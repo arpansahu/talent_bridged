@@ -11,3 +11,4 @@ services:
       - .:/job_portal_admin_panel
     ports:
       - "8015:8015"
+    restart: unless-stopped
