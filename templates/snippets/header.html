@@ -1,0 +1,108 @@
+{% load static %}
+{% block stylesheets %}
+<style>
+  .navbar .container-fluid {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .navbar-left {
+    display: flex;
+    align-items: center;
+  }
+  .navbar-brand {
+    display: flex;
+    align-items: center;
+  }
+  .navbar-center {
+    margin-left: 20px;
+  }
+  .navbar-right {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+  }
+  .navbar-right form {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+  }
+  .navbar-right .autocomplete-input {
+    margin-right: 10px;
+  }
+  .navbar-nav {
+    display: flex;
+    align-items: center;
+  }
+  .nav-item {
+    margin-left: 15px;
+    margin-right: 15px;
+  }
+</style>
+{% endblock stylesheets %}
+
+<!-- Navbar -->
+<nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
+  <div class="container-fluid py-1 px-3">
+    <div class="navbar-left">
+      <div class="navbar-brand">
+        <a href="{% url 'home' %}">
+          <img style="border-radius: 10px" src="{% static 'talent_bridged.png' %}" alt="Talent Bridged logo" width="75" height="75">
+        </a>
+      </div>
+      <div class="navbar-center">
+        <h5 class="my-0 mx-3 font-weight-bolder">Talent Bridged</h5>
+      </div>
+    </div>
+    <div class="navbar-right">
+      <ul class="navbar-nav">
+        {% if request.user.is_admin %}
+          <li class="nav-item">
+            <a href="{% url 'proxy-container' %}">Admin Panel</a>
+          </li>
+        {% endif %}
+        {% if request.user.is_authenticated %}
+          <li class="nav-item">
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+          </li>
+
+          <!-- "More" Dropdown Menu -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdownMenuButton" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              More
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <li><a class="dropdown-item" href="{% url 'account' %}">Profile</a></li>
+              <li><a class="dropdown-item" href="{% url 'order_list' %}">Orders</a></li>
+              <li><a class="dropdown-item" href="{% url 'billing_address' %}">Billing Address</a></li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <a href="{% url 'logout' %}" class="nav-link text-body font-weight-bold px-0">
+              <span class="d-sm-inline d-none">Sign Out</span>
+            </a>
+          </li>
+        {% endif %}
+        {% if not request.user.is_authenticated %}
+          <li class="nav-item">
+            <a href="{% url 'login' %}" class="nav-link text-body font-weight-bold px-0">
+              <span class="d-sm-inline d-none">Sign In</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'register' %}" class="nav-link text-body font-weight-bold px-0">
+              <span class="d-sm-inline d-none">Sign Up</span>
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- End Navbar -->
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+
+{% endblock javascripts %}

@@ -1,0 +1,49 @@
+{% extends "emails/base_email.html" %}
+
+{% block title %}Activate Your Account{% endblock %}
+
+{% block content %}
+<div style="
+    margin: 0;
+    margin-top: 70px;
+    padding: 92px 30px 115px;
+    background: #ffffff;
+    border-radius: 30px;
+    text-align: center;
+">
+    <div style="width: 100%; max-width: 489px; margin: 0 auto;">
+        <h1 style="margin: 0; font-size: 24px; font-weight: 500; color: #1f1f1f;">Activate Your Account</h1>
+        <p style="margin: 0; margin-top: 17px; font-size: 16px; font-weight: 500;">Hi {{ user.username }},</p>
+        <p style="margin: 0; margin-top: 17px; font-weight: 500; letter-spacing: 0.56px;">
+            Thank you for registering at Talent Bridged! Please click the button below to activate your account and complete the registration process.
+        </p>
+        <a href="{{ protocol }}://{{ domain }}/activate/{{ uid }}/{{ token }}/" target="_blank" style="
+            display: inline-block;
+            margin-top: 40px;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            background-color: #499fb6;
+            text-decoration: none;
+            border-radius: 5px;
+        ">
+            Activate Account
+        </a>
+    </div>
+</div>
+
+<p style="
+    max-width: 400px;
+    margin: 0 auto;
+    margin-top: 90px;
+    text-align: center;
+    font-weight: 500;
+    color: #8c8c8c;
+">
+    Need help? Contact us at
+    <a href="mailto:support@scrapeoptimus.com" style="color: #499fb6; text-decoration: none;">support@scrapeoptimus.com</a>
+    or visit our
+    <a href="https://scrapeoptimus.com/contact/" target="_blank" style="color: #499fb6; text-decoration: none;">Help Center</a>.
+</p>
+{% endblock %}

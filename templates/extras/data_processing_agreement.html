@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Data Processing Agreement | Talent Bridged{% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<style>
+    .dpa-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .dpa-header h1 {
+        font-size: 36px;
+        color: #333;
+    }
+
+    .dpa-header p {
+        font-size: 18px;
+        color: #888;
+    }
+
+    .dpa-body {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .dpa-content {
+        width: 85%; /* Main content section takes up 85% of the width */
+    }
+
+    .dpa-sidebar {
+        width: 15%; /* Sidebar takes up 15% of the width */
+        padding-left: 20px;
+    }
+
+    .dpa-sidebar ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .dpa-sidebar li {
+        margin-bottom: 10px;
+    }
+
+    .dpa-sidebar li a {
+        text-decoration: none;
+        color: #007bff;
+        font-weight: bold;
+    }
+
+    h2 {
+        margin-top: 30px;
+        font-size: 24px;
+        color: #333;
+    }
+
+    h3 {
+        margin-top: 20px;
+        font-size: 20px;
+        color: #555;
+    }
+
+    p {
+        margin: 20px 0;
+        line-height: 1.6;
+    }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="container">
+    <div class="dpa-header">
+        <h1>Data Processing Agreement</h1>
+        <p>This document outlines the responsibilities of ScrapeOptimus Ltd to its customers regarding data protection and GDPR compliance.</p>
+    </div>
+
+    <div class="dpa-body">
+        <!-- Main Content Section -->
+        <div class="dpa-content">
+            <h2 id="processor-definitions">ScrapeOptimus as Data Processor, Definitions</h2>
+            <p>ScrapeOptimus is a Data Processor operating on behalf of its customers. Customers are individuals or organizations paying money to use the ScrapeOptimus service. Free trial users of the ScrapeOptimus Service are not Customers and should not send ScrapeOptimus personal data.</p>
+
+            <p>ScrapeOptimus's Customers are Data Controllers.</p>
+
+            <p>Definitions:</p>
+            <ul>
+                <li><strong>Personal data:</strong> Any information relating to an identified or identifiable person.</li>
+                <li><strong>Data Protection Laws:</strong> EU Directive 95/46/EC, as transposed into domestic legislation of each Member State, including the GDPR.</li>
+                <li><strong>Services:</strong> ScrapeOptimus's APIs and the professional services provided by ScrapeOptimus.</li>
+                <li><strong>Sub-processor:</strong> Any Data Processor engaged by ScrapeOptimus.</li>
+                <li><strong>Data Subject:</strong> The individual to whom Personal Data relates.</li>
+            </ul>
+
+            <h2 id="processing-personal-data">Processing of Personal Data</h2>
+            <p>Use of the service implies that ScrapeOptimus may process personal data on behalf of the Data Controller in accordance with Data Protection Laws. The Data Controller is responsible for ensuring instructions to ScrapeOptimus comply with these laws.</p>
+
+            <h2 id="rights-data-subjects">Rights of Data Subjects</h2>
+            <p>The Data Controller is responsible for obtaining all necessary consent from Data Subjects for ScrapeOptimus to process personal data. ScrapeOptimus will notify the Data Controller if it receives a Data Subject request and will not respond to such requests without prior written consent from the Data Controller.</p>
+
+            <h2 id="personnel">Personnel</h2>
+            <p>ScrapeOptimus ensures that personnel engaged in processing personal data are informed of the confidential nature of the data, have received appropriate training, and have agreed to confidentiality obligations.</p>
+
+            <h2 id="sub-processors">Sub-Processors</h2>
+            <p>The Data Controller agrees that ScrapeOptimus may engage third-party Sub-processors to provide the Services. These Sub-processors will only access personal data for the purposes of providing the services ScrapeOptimus retained them for.</p>
+
+            <h2 id="security">Security</h2>
+            <p>ScrapeOptimus agrees to implement and maintain appropriate administrative, technical, and physical safeguards of personal data stored using the Services.</p>
+
+            <h2 id="security-breach-management">Security Breach Management and Notification</h2>
+            <p>If ScrapeOptimus becomes aware of unlawful access to the Data Controller's personal data, it will promptly notify the Data Controller, investigate the breach, and provide information about it. ScrapeOptimus will follow its policies and procedures to mitigate the effects and minimize any damage from the breach.</p>
+
+            <h2 id="deletion-customer-data">Deletion of Customer Data</h2>
+            <p>ScrapeOptimus agrees to delete customer personal data in accordance with its procedures and Data Protection Laws. At a Customer's request, ScrapeOptimus will provide a certification of deletion.</p>
+
+            <h2 id="governing-laws">Governing Laws</h2>
+            <p>This Agreement is governed by the laws of Ireland.</p>
+
+            <h2 id="legal-effect">Legal Effect</h2>
+            <p>This agreement comes into effect when a customer purchases a ScrapeOptimus subscription and expires when the customer's subscription ceases.</p>
+        </div>
+
+        <!-- Sidebar with links -->
+        <div class="dpa-sidebar">
+            <ul>
+                <li><a href="#processor-definitions">ScrapeOptimus as Data Processor, Definitions</a></li>
+                <li><a href="#processing-personal-data">Processing of Personal Data</a></li>
+                <li><a href="#rights-data-subjects">Rights of Data Subjects</a></li>
+                <li><a href="#personnel">Personnel</a></li>
+                <li><a href="#sub-processors">Sub-Processors</a></li>
+                <li><a href="#security">Security</a></li>
+                <li><a href="#security-breach-management">Security Breach Management and Notification</a></li>
+                <li><a href="#deletion-customer-data">Deletion of Customer Data</a></li>
+                <li><a href="#governing-laws">Governing Laws</a></li>
+                <li><a href="#legal-effect">Legal Effect</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+<!-- Any specific JavaScript for this page -->
+{% endblock javascripts %}

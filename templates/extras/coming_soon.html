@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Affiliate Program | Talent Bridged{% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<style>
+    .coming-soon-container {
+        text-align: center;
+        margin-top: 100px;
+    }
+
+    h1 {
+        font-size: 72px;
+        font-weight: bold;
+        background: linear-gradient(45deg, #ff6b6b, #5f27cd);
+        -webkit-background-clip: text;
+        color: transparent;
+        animation: glow 1.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+        from {  
+            text-shadow: 0 0 10px #5f27cd, 0 0 20px #ff6b6b, 0 0 30px #ff6b6b;
+        }
+        to {
+            text-shadow: 0 0 20px #5f27cd, 0 0 30px #ff6b6b, 0 0 40px #ff6b6b;
+        }
+    }
+
+    .message {
+        margin-top: 20px;
+        font-size: 20px;
+        color: #333;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .message p {
+        margin: 20px 0;
+    }
+
+    .social-links {
+        margin-top: 20px;
+    }
+
+    .social-links a {
+        margin: 0 15px;
+        color: #333;
+        font-size: 24px;
+        text-decoration: none;
+    }
+
+    .social-links a:hover {
+        color: #5f27cd;
+    }
+
+    .footer {
+        text-align: center;
+        margin-top: 40px;
+        color: #888;
+    }
+
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 48px;
+        }
+
+        .message {
+            font-size: 18px;
+        }
+
+        .social-links a {
+            font-size: 20px;
+        }
+    }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="coming-soon-container">
+    <h1>COMING SOON</h1>
+    <div class="message">
+        <p>Our Affiliate Program will be launching soon. Make sure to subscribe to our newsletter and follow us on social media for the latest updates and an official announcement of our launch.</p>
+        <p>We can't wait to partner with you in this exciting new journey!</p>
+    </div>
+    
+    <div class="social-links">
+        <a href="https://www.instagram.com/scrapeoptimus/"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.facebook.com/profile.php?id=61566415477872"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://x.com/scrapeoptimus"><i class="fab fa-twitter"></i></a>
+        <a href="mailto:support@scrapeoptimus.com"><i class="fas fa-envelope"></i></a>
+    </div>
+</div>
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+<!-- Font Awesome for Social Icons -->
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+{% endblock javascripts %}

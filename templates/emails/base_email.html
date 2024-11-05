@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>{% block title %}Talent Bridged Email{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body style="margin: 0; font-family: 'Poppins', sans-serif; background: #ffffff; font-size: 14px;">
+    <div style="
+        max-width: 680px;
+        margin: 0 auto;
+        padding: 45px 30px 60px;
+        background: #f4f7ff;
+        background-image: url({% static 'emails/email_background.png' %});
+        background-repeat: no-repeat;
+        background-size: 800px 452px;
+        background-position: top center;
+        font-size: 14px;
+        color: #434343;
+    ">
+        <!-- Header -->
+        <header>
+            <table style="width: 100%;">
+                <tbody>
+                    <tr style="height: 0;">
+                        <td>
+                            <a href="https://scrapeoptimus.com" target="_blank" style="display: inline-block;">
+                                <img alt="Logo" src="{% static 'emails/logo_white.png' %}" height="60px" />
+                            </a>
+                        </td>
+                        <td style="text-align: right;">
+                            <span style="font-size: 16px; line-height: 30px; color: #ffffff;">{{ date }}</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </header>
+
+        <!-- Main Content Block -->
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- Footer -->
+        <footer style="
+            width: 100%;
+            max-width: 490px;
+            margin: 20px auto 0;
+            text-align: center;
+            border-top: 1px solid #e6ebf1;
+        ">
+            <p style="margin: 0; margin-top: 40px; font-size: 16px; font-weight: 600; color: #434343;">Talent Bridged</p>
+            <p style="margin: 0; margin-top: 8px; color: #434343;">63a, Noida, India.</p>
+            <div style="margin: 0; margin-top: 16px;">
+                <a href="https://www.facebook.com/people/Scrape-Optimus/61566415477872/" target="_blank" style="display: inline-block;">
+                    <img src="{% static 'emails/facebook.png' %}" width="32" height="32" alt="Facebook" style="margin-right: 8px; border-radius: 50%;">
+                </a>
+                <a href="https://instagram.com/scrapeoptimus" target="_blank" style="display: inline-block;">
+                    <img src="{% static 'emails/instagram.png' %}" width="32" height="32" alt="Instagram" style="margin-right: 8px; border-radius: 50%;">
+                </a>
+                <a href="https://x.com/scrapeoptimus" target="_blank" style="display: inline-block;">
+                    <img src="{% static 'emails/x.png' %}" width="32" height="32" alt="X" style="margin-right: 8px; border-radius: 50%;">
+                </a>
+                <a href="https://youtube.com/@scrapeoptimus-q6d?si=1tpqatuT-usS4ei7" target="_blank" style="display: inline-block;">
+                    <img src="{% static 'emails/youtube.png' %}" width="32" height="32" alt="YouTube" style="margin-right: 8px; border-radius: 50%;">
+                </a>
+            </div>
+            <p style="margin: 0; margin-top: 16px; color: #434343;">Copyright © 2024 Talent Bridged. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>

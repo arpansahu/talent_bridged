@@ -1,0 +1,327 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+
+{% endblock title %}
+
+{% block stylesheets %}
+
+<style>
+    .hero-section {
+        background-color: #f0f4f7;
+        padding: 50px 0;
+        text-align: center;
+    }
+    .hero-section h1 {
+        font-size: 2.5rem;
+        font-weight: bold;
+    }
+    .hero-section p {
+        font-size: 1.25rem;
+        margin-bottom: 20px;
+    }
+    .hero-section .btn-primary {
+        padding: 10px 20px;
+        font-size: 1.25rem;
+    }
+    .section-title {
+        text-align: center;
+        font-weight: bold;
+        margin-top: 50px;
+        margin-bottom: 30px;
+        font-size: 1.75rem;
+    }
+    .pricing-card {
+        margin-bottom: 20px; /* Add some margin between cards */
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        background-color: #fff;
+        text-align: center;
+    }    
+    .pricing-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+    .pricing-card ul {
+        list-style-type: none;
+        padding: 0;
+        margin-bottom: 20px;
+    }
+    .pricing-card ul li {
+        margin-bottom: 10px;
+    }
+    .pricing-card .btn {
+        padding: 10px 20px;
+    }
+    .features-section {
+        padding: 50px 0;
+        background-color: #f7f7f7;
+    }
+    .features-section h2 {
+        font-size: 1.75rem;
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    .feature-item {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .feature-item img {
+        max-width: 100px;
+        margin-bottom: 20px;
+    }
+    .cta-section {
+        background-color: #4B0082;
+        color: #fff;
+        padding: 50px 0;
+        text-align: center;
+    }
+    .cta-section h2 {
+        font-size: 2rem;
+        margin-bottom: 20px;
+        color: white;
+    }
+    .cta-section .btn {
+        padding: 15px 30px;
+        font-size: 1.25rem;
+    }
+    footer {
+        background-color: #333;
+        color: #fff;
+        padding: 20px 0;
+        text-align: center;
+    }
+    .feature-banner h2, .feature-banner p {
+        margin-bottom: 20px;
+        color: white;
+    }
+    
+    .feature-cards .feature-icon img {
+        width: 60px;
+        height: 60px;
+        border-radius: 15px;
+        object-fit: cover; /* Ensures the image fits inside the defined width and height without distortion */
+    }
+    .flag-container {
+        width: 50px;
+        height: 50px;
+        margin: 0 auto 10px;
+        border-radius: 50%;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #ddd;
+    }
+    
+
+    
+    
+    .flag-icon {
+        font-size: 30px; /* Small flag size */
+        display: block;
+        line-height: 40px;
+    }
+    
+    .section-title {
+        color: #4B0082;
+    }
+    
+    ul {
+        list-style: none;
+        padding-left: 0;
+    }
+    
+    ul li {
+        padding: 5px 0;
+        font-weight: bold;
+        color: #333;
+    }
+    
+    p {
+        line-height: 1.6;
+        color: #555;
+    }
+    
+    img {
+        border: 2px solid #ddd;
+        padding: 5px;
+    }
+    
+    
+    
+</style>
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <h1>Never Worry About Finding Web Scraping Proxies Again</h1>
+    <p>ScrapeOptimus Proxy Aggregator makes it easy to find the best proxies for your web scraping needs. Get started today with our proxy aggregation platform.</p>
+    <a href="{% url 'dashboard' %}#requestBuilder" class="btn btn-primary" style="background-color: #4f66ff;">Try Proxy Aggregator</a>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <h2>Why Use A Proxy Aggregator?</h2>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 feature-item">
+                <img src="{% static 'images/proxy_aggregator/proxy.png' %}" alt="Proxy Feature">
+                <h4>Easy Proxy Management</h4>
+                <p>Manage multiple proxy providers from one dashboard.</p>
+            </div>
+            <div class="col-md-4 feature-item">
+                <img src="{% static 'images/proxy_aggregator/fast_and_reliable.png' %}" alt="Speed Feature">
+                <h4>Fast & Reliable</h4>
+                <p>Find proxies with the best uptime and speed for your needs.</p>
+            </div>
+            <div class="col-md-4 feature-item">
+                <img src="{% static 'images/proxy_aggregator/anonomity.png' %}" alt="Security Feature">
+                <h4>Secure & Anonymous</h4>
+                <p>Access secure and anonymous proxies with ease.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Feature Banner Section -->
+<section class="feature-banner text-white" style="background-color: #4B0082; padding: 50px; margin:40px; border-radius:15px; position: relative;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h2 class="display-5 font-weight-bold">The most reliable web scraping API</h2>
+                <p>Our clients have saved up to 40% of data collection budgets by integrating ScrapeOptimus API instead of self-made solutions.</p>
+                <span class="badge bg-warning text-dark">Metrics</span>
+            </div>
+            <div class="col-md-3 text-center">
+                <h2 class="display-4 font-weight-bold">99.99%</h2>
+                <p>Uptime over the last year.</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <h2 class="display-4 font-weight-bold">85.5%</h2>
+                <p>Anti-scraping avoidance rate with our cloud browser solution.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section Merged Below -->
+<section class="feature-cards" style="background-color: #4f66ff; color: white; padding: 50px 0; margin-left: 10%; margin-right: 10%; border-radius: 15px; margin-top: -80px; z-index: 1; position: relative;">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-4">
+                <div class="feature-icon mb-3">
+                    <img src="{% static 'images/proxy_aggregator/parallel.png' %}" alt="Unlimited Requests" width="50">
+                </div>
+                <h4 style="color: white;">Unlimited parallel requests</h4>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-icon mb-3">
+                    <img src="{% static 'images/proxy_aggregator/servers.png' %}" alt="Proxy Servers" width="50">
+                </div>
+                <h4 style="color: white;">3+ million proxy servers across the world</h4>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-icon mb-3">
+                    <img src="{% static 'images/proxy_aggregator/web.png' %}" alt="Browser Rendering" width="50">
+                </div>
+                <h4 style="color: white;">Open your web page as in a real browser</h4>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container mt-5">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <h2 class="section-title font-weight-bold">How Our Rotating Proxy API Works</h2>
+            <p>
+                Our <strong>Proxy Aggregator API</strong> uses a pool of thousands of proxy servers worldwide, providing a powerful solution for web scraping. 
+                Each time you send a request to the API, the system dynamically routes it through a random proxy server, selected from our global network. 
+                This ensures that your web scraping activities remain anonymous and undetected, significantly reducing the risk of IP blocking or rate limiting.
+            </p>
+            <p>
+                The API supports automatic rotation of IP addresses, meaning each request is sent via a different proxy, making it appear as if it's coming from multiple locations. This technique mitigates anti-scraping mechanisms, ensuring successful data extraction even from sites with advanced protection measures like IP bans, geolocation restrictions, and CAPTCHAs.
+            </p>
+            <ul>
+                <li><strong>Random Proxy Selection:</strong> Each request is routed through a randomly selected proxy server.</li>
+                <li><strong>High Anonymity:</strong> Your identity is protected as the source of each request appears to be different.</li>
+                <li><strong>Scalability:</strong> Handle thousands of requests simultaneously using our rotating proxy pool without being blocked.</li>
+                <li><strong>Geolocation Flexibility:</strong> Access content restricted to specific regions by leveraging geographically distributed proxy servers.</li>
+            </ul>
+            <p>
+                Our API also supports <strong>failover mechanisms</strong>, ensuring that if a proxy server is unavailable, the request is automatically routed through another working proxy. This guarantees high availability and uptime for your scraping activities.
+            </p>
+        </div>
+        <div class="col-md-6 text-center">
+            <img src="{% static 'images/proxy_aggregator/rotating_proxy.png' %}" alt="Rotating Proxy API Explanation" class="img-fluid" style="border-radius: 15px;">
+        </div>
+    </div>
+</section>
+
+
+<!-- Proxy Providers Section -->
+<section class="container mt-5">
+    <h2 class="section-title">Available Proxy Providers Locations Across the Globe 126 Nations</h2>
+    <div class="row text-center">
+        {% for country_code, country_name in selected_countries %}
+        <div class="col-md-3 feature-item">
+            <div class="flag-container">
+                <span class="flag-icon flag-icon-{{ country_code }}"></span>
+            </div>
+            <p>{{ country_name }}</p>
+        </div>
+        {% endfor %}
+
+        ...
+    </div>
+</section>
+
+<!-- Plans Section -->
+<section class="container mt-5">
+    <h2 class="section-title">Available Plans</h2>
+    <div class="row text-center">
+        {% for plan in plans %}
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card plan-card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ plan.subscription_type }} Plan</h5>
+                    <p class="card-text">
+                        <strong>Price:</strong> 
+                        {% if plan.price %}
+                            {{ plan.price }} USD / month
+                        {% else %}
+                            Free
+                        {% endif %}
+                    </p>
+                    <p><strong>Monthly Data Limit:</strong> {{ plan.monthly_limit_gb }} GB</p>
+                    <p><strong>Monthly Request Limit:</strong> {{ plan.monthly_request_limit }}</p>
+                    {% if plan.price %}
+                        <a href="{% url 'dashboard' %}#billing" class="btn btn-primary" style="background-color: #4f66ff;">Subscribe</a>
+                    {% else %}
+                        <a href="{% url 'dashboard' %}#requestBuilder" class="btn btn-primary" style="background-color: #4f66ff;">Try</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="cta-section" style="background-color: #4B0082; padding: 50px; margin:40px; border-radius:15px; position: relative;">
+    <h2>Start Scraping Within 30 Seconds</h2>
+    <p style="color: white;">Sign up for ScrapeOptimus Proxy Aggregator today and start scraping without worrying about proxies.</p>
+    <a href="{% url 'dashboard' %}#requestBuilder" class="btn btn-light">Try Proxy Aggregator</a>
+</section>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

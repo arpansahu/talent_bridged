@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Data Protection Policy | Talent Bridged{% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<style>
+    .data-protection-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .data-protection-header h1 {
+        font-size: 36px;
+        color: #333;
+    }
+
+    .data-protection-header p {
+        font-size: 18px;
+        color: #888;
+    }
+
+    .data-protection-body {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .data-protection-content {
+        width: 85%; /* Main content section takes up 85% of the width */
+    }
+
+    .data-protection-sidebar {
+        width: 15%; /* Sidebar takes up 15% of the width */
+        padding-left: 20px;
+    }
+
+    .data-protection-sidebar ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .data-protection-sidebar li {
+        margin-bottom: 10px;
+    }
+
+    .data-protection-sidebar li a {
+        text-decoration: none;
+        color: #007bff;
+        font-weight: bold;
+    }
+
+    h2 {
+        margin-top: 30px;
+        font-size: 24px;
+        color: #333;
+    }
+
+    h3 {
+        margin-top: 20px;
+        font-size: 20px;
+        color: #555;
+    }
+
+    p {
+        margin: 20px 0;
+        line-height: 1.6;
+    }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="container">
+    <div class="data-protection-header">
+        <h1>Data Protection Policy</h1>
+        <p>General Data Protection Regulation</p>
+    </div>
+
+    <div class="data-protection-body">
+        <!-- Main Content Section -->
+        <div class="data-protection-content">
+            <h2 id="gdpr">General Data Protection Regulation</h2>
+            <p>The General Data Protection Regulation (GDPR) is European Union legislation to strengthen and unify data protection laws for all individuals within the European Union. The regulation came into effect on May 25th, 2018.</p>
+
+            <p>As an Irish business, founded and run by Irish citizens, but also as people who value privacy, we are fully committed to being compliant with GDPR and all data protection best practices.</p>
+
+            <p>This page lays out our commitment to data protection and makes transparent what data we store about our users.</p>
+
+            <h2 id="who-we-are">Who We Are</h2>
+            <p>Our company, ScrapeOptimus Ltd, is a limited company by shares in Ireland.</p>
+
+            <h2 id="questions">Questions?</h2>
+            <p>If you have any questions regarding this topic, feel free to send us an email at <strong>support@scrapeoptimus.com</strong>.</p>
+
+            <h2 id="data-collect">What Data Do We Collect?</h2>
+
+            <h3 id="on-website">On Our Website</h3>
+            <p>Our website is hosted by Digital Ocean in London. On our website, we use Google Analytics to help us understand, in anonymized form, how the site is being used.</p>
+
+            <p>When registering for our free trial, you need to provide us with a valid email address. We confirm that the address works by emailing you a confirmation link. We use SendGrid, operated by Twilio Inc, for email delivery. Twilio privacy policy is available <a href="https://www.twilio.com/legal/privacy" target="_blank">here</a>.</p>
+
+            <h3 id="on-api">On Our API</h3>
+            <p>Our API servers are hosted with Digital Ocean. When our SDK is installed and active, data based on the ongoing scraping activity is sent to us. We send you a response and log the details. We use Datadog for log management, and logs are deleted after 14 days.</p>
+
+            <h3 id="customer-financial">Customer/Financial Transaction Information</h3>
+            <p>If you become a paying customer, we collect valid billing information, including name, billing address, email, and VAT number. Payment processing is handled by Stripe, and invoicing is managed by Chargebee.</p>
+
+            <h2 id="data-processing-agreement">Data Processing Agreement</h2>
+            <p>Becoming a customer of our service implies acceptance of our <a href="#">Data Processing Agreement</a>, unless otherwise explicitly agreed with us in writing.</p>
+
+            <h2 id="data-deletion">Data Deletion</h2>
+            <p>Any user (paid or free-trial) can request to have their account deleted at any time by contacting us at <strong>support@scrapeoptimus.com</strong>. For paying customers, we must retain records of completed transactions for tax purposes.</p>
+        </div>
+
+        <!-- Sidebar with links -->
+        <div class="data-protection-sidebar">
+            <ul>
+                <li><a href="#gdpr">General Data Protection Regulation</a></li>
+                <li><a href="#who-we-are">Who We Are</a></li>
+                <li><a href="#questions">Questions?</a></li>
+                <li><a href="#data-collect">What Data Do We Collect?</a></li>
+                <li><a href="#on-website">On Our Website</a></li>
+                <li><a href="#on-api">On Our API</a></li>
+                <li><a href="#customer-financial">Customer/Financial Transaction Information</a></li>
+                <li><a href="#data-processing-agreement">Data Processing Agreement</a></li>
+                <li><a href="#data-deletion">Data Deletion</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+<!-- Any specific JavaScript for this page -->
+{% endblock javascripts %}

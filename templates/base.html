@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+
+  <title>
+      {% block title %}{% endblock %}
+  </title>
+
+  <!--     Fonts and icons     -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  {% comment %} <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" /> {% endcomment %}
+  <link href="{% static 'css/google-font.css' %}" rel="stylesheet" />
+  <!-- Nucleo Icons -->
+  <link href="{% static 'assets/css/nucleo-icons.css' %}" rel="stylesheet" />
+  <link href="{% static 'assets/css/nucleo-svg.css' %}" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <script src="{% static 'js/fontawesome/all.js' %}"></script>
+
+  <link href="{% static 'assets/css/nucleo-svg.css' %}" rel="stylesheet" />
+  <!-- CSS Files -->
+  <link id="pagestyle" href="{% static 'assets/css/soft-ui-dashboard.css' %}" rel="stylesheet" />
+
+  <script src="{% static 'js/sweetalert2.js' %}"></script>
+  <!-- Jquery/AJAX -->
+  <script src="{% static 'js/jquery.js' %}"></script>
+  <script src="{% static 'js/htmx.js' %}"></script>
+  <script src="{% static 'js/ws.js' %}"></script>
+  {% comment %} <script src="https://unpkg.com/htmx.org/dist/htmx.js"></script> {% endcomment %}
+  {% comment %} <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script> {% endcomment %}
+
+  <!-- Specific CSS goes HERE -->
+  <link rel="stylesheet" href="https://unpkg.com/@trevoreyre/autocomplete-js/dist/style.css"/>
+  <!-- Sentry SDK for JavaScript -->
+  <script src="https://js.sentry-cdn.com/cf75ac079fc4d34af42827eff8c690e3.min.js" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css">
+
+  {% block stylesheets %}
+    <style>
+          html {
+        {#font-size: 14px;#}
+      }
+    </style>
+  {% endblock stylesheets %}
+</head>
+<body class="g-sidenav-show  bg-gray-100">
+  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+      {% include 'snippets/header.html' %}
+
+      {% block content %}{% endblock content %}
+
+      {% comment %} <div class="container-fluid py-4"> {% endcomment %}
+          {% include 'snippets/footer.html' %}
+      {% comment %} </div> {% endcomment %}
+
+  </main>
+
+  {% include "snippets/scripts.html" %}
+
+  <!-- Specific JS goes HERE -->
+  <script src="{% static 'js/jquery.js' %}"></script>
+  {% block javascripts %}{% endblock javascripts %}
+</body>
+</html>

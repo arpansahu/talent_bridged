@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: scrape-optimus-service
+spec:
+  selector:
+    app: scrape-optimus
+  ports:
+    - name: uvicorn
+      protocol: TCP
+      port: 8018
+      targetPort: 8018
+      nodePort: 32018
+    - name: celery-flower
+      protocol: TCP
+      port: 8055
+      targetPort: 8055
+      nodePort: 32055
+  type: NodePort

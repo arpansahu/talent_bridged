@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scrape-optimus-mac-app
+  labels:
+    app: scrape-optimus-mac
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scrape-optimus-mac
+  template:
+    metadata:
+      labels:
+        app: scrape-optimus-mac
+    spec:
+      imagePullSecrets:
+        - name: harbor-registry-secret
+      containers:
+        - image: harbor.arpansahu.me/library/talent_bridged_mac:latest
+          name: scrape-optimus-mac
+          envFrom:
+            - secretRef:
+                name: scrape-optimus-secret
+          ports:
+            - containerPort: 8002
+              name: daphne
+  revisionHistoryLimit: 0

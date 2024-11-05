@@ -1,0 +1,149 @@
+{% load static %}
+
+{% block stylesheets %}
+<style>
+.footer {
+    background-color: #4B0082; /* Violet color similar to the one in your logo */
+    color: white;
+    padding: 40px 0;
+    margin-top: 20px;
+}
+
+.footer a {
+    color: #bdb6ff; /* Light violet for links */
+    text-decoration: none;
+}
+
+.footer a:hover {
+    color: #ffffff; /* White on hover */
+}
+
+.footer-social a {
+    color: #bdb6ff; /* Social icons same as links */
+    text-decoration: none;
+}
+
+.footer-social img {
+    width: 24px; /* Adjust size of icons */
+    height: 24px;
+}
+
+.footer-social img:hover {
+    filter: brightness(1.2); /* Slightly brighten icon on hover */
+}
+
+.footer h6 {
+    color: white;
+    font-weight: bold;
+}
+
+.footer-list li {
+    margin-bottom: 10px;
+}
+
+.footer-social {
+    margin-top: 15px;
+}
+
+.footer-social ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-social li {
+    display: inline-block;
+    margin-right: 15px;
+}
+
+/* Styling for the copyright section */
+.footer .copyright {
+    border-top: 1px solid #bdb6ff; /* Light violet border on top */
+    padding-top: 15px;
+    margin-top: 30px;
+}
+
+/* Flexbox to align content on larger screens */
+.footer .row.justify-content-between {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Align text for small screens */
+@media (max-width: 768px) {
+    .footer .row {
+        text-align: center;
+    }
+
+    .footer .copyright-text {
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .footer .social-media {
+        text-align: center;
+    }
+}
+</style>
+{% endblock stylesheets %}
+
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6 col-md-4">
+                <h6 class="text-footer mb-4 mt-sm-0 mt-5">Company</h6>
+                <ul class="list-unstyled footer-list">
+                    <li><a href="#">Resources</a></li>
+                    <li><a href="#">Documentation</a></li>
+                    <li><a href="#">Proxy Comparison Tool</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="{% url 'contact' %}">Contact</a></li>
+                    <li><a href="https://github.com/scrapeoptimus">Github</a></li>
+                </ul>
+            </div><!-- end col -->
+            <div class="col-sm-6 col-md-4">
+                <h6 class="text-footer mb-4 mt-sm-0 mt-4">Recent Blog Posts</h6>
+                <ul class="list-unstyled footer-list">
+                    {% comment %} <li><a href="#">FAQs</a></li>
+                    <li><a href="#">Projects</a></li>
+                    <li><a href="#">Support</a></li>
+                    <li><a href="#">Contact</a></li> {% endcomment %}
+                </ul>
+            </div><!-- end col -->
+            <div class="col-sm-6 col-md-4">
+                <h6 class="text-footer mb-4 mt-sm-0 mt-4">Legal</h6>
+                <ul class="list-unstyled footer-list">
+                    <li><a href="{% url 'affiliate_program' %}">Affiliate Program</a></li>
+                    <li><a href="{% url 'terms_and_conditions' %}">Terms & Conditions</a></li>
+                    <li><a href="{% url 'privacy_policy' %}">Privacy Policy</a></li>
+                    <li><a href="{% url 'data_protection_policy' %}">Data Protection Policy</a></li>
+                    <li><a href="{% url 'data_processing_agreement' %}">Data Processing Agreement</a></li>
+                </ul>
+            </div><!-- end col -->
+        </div><!-- end row -->
+
+        <!-- Social media icons, copyright text, and a placeholder for future use -->
+        <div class="row justify-content-between copyright">
+            <!-- Left part for social media icons -->
+            <div class="col-md-4 social-media">
+                <ul class="footer-social list-unstyled">
+                    <li><a href="https://facebook.com/scrapeoptimus" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook"></a></li>
+                    <li><a href="https://twitter.com/scrapeoptimus" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter"></a></li>
+                    <li><a href="https://instagram.com/scrapeoptimus" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram"></a></li>
+                    <li><a href="https://github.com/scrapeoptimus" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/733/733553.png" alt="GitHub"></a></li>
+                </ul>
+            </div>
+
+            <!-- Center part for copyright text -->
+            <div class="col-md-4 text-center copyright-text">
+                <p class="mb-0">Copyright © 2024 ScrapeOptimus.</p>
+            </div>
+
+            <!-- Right part left empty for future use -->
+            <div class="col-md-4 text-md-right">
+                <!-- You can add content here later -->
+            </div>
+        </div><!-- end row -->
+    </div>
+</footer>
+

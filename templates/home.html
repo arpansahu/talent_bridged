@@ -1,0 +1,285 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Talent Bridged - Your Web Scraping Solution{% endblock title %}
+
+{% block stylesheets %}
+<style>
+    /* Main styles for home page */
+    html, body {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .main-content {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .header-section {
+        text-align: center;
+        padding: 80px 20px;
+        background-color: #f8f9fa;
+    }
+
+    .header-section h1 {
+        font-size: 48px;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .header-section p {
+        font-size: 18px;
+        color: #555;
+        margin-bottom: 30px;
+    }
+
+    .header-section .cta-buttons {
+        margin-top: 20px;
+    }
+
+    .cta-buttons a {
+        padding: 12px 25px;
+        margin: 0 10px;
+        background-color: #4f66ff;
+        color: white;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+
+    .cta-buttons a:hover {
+        background-color: #8c52ff;
+        color: white;
+    }
+
+    .features-section {
+        text-align: center;
+        padding: 60px 20px;
+        background-color: #fff;
+    }
+
+    .features-section h2 {
+        font-size: 36px;
+        margin-bottom: 40px;
+    }
+
+    .feature-cards {
+        display: flex;
+        justify-content: space-around;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .feature-card {
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        flex-basis: 30%;
+        text-align: center;
+        min-width: 250px;
+    }
+
+    .feature-card h3 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .feature-card p {
+        font-size: 16px;
+        color: #555;
+    }
+
+    .learn-more-btn {
+        background-color: #4f66ff;
+        padding: 10px 20px;
+        color: white;
+        border-radius: 5px;
+        margin-top: 20px;
+        display: inline-block;
+        text-decoration: none;
+    }
+
+    .learn-more-btn:hover {
+        background-color: #8c52ff;
+        color: white;
+    }
+
+    /* Why Use Talent Bridged Section */
+    .why-use-section {
+        background-color: #f8f9fa;
+        padding: 60px 20px;
+    }
+
+    .why-use-section h2 {
+        text-align: center;
+        font-size: 36px;
+        margin-bottom: 40px;
+    }
+
+    .why-use-points {
+        display: flex;
+        justify-content: space-around;
+        text-align: left;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .why-use-points div {
+        flex-basis: 45%;
+        margin-bottom: 20px;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        text-align: center;
+        padding: 40px 0; /* Vertical padding */
+        background-color: #4B0082; /* Same background color as footer */
+        color: white;
+        padding-left: 40px;  /* Horizontal padding, similar to footer */
+        padding-right: 40px;
+    }
+
+    .cta-section h3 {
+        font-size: 28px;
+        margin-bottom: 20px;
+        color: white;
+        font-weight: bold;
+    }
+
+    .cta-section a {
+        padding: 12px 25px;
+        background-color: white;
+        color: #4f66ff;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+
+    .cta-section a:hover {
+        background-color: #f0f0f0;
+    }
+
+    .cta-button:hover {
+        background-color: #f0f0f0;
+    }
+
+
+    @media (max-width: 600px) {
+        .cta-section h3 {
+            font-size: 20px;
+        }
+
+        .cta-button {
+            font-size: 14px;
+            padding: 10px 20px;
+        }
+    }
+
+    .cta-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center; /* Center align buttons horizontally */
+        gap: 20px; /* Add spacing between the buttons */
+        margin-top: 20px;
+    }
+
+    .cta-button {
+        display: inline-block;
+        padding: 12px 25px;
+        background-color: #4f66ff;
+        color: white;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        text-align: center;
+        transition: background-color 0.3s ease;
+    }
+
+    .cta-button:hover {
+        background-color: #8c52ff;
+        color: white;
+    }
+
+    @media (max-width: 600px) {
+        .cta-button {
+            flex-basis: 100%; /* Make each button take the full width on smaller screens */
+            margin-bottom: 10px; /* Add margin at the bottom for better spacing */
+        }
+    }
+
+</style>
+{% endblock stylesheets %}
+{% block content %}
+<div class="main-content">
+    <!-- Header Section -->
+    <section class="header-section">
+        <h1>Your Complete Toolbox for Web Scraping</h1>
+        <p>Schedule your scraping jobs, monitor their performance, and scrape with ease using Talent Bridged.</p>
+        <div class="cta-buttons">
+            <a href="{% url 'register' %}" class="cta-button">Get Free Account</a>
+            <a href="{% url 'dashboard' %}" class="cta-button">Live Demo</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <h2>What Type of Solution Do You Need?</h2>
+        <div class="feature-cards">
+            <div class="feature-card">
+                <h3>Proxy Aggregator</h3>
+                <p>Use over 200 proxy providers with one simple API integration.</p>
+                <a href="{% url 'proxy_aggregator_view' %}" class="learn-more-btn">Learn More</a>
+            </div>
+            <div class="feature-card">
+                <h3>Job Scheduling</h3>
+                <p>Connect your servers with our job scheduler to automate and manage scraping jobs.</p>
+                <a href="#" class="learn-more-btn">Coming Soon...</a>
+            </div>
+            <div class="feature-card">
+                <h3>Monitoring & Alerts</h3>
+                <p>Monitor and get real-time alerts on your scraping jobs from one dashboard.</p>
+                <a href="#" class="learn-more-btn">Coming Soon...</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Use Talent Bridged Section -->
+    <section class="why-use-section">
+        <h2>Why Use Talent Bridged?</h2>
+        <div class="why-use-points">
+            <div>
+                <h4>Real-Time Monitoring</h4>
+                <p>Get instant updates and alerts for your scraping jobs.</p>
+            </div>
+            <div>
+                <h4>Proxy Aggregator</h4>
+                <p>Seamlessly integrate and manage proxies with our easy-to-use API.</p>
+            </div>
+            <div>
+                <h4>Job Scheduling</h4>
+                <p>Schedule jobs efficiently and save time with automated workflows.</p>
+            </div>
+            <div>
+                <h4>Custom Solutions</h4>
+                <p>We offer flexible solutions to suit your specific scraping needs.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h3>Ready to make web scraping less painful?</h3>
+            <a href="{% url 'register' %}" class="cta-button">Sign up for a free account today</a>
+        </div>
+    </section>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+<!-- Any additional JavaScript can be added here -->
+{% endblock javascripts %}

@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block stylesheets %}
+{% endblock stylesheets %}
+{% block content %}
+
+<!-- start contact us -->
+<section class="section bg-light" id="contact" style="padding: 20px 0;">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="card bg-white">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h2 class="fs-2 fw-normal lh-1 text-dark mb-3">Get in touch!</h2>
+                                <p class="text-gray-700 fs-18 fs-lg mb-4 mb-md-5 ">
+                                Whether you have a question or just want to know anything, We’ll try my best to get back to you as soon as possible!</p>
+                                <form method="post" name="myForm" onsubmit="return validateForm()">
+                                    {% csrf_token %}
+                                    <span id="error-msg"></span>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="fw-medium form-label fs-16" for="name">Name</label>
+                                            {{ form.name }}
+                                        </div>
+                                        <!-- end col -->
+                                        <div class="col-md-6 mb-3" id="email-div">
+                                            <label class="fw-medium form-label  fs-16" for="email">Email</label>
+                                            {{ form.email }}
+                                        </div>
+                                        <!-- end col -->
+                                        <div class="col-md-6 mb-3">
+                                            <label class="fw-medium form-label fs-16" for="otp">One Time Password</label>
+                                            <input type="text" class="form-control" placeholder="One Time Password" id="otp" name="otp"/>
+                                            {{ form.otp }}
+                                        </div>
+                                        <div class="col-md-6 mb-6" style="margin-top: 30px" >
+                                            <button type="button" class="btn btn-secondary btn-lg" style="background-color: #4f66ff;" id="get_otp">Get One Time Password</button>
+                                        </div>
+                                        <!-- end col -->
+                                        <div class="col-md-6 mb-3" >
+                                            <label class="fw-medium form-label  fs-16" for="subject">Subject</label>
+                                            {{ form.subject }}
+                                        </div>
+                                        <!-- end col -->
+                                        <div class="col-md-6 mb-3">
+                                            <label class="fw-medium form-label  fs-16" for="number">Contact</label>
+                                            {{ form.contact }}
+                                        </div>
+                                        <!-- end col -->
+                                        <div class="col-12 mb-3">
+                                            <label class="fw-medium form-label  fs-16" for="comments">Message</label>
+                                            {{ form.message }}
+                                        </div>
+                                        <!-- end col -->
+                                        <div class="col-12">
+                                            <input type="submit" id="submit" name="send" class="btn btn-primary mt-2" value="Send message" style="background-color: #8c52ff; border-color: #8c52ff;"/>
+                                        </div>
+                                        
+
+                                        <!-- end col -->
+                                    </div><!--end row-->
+                                </form><!-- end form -->
+                            </div><!-- end col -->
+                            <div class="col-md-4">
+                                <img src="{% static 'images/personal/contact.svg' %}" alt="" height="200" class=" mx-auto d-block mb-5">
+                                <div class="d-flex">
+                                    <div class="bg-light d-flex justify-content-center align-items-center thumb-lg  rounded">
+                                        <i class="ti ti-phone fs-22"></i>
+                                    </div>
+                                    <div class="align-self-center ms-3">
+                                        <span class="d-block lh-1">+91 7470706663</span>
+                                        <span class="text-muted fs-14 mt-n2">9:00am to 7:00pm</span>
+                                    </div>
+                                </div>
+                                <hr class="hr-dashed my-3">
+                                <div class="d-flex">
+                                    <div class="bg-light d-flex justify-content-center align-items-center thumb-lg  rounded">
+                                        <i class="ti ti-mail fs-22"></i>
+                                    </div>
+                                    <div class="align-self-center ms-3">
+                                        <span class="d-block lh-1">support@scrapeoptimus.com</span>
+                                        <span class="text-muted fs-14 mt-n2">Monday to Sunday</span>
+                                    </div>
+                                </div>
+                            </div><!--end col-->
+                        </div><!-- end row -->
+                    </div><!--end card-body-->
+                </div><!--end card-->
+            </div><!-- end col -->
+        </div><!-- end row -->
+    </div><!-- end container -->
+</section>
+
+{% endblock content %}
+
+{% block javascripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function() {
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        const csrftoken = getCookie('csrftoken');
+
+        $('#get_otp').on('click', function(e) {
+            e.preventDefault();
+            let email = $('#id_email').val();
+
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'get-otp' %}",
+                data: {
+                    email: email,
+                    csrfmiddlewaretoken: csrftoken
+                },
+                dataType: 'json',
+                success: function(data) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: data.message,
+                    }).then(() => {
+                        $('#get_otp').css('background-color', 'green');
+                        $('#get_otp').text('One Time Password Sent | Resend');
+                    });
+                },
+                error: function(data) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: data.responseJSON.message,
+                    });
+                }
+            });
+        });
+
+        $('form[name="myForm"]').on('submit', function(e) {
+            e.preventDefault(); // Prevent form submission
+            const formData = $(this).serialize(); // Serialize form data
+
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'contact' %}",
+                data: formData,
+                dataType: 'json',
+                success: function(data) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thank you!',
+                        text: data.message,
+                    }).then(() => {
+                        // Clear the form fields
+                        $('form[name="myForm"]')[0].reset();
+                        $('#get_otp').css('background-color', '#8392AB');
+                        $('#get_otp').text('One Time Password');
+                    });
+                },
+                error: function(data) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: data.responseJSON.message,
+                    });
+                    $('form[name="myForm"]')[0].reset();
+                    $('#get_otp').css('background-color', '#8392AB');
+                    $('#get_otp').text('One Time Password');
+                }
+            });
+        });
+    });
+</script>
+{% endblock javascripts %}
+

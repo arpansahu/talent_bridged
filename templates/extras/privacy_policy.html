@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Privacy Policy | Talent Bridged{% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<style>
+    .privacy-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .privacy-header h1 {
+        font-size: 36px;
+        color: #333;
+    }
+
+    .privacy-header p {
+        font-size: 18px;
+        color: #888;
+    }
+
+    .privacy-body {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .privacy-content {
+        width: 85%; /* Main content section takes up 85% of the width */
+    }
+
+    .privacy-sidebar {
+        width: 15%; /* Sidebar takes up 15% of the width */
+        padding-left: 20px;
+    }
+
+    .privacy-sidebar ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .privacy-sidebar li {
+        margin-bottom: 10px;
+    }
+
+    .privacy-sidebar li a {
+        text-decoration: none;
+        color: #007bff;
+        font-weight: bold;
+    }
+
+    h2 {
+        margin-top: 30px;
+        font-size: 24px;
+        color: #333;
+    }
+
+    h3 {
+        margin-top: 20px;
+        font-size: 20px;
+        color: #555;
+    }
+
+    p {
+        margin: 20px 0;
+        line-height: 1.6;
+    }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="container">
+    <div class="privacy-header">
+        <h1>Privacy Policy</h1>
+        <p>Effective date: Nov 14, 2021</p>
+    </div>
+
+    <div class="privacy-body">
+        <!-- Main Content Section -->
+        <div class="privacy-content">
+            <p>ScrapeOptimus Ltd ("us", "we", or "our") operates the <strong>https://scrapeoptimus.com</strong> website (the "Service").</p>
+
+            <p>This page informs you of our policies regarding the collection, use, and disclosure of personal data when you use our Service and the choices you have associated with that data. By using the Service, you agree to the collection and use of information in accordance with this policy.</p>
+
+            <h2 id="information-collection">Information Collection And Use</h2>
+            <p>We collect several different types of information for various purposes to provide and improve our Service to you.</p>
+
+            <h2 id="types-data">Types of Data Collected</h2>
+            <h3 id="personal-data">Personal Data</h3>
+            <p>While using our Service, we may ask you to provide us with certain personally identifiable information ("Personal Data"). This includes, but is not limited to: your email address, first name, last name, phone number, and address.</p>
+
+            <h3 id="tracking-cookies">Tracking & Cookies Data</h3>
+            <p>We use cookies and similar tracking technologies to track the activity on our Service and hold certain information.</p>
+            
+            <h3 id="types-cookies">Types of Cookies</h3>
+            <p><strong>Session Cookies:</strong> We use Session Cookies to operate our Service.</p>
+            <p><strong>Preference Cookies:</strong> We use Preference Cookies to remember your preferences and various settings.</p>
+            <p><strong>Security Cookies:</strong> We use Security Cookies for security purposes.</p>
+
+            <h2 id="use-data">Use of Data</h2>
+            <p>ScrapeOptimus Ltd uses the collected data for various purposes:</p>
+            <ul>
+                <li>To provide and maintain the Service</li>
+                <li>To notify you about changes to our Service</li>
+                <li>To allow you to participate in interactive features of our Service</li>
+                <li>To provide customer care and support</li>
+                <li>To provide analysis to improve the Service</li>
+                <li>To monitor the usage of the Service</li>
+                <li>To detect, prevent and address technical issues</li>
+            </ul>
+
+            <h2 id="transfer-data">Transfer Of Data</h2>
+            <p>Your information, including Personal Data, may be transferred to computers located outside of your jurisdiction.</p>
+
+            <h2 id="disclosure-data">Disclosure Of Data</h2>
+            <p>ScrapeOptimus Ltd may disclose your Personal Data if such action is necessary to comply with a legal obligation or protect our rights.</p>
+
+            <h2 id="security-data">Security Of Data</h2>
+            <p>The security of your data is important to us, but no method of transmission over the Internet is 100% secure. While we strive to protect your Personal Data, we cannot guarantee its absolute security.</p>
+
+            <h2 id="service-providers">Service Providers</h2>
+            <p>We may employ third-party companies and individuals to facilitate our Service, provide the Service on our behalf, or assist us in analyzing how our Service is used.</p>
+
+            <h2 id="analytics">Analytics</h2>
+            <p>We may use third-party Service Providers to monitor and analyze the use of our Service.</p>
+
+            <h2 id="links-other">Links To Other Sites</h2>
+            <p>Our Service may contain links to other sites that are not operated by us. We are not responsible for the content or privacy practices of any third-party sites.</p>
+
+            <h2 id="children-privacy">Children's Privacy</h2>
+            <p>Our Service does not address anyone under the age of 18 ("Children"). We do not knowingly collect personal information from anyone under the age of 18.</p>
+
+            <h2 id="changes-policy">Changes To This Privacy Policy</h2>
+            <p>We may update our Privacy Policy from time to time. You are advised to review this Privacy Policy periodically for any changes.</p>
+
+            <h2 id="contact-us">Contact Us</h2>
+            <p>If you have any questions about this Privacy Policy, please contact us by email: support@scrapeoptimus.com</p>
+        </div>
+
+        <!-- Sidebar with links -->
+        <div class="privacy-sidebar">
+            <ul>
+                <li><a href="#information-collection">Information Collection And Use</a></li>
+                <li><a href="#types-data">Types of Data Collected</a></li>
+                <li><a href="#personal-data">Personal Data</a></li>
+                <li><a href="#tracking-cookies">Tracking & Cookies Data</a></li>
+                <li><a href="#use-data">Use of Data</a></li>
+                <li><a href="#transfer-data">Transfer Of Data</a></li>
+                <li><a href="#disclosure-data">Disclosure Of Data</a></li>
+                <li><a href="#security-data">Security Of Data</a></li>
+                <li><a href="#service-providers">Service Providers</a></li>
+                <li><a href="#analytics">Analytics</a></li>
+                <li><a href="#links-other">Links To Other Sites</a></li>
+                <li><a href="#children-privacy">Children's Privacy</a></li>
+                <li><a href="#changes-policy">Changes To This Privacy Policy</a></li>
+                <li><a href="#contact-us">Contact Us</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+<!-- Any specific JavaScript for this page -->
+{% endblock javascripts %}
