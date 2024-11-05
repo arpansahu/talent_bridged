@@ -20,6 +20,7 @@ from jobs.models import Jobs, JobsStats
 from django.utils import timezone
 from locations.models import Locations
 from skills.models import Skills
+from .forms import ModifyCompaniesForm
 
 now = timezone.now()
 User = get_user_model()

@@ -5,59 +5,86 @@
 
 {% block stylesheets %}
 <style>
-    /* Main styles for home page */
-    html, body {
-        height: 100%;
+    /* Main styles */
+    body {
+        font-family: Arial, sans-serif;
         margin: 0;
+        padding: 0;
+        color: #333;
+    }
+
+    /* Hero Section */
+    .hero-section {
         display: flex;
-        flex-direction: column;
+        padding: 50px;
+        background-color: #eef4ff;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
     }
 
-    .main-content {
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
+    .hero-content {
+        max-width: 50%;
+        flex: 1;
     }
 
-    .header-section {
-        text-align: center;
-        padding: 80px 20px;
-        background-color: #f8f9fa;
-    }
-
-    .header-section h1 {
+    .hero-content h1 {
         font-size: 48px;
         color: #333;
-        margin-bottom: 20px;
+        margin: 0;
     }
 
-    .header-section p {
+    .hero-content p {
         font-size: 18px;
-        color: #555;
-        margin-bottom: 30px;
+        color: #666;
+        margin: 20px 0;
     }
 
-    .header-section .cta-buttons {
-        margin-top: 20px;
+    .hero-buttons .cta-button, .hero-buttons .cta-secondary {
+        padding: 12px 24px;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-right: 10px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
     }
 
-    .cta-buttons a {
-        padding: 12px 25px;
-        margin: 0 10px;
+    .cta-button {
         background-color: #4f66ff;
         color: white;
-        border-radius: 5px;
-        text-decoration: none;
+        border: none;
     }
 
-    .cta-buttons a:hover {
+    .cta-secondary {
+        background-color: transparent;
+        color: #4f66ff;
+        border: 2px solid #4f66ff;
+    }
+
+    .cta-button:hover {
         background-color: #8c52ff;
-        color: white;
     }
 
-    .features-section {
+    .cta-secondary:hover {
+        background-color: #f0f0f0;
+    }
+
+    .hero-image {
+        flex: 1;
         text-align: center;
-        padding: 60px 20px;
+    }
+
+    .hero-image img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 15px;
+    }
+
+    /* Feature Section */
+    .features-section {
+        padding: 50px;
+        text-align: center;
         background-color: #fff;
     }
 
@@ -68,215 +95,262 @@
 
     .feature-cards {
         display: flex;
-        justify-content: space-around;
+        justify-content: center;
         gap: 20px;
         flex-wrap: wrap;
     }
 
     .feature-card {
         background-color: white;
-        padding: 30px;
         border-radius: 10px;
+        padding: 30px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        flex-basis: 30%;
         text-align: center;
-        min-width: 250px;
+        width: 250px;
     }
 
     .feature-card h3 {
         font-size: 24px;
         margin-bottom: 20px;
+    }
+
+    /* Job Listings Section */
+    .job-listings {
+        padding: 50px;
+        background-color: #f8f9fa;
+        text-align: center;
+    }
+
+    .job-listings h2 {
+        font-size: 36px;
+        margin-bottom: 30px;
+    }
+
+    .job-cards {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .job-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 250px;
+        text-align: left;
+    }
+
+    .job-card h3 {
+        font-size: 20px;
+        margin: 0;
         color: #333;
     }
 
-    .feature-card p {
+    .job-card p {
         font-size: 16px;
-        color: #555;
+        color: #777;
+        margin: 10px 0;
     }
 
-    .learn-more-btn {
-        background-color: #4f66ff;
+    .job-card button {
         padding: 10px 20px;
+        background-color: #4f66ff;
         color: white;
+        border: none;
         border-radius: 5px;
-        margin-top: 20px;
-        display: inline-block;
-        text-decoration: none;
+        cursor: pointer;
     }
 
-    .learn-more-btn:hover {
-        background-color: #8c52ff;
-        color: white;
-    }
-
-    /* Why Use Talent Bridged Section */
-    .why-use-section {
-        background-color: #f8f9fa;
-        padding: 60px 20px;
-    }
-
-    .why-use-section h2 {
+    /* Company Culture Section */
+    .culture-section {
+        padding: 50px;
+        background-color: #fff;
         text-align: center;
+    }
+
+    .culture-section h2 {
         font-size: 36px;
-        margin-bottom: 40px;
+        margin-bottom: 30px;
     }
 
-    .why-use-points {
+    .culture-tags {
         display: flex;
-        justify-content: space-around;
-        text-align: left;
         flex-wrap: wrap;
-        gap: 20px;
+        justify-content: center;
+        gap: 15px;
     }
 
-    .why-use-points div {
-        flex-basis: 45%;
-        margin-bottom: 20px;
+    .tag {
+        background-color: #e0e0e0;
+        border-radius: 5px;
+        padding: 10px 20px;
+        font-size: 14px;
+        color: #333;
+        cursor: pointer;
+        transition: background-color 0.3s;
     }
 
-    /* CTA Section */
-    .cta-section {
+    .tag:hover {
+        background-color: #ccc;
+    }
+
+    /* Steps Section */
+    .steps-section {
+        padding: 50px;
+        background-color: #f8f9fa;
         text-align: center;
-        padding: 40px 0; /* Vertical padding */
-        background-color: #4B0082; /* Same background color as footer */
-        color: white;
-        padding-left: 40px;  /* Horizontal padding, similar to footer */
-        padding-right: 40px;
     }
 
-    .cta-section h3 {
+    .steps-section h2 {
+        font-size: 36px;
+        margin-bottom: 30px;
+    }
+
+    .steps-section ol {
+        max-width: 600px;
+        margin: 0 auto;
+        text-align: left;
+        font-size: 18px;
+    }
+
+    .steps-section ol li {
+        padding: 10px 0;
+    }
+
+    /* Newsletter Section */
+    .newsletter-section {
+        padding: 50px;
+        background-color: #4B0082;
+        color: white;
+        text-align: center;
+    }
+
+    .newsletter-section h2 {
         font-size: 28px;
         margin-bottom: 20px;
-        color: white;
-        font-weight: bold;
     }
 
-    .cta-section a {
-        padding: 12px 25px;
-        background-color: white;
-        color: #4f66ff;
-        border-radius: 5px;
-        text-decoration: none;
+    .newsletter-section p {
+        font-size: 18px;
+        margin-bottom: 20px;
     }
 
-    .cta-section a:hover {
-        background-color: #f0f0f0;
-    }
-
-    .cta-button:hover {
-        background-color: #f0f0f0;
-    }
-
-
-    @media (max-width: 600px) {
-        .cta-section h3 {
-            font-size: 20px;
-        }
-
-        .cta-button {
-            font-size: 14px;
-            padding: 10px 20px;
-        }
-    }
-
-    .cta-buttons {
+    .newsletter-section form {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center; /* Center align buttons horizontally */
-        gap: 20px; /* Add spacing between the buttons */
-        margin-top: 20px;
+        justify-content: center;
+        gap: 10px;
     }
 
-    .cta-button {
-        display: inline-block;
-        padding: 12px 25px;
+    .newsletter-section input[type="email"] {
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        width: 250px;
+    }
+
+    .newsletter-section button {
+        padding: 10px 20px;
         background-color: #4f66ff;
         color: white;
+        border: none;
         border-radius: 5px;
-        text-decoration: none;
-        font-weight: bold;
-        text-align: center;
-        transition: background-color 0.3s ease;
+        cursor: pointer;
     }
-
-    .cta-button:hover {
-        background-color: #8c52ff;
-        color: white;
-    }
-
-    @media (max-width: 600px) {
-        .cta-button {
-            flex-basis: 100%; /* Make each button take the full width on smaller screens */
-            margin-bottom: 10px; /* Add margin at the bottom for better spacing */
-        }
-    }
-
 </style>
 {% endblock stylesheets %}
 {% block content %}
 <div class="main-content">
-    <!-- Header Section -->
-    <section class="header-section">
-        <h1>Your Complete Toolbox for Web Scraping</h1>
-        <p>Schedule your scraping jobs, monitor their performance, and scrape with ease using Talent Bridged.</p>
-        <div class="cta-buttons">
-            <a href="{% url 'register' %}" class="cta-button">Get Free Account</a>
-            <a href="{% url 'dashboard' %}" class="cta-button">Live Demo</a>
+    
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1>It has never been easier to find the perfect job</h1>
+            <p>Apply to jobs that match your skills and interests directly on Talent Bridged.</p>
+            <div class="hero-buttons">
+                <a href="#" class="cta-button">Get Started</a>
+                <a href="#" class="cta-secondary">How it Works</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="{% static 'assets/img/ivancik.jpg' %}" alt="Hero Image">
         </div>
     </section>
-
-    <!-- Features Section -->
+    
+    <!-- Feature Section -->
     <section class="features-section">
-        <h2>What Type of Solution Do You Need?</h2>
+        <h2>Why Talent Bridged?</h2>
         <div class="feature-cards">
             <div class="feature-card">
-                <h3>Proxy Aggregator</h3>
-                <p>Use over 200 proxy providers with one simple API integration.</p>
-                <a href="{% url 'proxy_aggregator_view' %}" class="learn-more-btn">Learn More</a>
+                <h3>Apply to Humans</h3>
+                <p>Connect with real recruiters and hiring managers, making the hiring process more human-centered.</p>
             </div>
             <div class="feature-card">
-                <h3>Job Scheduling</h3>
-                <p>Connect your servers with our job scheduler to automate and manage scraping jobs.</p>
-                <a href="#" class="learn-more-btn">Coming Soon...</a>
+                <h3>Instantly Stand Out</h3>
+                <p>Showcase your skills and accomplishments to get noticed by top companies.</p>
             </div>
             <div class="feature-card">
-                <h3>Monitoring & Alerts</h3>
-                <p>Monitor and get real-time alerts on your scraping jobs from one dashboard.</p>
-                <a href="#" class="learn-more-btn">Coming Soon...</a>
+                <h3>Real-Time Feedback</h3>
+                <p>Get updates on your applications in real-time, so you’re always in the know.</p>
             </div>
         </div>
     </section>
+    
+    <!-- Job Listings Section -->
+    <section class="job-listings">
+        <h2>Find a Job Right Now</h2>
+        <div class="job-cards">
+            <div class="job-card">
+                <h3>Senior Front End Developer</h3>
+                <p>Microsoft</p>
+                <button>Apply Now</button>
+            </div>
+            <div class="job-card">
+                <h3>Junior UX Designer</h3>
+                <p>Google</p>
+                <button>Apply Now</button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Company Culture Section -->
+    <section class="culture-section">
+        <h2>Find Your Company Culture</h2>
+        <div class="culture-tags">
+            <div class="tag">Friendly</div>
+            <div class="tag">Autonomous</div>
+            <div class="tag">Fast Paced</div>
+            <div class="tag">Empowering</div>
+            <div class="tag">Forward Thinking</div>
+        </div>
+    </section>
+    
+    <!-- Steps Section -->
+    <section class="steps-section">
+        <h2>It's Easy to Get Started</h2>
+        <ol>
+            <li>Build a strong profile</li>
+            <li>Discover jobs you love</li>
+            <li>Apply directly on our platform</li>
+        </ol>
+    </section>
+    
+    <!-- Newsletter Section -->
+    <section class="newsletter-section">
+        <h2>Stay Updated</h2>
+        <p>Subscribe to our newsletter for the latest job listings and career advice</p>
+        <form>
+            <input type="email" placeholder="Enter your email" required>
+            <button type="submit">Subscribe</button>
+        </form>
+    </section>
+    
 
-    <!-- Why Use Talent Bridged Section -->
-    <section class="why-use-section">
-        <h2>Why Use Talent Bridged?</h2>
-        <div class="why-use-points">
-            <div>
-                <h4>Real-Time Monitoring</h4>
-                <p>Get instant updates and alerts for your scraping jobs.</p>
-            </div>
-            <div>
-                <h4>Proxy Aggregator</h4>
-                <p>Seamlessly integrate and manage proxies with our easy-to-use API.</p>
-            </div>
-            <div>
-                <h4>Job Scheduling</h4>
-                <p>Schedule jobs efficiently and save time with automated workflows.</p>
-            </div>
-            <div>
-                <h4>Custom Solutions</h4>
-                <p>We offer flexible solutions to suit your specific scraping needs.</p>
-            </div>
-        </div>
-    </section>
+    
 
-    <!-- CTA Section -->
-    <section class="cta-section">
-        <div class="cta-content">
-            <h3>Ready to make web scraping less painful?</h3>
-            <a href="{% url 'register' %}" class="cta-button">Sign up for a free account today</a>
-        </div>
-    </section>
+
+
 </div>
 {% endblock content %}
 

@@ -2,15 +2,13 @@ from django.urls import path
 
 from .views import (
     HomeView,
-    LoginView,
-    LogoutView,
 
     JobsListView,
     JobsView,
     JobsUpdateView,
     job_update,
 
-    AddNewSkil,
+    AddNewSkill,
     SkillsListView,
     UpdateSkill,
 
@@ -44,7 +42,7 @@ urlpatterns = [
     path('jobs/<pk>/update/', job_update, name='admin-jobs-update-view'),
 
     # skills
-    path('skills/add/', AddNewSkil.as_view(), name='admin-add-new-skill'),
+    path('skills/add/', AddNewSkill.as_view(), name='admin-add-new-skill'),
     path('skills/', SkillsListView.as_view(), name='admin-skills'),
     path('skills/update/', UpdateSkill.as_view(), name='admin-update-skill'),
 

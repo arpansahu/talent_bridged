@@ -1,0 +1,68 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load company_tags %}
+{% block title %} Tables {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+    <link
+  rel="stylesheet"
+  href="https://unpkg.com/@trevoreyre/autocomplete-js/dist/style.css"
+/>
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <div class="container-fluid py-4">
+    <div class="row" style="margin-bottom: 10px">
+        <form method="POST" enctype="multipart/form-data">
+            <div class="col-md-12 mb-lg-0 mb-4">
+                <div class="card mt-4">
+              <div class="card-header pb-0 p-3">
+                <div class="row">
+                  <div class="col-4 d-flex align-items-center">
+                    <h6 class="mb-0">Add New Company</h6>
+                  </div>
+                  <div class="col-4 d-flex align-items-center offset-md-5">
+                    <img src="{% static 'logo/companies.png' %}" class="avatar avatar-lg lg-3" alt="Company Logo" id="company-logo-preview" style="margin-left: 12%">
+                  </div>
+                </div>
+              </div>
+              <div class="card-body p-3">
+                <div class="row">
+                      {% csrf_token %}
+                    {{ form.as_p }}
+                </div>
+                <div class="row">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4 justify-content-center">
+                        <input type="submit" value="Update"  class="btn bg-gradient-success " style="margin-left: 30%"/>
+                    </div>
+                </div>
+              </div>
+              </div>
+            </div>
+        </form>
+    </div>
+
+        <!--end of Modals-->
+    {% include "snippets/footer.html" %}
+
+  </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+    <script src="{% static 'js/autocomplete.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+
+    function upload_img(input) {
+      if (input.files && input.files[0]) {
+        var src = URL.createObjectURL(input.files[0])
+        $('#company-logo-preview').attr('src', src)
+      }
+    }
+    </script>
+{% endblock javascripts %}

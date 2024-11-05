@@ -209,7 +209,7 @@ class LoginView(View):
                     # If the password is correct, check if the account is active
                     if user.is_active:
                         login(request, user)
-                        return redirect("dashboard")
+                        return redirect("admin-home")
                     else:
                         msg = "Your account is not active. Please activate it using the link sent to your email."
                 else:

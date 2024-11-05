@@ -49,6 +49,8 @@ urlpatterns = [
     # Dashboard Views
     path('', home_view, name='home'),
 
+    path('home/', include('admin_panel.urls')),
+
 
     path('contact/', contact_view, name='contact'),
     path('get-otp', get_otp_view, name='get-otp'),

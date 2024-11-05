@@ -160,8 +160,8 @@
 <!-- Hero Section -->
 <section class="hero-section">
     <h1>Never Worry About Finding Web Scraping Proxies Again</h1>
-    <p>ScrapeOptimus Proxy Aggregator makes it easy to find the best proxies for your web scraping needs. Get started today with our proxy aggregation platform.</p>
-    <a href="{% url 'dashboard' %}#requestBuilder" class="btn btn-primary" style="background-color: #4f66ff;">Try Proxy Aggregator</a>
+    <p>TalentBridged Proxy Aggregator makes it easy to find the best proxies for your web scraping needs. Get started today with our proxy aggregation platform.</p>
+    <a href="{% url 'admin-home' %}#requestBuilder" class="btn btn-primary" style="background-color: #4f66ff;">Try Proxy Aggregator</a>
 </section>
 
 <!-- Features Section -->
@@ -172,7 +172,7 @@
             <div class="col-md-4 feature-item">
                 <img src="{% static 'images/proxy_aggregator/proxy.png' %}" alt="Proxy Feature">
                 <h4>Easy Proxy Management</h4>
-                <p>Manage multiple proxy providers from one dashboard.</p>
+                <p>Manage multiple proxy providers from one admin-home.</p>
             </div>
             <div class="col-md-4 feature-item">
                 <img src="{% static 'images/proxy_aggregator/fast_and_reliable.png' %}" alt="Speed Feature">
@@ -195,7 +195,7 @@
         <div class="row align-items-center">
             <div class="col-md-6">
                 <h2 class="display-5 font-weight-bold">The most reliable web scraping API</h2>
-                <p>Our clients have saved up to 40% of data collection budgets by integrating ScrapeOptimus API instead of self-made solutions.</p>
+                <p>Our clients have saved up to 40% of data collection budgets by integrating TalentBridged API instead of self-made solutions.</p>
                 <span class="badge bg-warning text-dark">Metrics</span>
             </div>
             <div class="col-md-3 text-center">
@@ -302,9 +302,9 @@
                     <p><strong>Monthly Data Limit:</strong> {{ plan.monthly_limit_gb }} GB</p>
                     <p><strong>Monthly Request Limit:</strong> {{ plan.monthly_request_limit }}</p>
                     {% if plan.price %}
-                        <a href="{% url 'dashboard' %}#billing" class="btn btn-primary" style="background-color: #4f66ff;">Subscribe</a>
+                        <a href="{% url 'admin-home' %}#billing" class="btn btn-primary" style="background-color: #4f66ff;">Subscribe</a>
                     {% else %}
-                        <a href="{% url 'dashboard' %}#requestBuilder" class="btn btn-primary" style="background-color: #4f66ff;">Try</a>
+                        <a href="{% url 'admin-home' %}#requestBuilder" class="btn btn-primary" style="background-color: #4f66ff;">Try</a>
                     {% endif %}
                 </div>
             </div>
@@ -316,8 +316,8 @@
 <!-- Call to Action Section -->
 <section class="cta-section" style="background-color: #4B0082; padding: 50px; margin:40px; border-radius:15px; position: relative;">
     <h2>Start Scraping Within 30 Seconds</h2>
-    <p style="color: white;">Sign up for ScrapeOptimus Proxy Aggregator today and start scraping without worrying about proxies.</p>
-    <a href="{% url 'dashboard' %}#requestBuilder" class="btn btn-light">Try Proxy Aggregator</a>
+    <p style="color: white;">Sign up for TalentBridged Proxy Aggregator today and start scraping without worrying about proxies.</p>
+    <a href="{% url 'admin-home' %}#requestBuilder" class="btn btn-light">Try Proxy Aggregator</a>
 </section>
 
 {% endblock content %}

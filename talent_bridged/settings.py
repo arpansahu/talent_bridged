@@ -17,7 +17,6 @@ import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 import django
 from django.db.models.signals import pre_init
-from celery.schedules import crontab
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -70,20 +69,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'channels',
-    'django_celery_beat',
-    'django_celery_results',
-
     'account',
     'check_service_health',
     'custom_tag_app',
     'admin_panel',
     'emails_manager',
-    'celery_progress_custom_app',
     'companies',
     'jobs',
     'locations',
-    'skills'
+    'skills',
 ]
 
 MIDDLEWARE = [

@@ -23,10 +23,11 @@ class Jobs(AbstractBaseModel):
     category = models.CharField(max_length=300, default='')
     sub_category = models.CharField(max_length=300, default='')
     post = models.CharField(max_length=100000)
-    required_skills = models.ManyToManyField(Skills, related_name='skills')
+    # Reference Skills with the correct app name
+    required_skills = models.ManyToManyField('skills.Skills', related_name='jobs')
     required_experience = models.IntegerField(blank=True, null=True)
-    location = models.ManyToManyField('locations.Locations', through='JobLocation', related_name='locations')
-    company = models.ForeignKey(Company, on_delete=models.SET_NULL, related_name='company', null=True)
+    location = models.ManyToManyField('locations.Locations', through='JobLocation', related_name='jobs')
+    company = models.ForeignKey('companies.Company', on_delete=models.SET_NULL, related_name='jobs', null=True)
     date = models.DateTimeField(auto_now_add=True, blank=True)
     job_id = models.CharField(max_length=300, null=False, blank=False)
     job_url = models.CharField(max_length=1000, null=False, blank=False)
@@ -39,8 +40,7 @@ class Jobs(AbstractBaseModel):
     class Meta:
         unique_together = ('job_id', 'company')
 
-
-class JobsStats(models.Model):
+class JobsStats(AbstractBaseModel):
     total_available = models.IntegerField()
     total_unavailable = models.IntegerField()
     date = models.DateTimeField(auto_now_add=True, blank=True)

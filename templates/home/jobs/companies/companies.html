@@ -1,0 +1,159 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load company_tags %}
+{% block title %} Tables {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+    <link
+  rel="stylesheet"
+  href="https://unpkg.com/@trevoreyre/autocomplete-js/dist/style.css"
+/>
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <div class="container-fluid py-4">
+    <div class="row" style="margin-bottom: 10px">
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+          <div class="card">
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-8">
+                  <div class="numbers">
+                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Total Companies</p>
+                    <h5 class="font-weight-bolder mb-0">
+                      {{ all_companies_count }}
+                    </h5>
+                  </div>
+                </div>
+                <div class="col-4 text-end">
+                  <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                    <i class="ni ni-building text-lg opacity-10" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="row" style="margin-bottom: 10px">
+        <form method="GET" action="{% url 'admin-companies' %}">
+            <div class="col-md-12 mb-lg-0 mb-4">
+                <div class="card mt-4">
+              <div class="card-header pb-0 p-3">
+                <div class="row">
+                  <div class="col-3 d-flex align-items-center">
+                    <h6 class="mb-0">Search with Filters</h6>
+                  </div>
+                  <div class="col-9 text-end">
+                    <a class="btn bg-gradient-dark mb-0" href="{% url 'admin-add-new-companies' %}" id="add-location"><i class="fas fa-plus"></i>&nbsp;&nbsp;Add New Company</a>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body p-3">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div id="autocomplete" class="autocomplete">
+                      <div class="col-6 d-flex align-items-center" style="margin: 5px">
+                        <h6 class="mb-0">Enter Company</h6>
+                      </div>
+                      <input class="autocomplete-input" name="company-name" id="company-name" value="{{ companyname }}" placeholder="Search Company Name..."/>
+                      <ul class="autocomplete-result-list"></ul>
+                    </div>
+                  </div>
+                  <div class="col-md-4 mb-md-0 mb-4">
+                    <div  class="autocomplete">
+                        <div class="col-6 d-flex align-items-center" style="margin: 5px">
+                        <h6 class="mb-0"></h6>
+                      </div>
+                      <input type="submit" value="Search" class="btn bg-gradient-success w-auto " style="margin-left: 40%; margin-top: 28px;" >
+                    </div>
+                  </div>
+                </div>
+              </div>
+              </div>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+          <div class="card-header pb-0">
+            <h6>Locations</h6>
+          </div>
+          <div class="card-body px-0 pt-0 pb-2">
+            <div class="table-responsive p-0">
+              <table class="table align-items-center mb-0">
+                <thead>
+                  <tr>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Company</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Company ID</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Job Openings</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Career Page</th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for company in companies_list %}
+                  <tr>
+                    <td id="name_td" src="{{ company.logo.url }}">
+                      <img id="logo-{{ company.id }}" src="{{ company.logo.url }}" class="avatar avatar-sm me-3" alt="user1">
+                      {{ company.name }}
+                    </td>
+                    <td id="company_id_td">
+                      {{ company.id }}
+                    </td>
+                    <td id="job_openings_td">
+                      {{ company.job_openings }}
+                    </td>
+                    <td id="careers_page_td">
+                      {{ company.career_page }}
+                    </td>
+                    <td class="align-middle text-center">
+                      <a href="{% url 'admin-companies-update' company.id %}" id="edit-company-button" class="badge badge-sm bg-gradient-faded-dark" data-toggle="tooltip" data-original-title="Edit">
+                        Edit
+                      </a>
+                    </td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Pagination-->
+    {% include '../../../includes/pagination.html' %}
+    <!--end of Pagination-->
+
+
+        <!--end of Modals-->
+    {% include "snippets/footer.html" %}
+
+  </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+    <script src="{% static 'js/autocomplete.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+
+    new Autocomplete('#autocomplete', {
+          search: input => {
+              const url = {% url 'admin-search-company-name' %} + `?company=${input}`
+              return new Promise(resolve => {
+                  fetch(url)
+                  .then(response => response.json())
+                  .then(data => {
+                      resolve(data.data)
+                  })
+              })
+          }
+        })
+
+    </script>
+{% endblock javascripts %}

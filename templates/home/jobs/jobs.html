@@ -1,0 +1,467 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load company_tags %}
+{% block title %} Tables {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+    <link
+  rel="stylesheet"
+  href="https://unpkg.com/@trevoreyre/autocomplete-js/dist/style.css"
+/>
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <div class="container-fluid py-4">
+    <div class="row" style="margin-bottom: 10px">
+{#      <div class="col-12">#}
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+          <div class="card">
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-8">
+                  <div class="numbers">
+                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Today's New</p>
+                    <h5 class="font-weight-bolder mb-0">
+                      {{ new_jobs }}
+                      <span class="text-success text-sm font-weight-bolder">{{ new_jobs_perc|floatformat:1 }}%</span>
+                    </h5>
+                  </div>
+                </div>
+                <div class="col-4 text-end">
+                  <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                    <i class="ni ni-briefcase-24 text-lg opacity-10" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+          <div class="card">
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-8">
+                  <div class="numbers">
+                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Total Available</p>
+                    <h5 class="font-weight-bolder mb-0">
+                      {{ total_jobs }}
+                        {% if total_jobs_change_positive %}
+                            <span class="text-success text-sm font-weight-bolder">+{{ total_jobs_change }}%</span>
+                            {% else %}
+                            <span class="text-danger text-sm font-weight-bolder">-{{ total_jobs_change }}%</span>
+                        {% endif %}
+                    </h5>
+                  </div>
+                </div>
+                <div class="col-4 text-end">
+                  <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                    <i class="ni ni-briefcase-24 text-lg opacity-10" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+          <div class="card">
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-8">
+                  <div class="numbers">
+                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Total UnAvailable</p>
+                    <h5 class="font-weight-bolder mb-0">
+                      {{ total_unavailable_jobs }}
+                        <span class="text-success text-sm font-weight-bolder">+{{ total_unavailable_jobs_change }}%</span>
+                    </h5>
+                  </div>
+                </div>
+                <div class="col-4 text-end">
+                  <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                    <i class="ni ni-briefcase-24 text-lg opacity-10" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+          <div class="card">
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-8">
+                  <div class="numbers">
+                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Un Reviewed</p>
+                    <h5 class="font-weight-bolder mb-0 text-danger">
+                      {{ total_non_reviewed }}
+{#                      <span class="text-success text-sm font-weight-bolder">+5%</span>#}
+                    </h5>
+                  </div>
+                </div>
+                <div class="col-4 text-end">
+                  <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                    <i class="ni ni-cart text-lg opacity-10" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+{#      </div>#}
+    </div>
+    <div class="row" style="margin-bottom: 10px">
+        <form method="GET" action="{% url 'admin-jobs' %}">
+            <div class="col-md-12 mb-lg-0 mb-4">
+                <div class="card mt-4">
+              <div class="card-header pb-0 p-3">
+                <div class="row">
+                  <div class="col-3 d-flex align-items-center">
+                    <h6 class="mb-0">Search with Filters {{ request.path }}</h6>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body p-3">
+                <div class="row">
+                  <div class="col-md-4 mb-md-0 mb-4">
+                    <div id="autocomplete" class="autocomplete">
+                      <div class="col-6 d-flex align-items-center" style="margin: 5px">
+                        <h6 class="mb-0">Enter Company</h6>
+                      </div>
+                      <input class="autocomplete-input" name="company-name" id="company-name" value="{{ companyname }}" placeholder="Search Company Name..."/>
+                      <ul class="autocomplete-result-list"></ul>
+                    </div>
+                  </div>
+                    <div class="col-md-4 mb-md-0 mb-4">
+                    <div id="autocomplete-job-jobid" class="autocomplete">
+                      <div class="col-6 d-flex align-items-center" style="margin: 5px">
+                        <h6 class="mb-0">Enter Job ID</h6>
+                      </div>
+                      <input class="autocomplete-input" name="job-job-id" id="job-job-id" value="{{ job_id }}" placeholder="Search Job ID..."/>
+                      <ul class="autocomplete-result-list"></ul>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div id="autocomplete-job-title" class="autocomplete">
+                      <div class="col-6 d-flex align-items-center" style="margin: 5px">
+                        <h6 class="mb-0">Enter Job Title</h6>
+                      </div>
+                      <input class="autocomplete-input"  name="job-title" value="{{ jobtitle }}" placeholder="Search Job Title..."/>
+                      <ul class="autocomplete-result-list"></ul>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div id="autocomplete-job-category" class="autocomplete">
+                      <div class="col-6 d-flex align-items-center" style="margin: 5px">
+                        <h6 class="mb-0">Enter Job Dep</h6>
+                      </div>
+                      <input class="autocomplete-input"  name="job-category" value="{{ jobcategory }}" placeholder="Search Job Dep Name..."/>
+                      <ul class="autocomplete-result-list"></ul>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div id="autocomplete-job-country" class="autocomplete">
+                      <div class="col-6 d-flex align-items-center" style="margin: 5px">
+                        <h6 class="mb-0">Enter Job Country</h6>
+                      </div>
+                      <input class="autocomplete-input"  name="job-country" value="{{ jobcountry }}" placeholder="Search Job Country..."/>
+                      <ul class="autocomplete-result-list"></ul>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div id="autocomplete-job-city" class="autocomplete">
+                      <div class="col-6 d-flex align-items-center" style="margin: 5px">
+                        <h6 class="mb-0">Enter Job City</h6>
+                      </div>
+                      <input class="autocomplete-input"  name="job-city" value="{{ jobcity }}" placeholder="Search Job City..."/>
+                      <ul class="autocomplete-result-list"></ul>
+                    </div>
+                  </div>
+                  <div class="col-md-8">
+                    <div id="autocomplete-job-skill" class="autocomplete">
+                      <div class="col-6 d-flex align-items-center" style="margin: 5px">
+                        <h6 class="mb-0">Enter Job Skill</h6>
+                      </div>
+                      <input class="autocomplete-input"  name="skill" value="{{ skill }}" placeholder="Search Skill ..."/>
+                      <ul class="autocomplete-result-list"></ul>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div id="autocomplete-job-state" class="autocomplete">
+                      <div class="col-6 d-flex align-items-center" style="margin: 5px">
+                        <h6 class="mb-0">Enter Job State</h6>
+                      </div>
+                      <input class="autocomplete-input"  name="job-state" value="{{ jobstate }}" placeholder="Search Job State..."/>
+                      <ul class="autocomplete-result-list"></ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body p-3">
+                  <div class="row">
+                      <div class="col-md-4 mb-md-0 mb-4 calendar">
+                          <div class="col-6 d-flex align-items-center" style="margin: 5px">
+                            <h6 class="mb-0">Date</h6>
+                          </div>
+                          <input class="form-control datepicker" id="date" name="date-range" value="{{ daterange }}" placeholder="Please select date" type="text" onfocus="focused(this)" onfocusout="defocused(this)">
+                      </div>
+                      <div class="col-md-4">
+                          <div class="col-6 d-flex align-items-center" style="margin: 5px">
+                            <h6 class="mb-0">Reviewed</h6>
+                          </div>
+                          <select class="form-control" name="reviewed" id="choices-button" placeholder="Departure">
+                              {% if reviewed == 'all' %}
+                                    <option value="all" selected="selected">All</option>
+                              {% else %}
+                                    <option value="all">All</option>
+                              {% endif %}
+                              {% if reviewed == 'reviewed' %}
+                                    <option value="reviewed" selected="selected">Reviewed</option>
+                              {% else %}
+                                    <option value="reviewed">Reviewed</option>
+                              {% endif %}
+                              {% if reviewed == 'unreviewed' %}
+                                     <option value="unreviewed" selected="selected">UnReviewed</option>
+                              {% else %}
+                                     <option value="unreviewed">UnReviewed</option>
+                              {% endif %}
+                          </select>
+                      </div>
+                      <div class="col-md-4">
+                          <div class="col-6 d-flex align-items-center" style="margin: 5px">
+                            <h6 class="mb-0">Available</h6>
+                          </div>
+                          <select class="form-control" name="available" id="choices-button" placeholder="Departure">
+                              {% if available == 'all' %}
+                                  <option value="all" selected="selected">All</option>
+                              {% else %}
+                                  <option value="all" selected="selected">All</option>
+                              {% endif %}
+                              {% if available == 'unavailable' %}
+                                  <option value="unavailable" selected="selected">Unavailable</option>
+                              {% else %}
+                                  <option value="unavailable">Unavailable</option>
+                              {% endif %}
+                              {% if available == 'available' %}
+                                  <option value="available" selected="selected">Available</option>
+                              {% else %}
+                                  <option value="available">Available</option>
+                              {% endif %}
+                          </select>
+                      </div>
+{#                      <div class="col-md-12">#}
+                            <input type="submit" value="Search" class="btn bg-gradient-success w-auto " style="margin-left: 40%; margin-top: 20px;" >
+{#                      </div>#}
+                  </div>
+                </div>
+              </div>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+          <div class="card-header pb-0">
+            <h6>Jobs</h6>
+          </div>
+          <div class="card-body px-0 pt-0 pb-2">
+            <div class="table-responsive p-0">
+              <table class="table align-items-center mb-0">
+                <thead>
+                  <tr>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Company</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Title / Department / Sub Dep</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Location</th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Job URL</th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Reviewed Status</th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date / Un Date</th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for job in jobs_list %}
+                  <tr>
+                    <td>
+                      <div class="d-flex px-2 py-1">
+                        <div>
+                          <img src="{{ job.company.logo.url }}" class="avatar avatar-sm me-3" alt="user1">
+                        </div>
+                        <div class="d-flex flex-column justify-content-center">
+                          <h6 class="mb-0 text-sm">{{ job.company.name }}</h6>
+                          <p class="text-xs text-secondary mb-0">Job Id: {{ job.job_id }}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <p class="text-xs font-weight-bold mb-0">{{ job.title }}</p>
+                      <p class="text-xs text-secondary mb-0">{{ job.category }}</p>
+                      <p class="text-xs text-secondary mb-0">{{ job.sub_category }}</p>
+                    </td>
+                    <td>
+                        {% for location in job.location.all %}
+                          <p class="text-xs font-weight-bold mb-0">{{ location.city }}</p>
+                          <p class="text-xs text-secondary mb-0">{{ location.country }}</p>
+                        {% endfor %}
+
+                    </td>
+                    <td class="align-middle text-center text-sm">
+                        <a href="{{ job.job_url }}"  target="_blank">
+                            <span class="badge badge-sm bg-gradient-faded-primary">Go to Job</span>
+                        </a>
+                    </td>
+                    <td class="align-middle text-center text-sm">
+                        {% if job.reviewed %}
+                        <span class="badge badge-sm bg-gradient-success">YES</span>
+                        {% else %}
+                            <span class="badge badge-sm bg-gradient-danger">NO</span>
+                        {% endif %}
+                    </td>
+                    <td class="align-middle text-center">
+                      <span class="text-secondary text-xs font-weight-bold">{{ job.date | date:"M d, Y" }}</span>
+                        <span class="text-secondary text-xs font-weight-bold">{{ job.unavailable_date | date:"M d, Y" }}</span>
+                    </td>
+                    <td class="align-middle text-center">
+                      <a href="{% url 'admin-job-detailed-view' job.id %}" class="badge badge-sm bg-gradient-info" data-toggle="tooltip" data-original-title="View">
+                        View
+                      </a>
+                      <a href="{% url 'admin-jobs-update-view'  job.id %}" class="badge badge-sm bg-gradient-faded-dark" data-toggle="tooltip" data-original-title="Edit">
+                        Edit
+                      </a>
+                    </td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Pagination-->
+    {% include '../../includes/pagination.html' %}
+    <!--end of Pagination-->
+
+
+    {% include "snippets/footer.html" %}
+
+  </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+    <script src="https://unpkg.com/@trevoreyre/autocomplete-js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+    new Autocomplete('#autocomplete', {
+          search: input => {
+              const url = {% url 'admin-search-company-name' %} + `?company=${input}`
+              return new Promise(resolve => {
+                  fetch(url)
+                  .then(response => response.json())
+                  .then(data => {
+                      resolve(data.data)
+                  })
+              })
+          }
+        })
+    new Autocomplete('#autocomplete-job-title', {
+          search: input => {
+
+              const url = {% url 'admin-search-job-title' %} + `?title=${input}`
+              return new Promise(resolve => {
+                  fetch(url)
+                  .then(response => response.json())
+                  .then(data => {
+                      console.log(data)
+                      resolve(data.data)
+                  })
+              })
+          }
+        })
+        new Autocomplete('#autocomplete-job-category', {
+          search: input => {
+            console.log(input)
+              const url = {% url 'admin-search-job-category' %} + `?category=${input}`
+              return new Promise(resolve => {
+                  fetch(url)
+                  .then(response => response.json())
+                  .then(data => {
+
+                      resolve(data.data)
+                  })
+              })
+          }
+        })
+        new Autocomplete('#autocomplete-job-country', {
+          search: input => {
+            console.log(input)
+              const url = {% url 'admin-search-country' %} + `?country=${input}`
+              return new Promise(resolve => {
+                  fetch(url)
+                  .then(response => response.json())
+                  .then(data => {
+                      resolve(data.data)
+                  })
+              })
+          }
+        })
+        new Autocomplete('#autocomplete-job-city', {
+          search: input => {
+            console.log(input)
+              const url = {% url 'admin-search-city' %} + `?city=${input}`
+              return new Promise(resolve => {
+                  fetch(url)
+                  .then(response => response.json())
+                  .then(data => {
+                      resolve(data.data)
+                  })
+              })
+          }
+        })
+        new Autocomplete('#autocomplete-job-jobid', {
+          search: input => {
+            {#console.log(input)#}
+              var url = {% url 'admin-search-job-jobid' %} + `?jobid=${input}`
+              return new Promise(resolve => {
+                  fetch(url)
+                  .then(response => response.json())
+                  .then(data => {
+                      resolve(data.data)
+                  })
+              })
+          }
+        })
+
+        new Autocomplete('#autocomplete-job-state', {
+          search: input => {
+              var url = {% url 'admin-search-state' %} + `?state=${input}`
+              return new Promise(resolve => {
+                  fetch(url)
+                  .then(response => response.json())
+                  .then(data => {
+                      resolve(data.data)
+                  })
+              })
+          }
+        })
+
+        new Autocomplete('#autocomplete-job-skill', {
+          search: input => {
+              const url = {% url 'admin-search-skills' %} + `?name=${input}`
+              return new Promise(resolve => {
+                  fetch(url)
+                  .then(response => response.json())
+                  .then(data => {
+                      resolve(data.data)
+                  })
+              })
+          }
+        });
+        flatpickr("#date", {
+            mode: "range"
+        });
+
+
+    </script>
+{% endblock javascripts %}

@@ -1,0 +1,133 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load company_tags %}
+{% block title %} Tables {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/@trevoreyre/autocomplete-js/dist/style.css"
+  />
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+          <div class="card-body px-0 pt-0 pb-2">
+            <div class="table-responsive p-0">
+                <div style="padding: 20px">
+                    <div class="row">
+                        <div class="col-9" ><h3 style="color: lightcoral">{{ job.title }}</h3>
+                            <p class="text-xs text-secondary mb-3">Department: {{ job.category }}</p>
+                            <p class="text-xs text-secondary mb-3">Sub Department: {{ job.sub_category }}</p>
+                        </div>
+                        <div class="col">
+                            <div>
+                              <img src="{{ job.company.logo.url }}" class="avatar avatar-sm me-3" alt="user1">
+                            </div>
+                            <div class="d-flex flex-column justify-content-center">
+                              <h6 class="mb-0 text-sm">{{ job.company.name }}</h6>
+                              <p class="text-xs text-secondary mb-0">Job Id: {{ job.job_id }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="d-flex flex-column justify-content-center">
+                                {% if job.reviewed  %}
+                                    <h6 class="mb-0 text-sm">Reviewed: Yes</h6>
+                                {% else %}
+                                    <h6 class="mb-0 text-sm">Reviewed: No</h6>
+                                {% endif %}
+                                {% if job.available  %}
+                                    <h6 class="mb-0 text-sm">Available: Yes</h6>
+                                {% else %}
+                                    <h6 class="mb-0 text-sm">Available: No</h6>
+                                {% endif %}
+                                <h6 class="mb-0 text-sm">Required Experience: {{ job.required_experience }}</h6>
+                            </div>
+                            <div class="d-flex flex-column justify-content-center">
+                                <h6 class="mb-0 text-sm">Date: {{ job.date }}</h6>
+                            </div>
+                            <div class="d-flex flex-column justify-content-center">
+                                <h6 class="mb-0 text-sm">Unavailable Date: {{ job.unavailable_date }}</h6>
+                            </div>
+                        </div>
+                        <div class="col ">
+                              <button type="button" class="btn bg-gradient-success w-auto me-2">
+                                  {% for location in job.location.all %}
+                                    <i class="ni fa-location-arrow text-lg opacity-10" aria-hidden="true"></i>
+                                    {{ location.city }} / {{ location.country }} <br>
+                                  {% endfor %}
+                              </button>
+                        </div>
+                        <div class="col" style="margin-left: 25%">
+                            <a href="{{ job.job_url }}"  target="_blank">
+                                <button type="button" class="btn bg-gradient-info w-auto me-2">Go to Job</button>
+                            </a>
+                            <a href="{% url 'admin-jobs-update-view' job.id %}"  target="_blank">
+                                <button type="button" class="btn bg-gradient-primary w-auto me-2">Review</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+          <div class="card-body px-0 pt-0 pb-2">
+            <div class="table-responsive p-0">
+                <div style="padding: 20px">
+                   <div class="row">
+                        <div class="card-header pb-0">
+                            <h6>Skills:</h6>
+                        </div>
+                        <div>
+                            <p>
+                            {% for skill in job.required_skills.values %}
+                                <h5 class="btn bg-gradient-faded-dark w-auto me-2" style="color: white">{{ skill.name }}</h5>
+                            {% endfor %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+          <div class="card-body px-0 pt-0 pb-2">
+            <div class="table-responsive p-0">
+                <div style="padding: 20px">
+                    <div class="row">
+                        <p>
+                            {{ job.post| safe }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% include "snippets/footer.html" %}
+
+  </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+{% endblock javascripts %}

@@ -1,0 +1,457 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block title %} Tables {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+    <link
+  rel="stylesheet"
+  href="https://unpkg.com/@trevoreyre/autocomplete-js/dist/style.css"
+/>
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <div class="container-fluid py-4">
+    <div class="row" style="margin-bottom: 10px">
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+          <div class="card">
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-8">
+                  <div class="numbers">
+                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Total Locations</p>
+                    <h5 class="font-weight-bolder mb-0">
+                      {{ all_locations_count }}
+                    </h5>
+                  </div>
+                </div>
+                <div class="col-4 text-end">
+                  <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                    <i class="ni ni-map-big text-lg opacity-10" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+          <div class="col-9 text-end">
+            <a class="btn bg-gradient-dark mb-0" href="{% url 'download-locations-csv' %}" ><i class="fas fa-download"></i>&nbsp;&nbsp;Download Locations </a>
+          </div>
+        </div>
+    </div>
+    <div class="row" style="margin-bottom: 10px">
+        <form method="GET" action="{% url 'admin-locations' %}">
+            <div class="col-md-12 mb-lg-0 mb-4">
+                <div class="card mt-4">
+              <div class="card-header pb-0 p-3">
+                <div class="row">
+                  <div class="col-3 d-flex align-items-center">
+                    <h6 class="mb-0">Search with Filters</h6>
+                  </div>
+                  <div class="col-9 text-end">
+                    <a class="btn bg-gradient-dark mb-0" href="javascript:;" id="add-location"><i class="fas fa-plus"></i>&nbsp;&nbsp;Add New Location</a>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body p-3">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div id="autocomplete-country" class="autocomplete">
+                      <div class="col-6 d-flex align-items-center" style="margin: 5px">
+                        <h6 class="mb-0">Enter Country</h6>
+                      </div>
+                      <input class="autocomplete-input"  name="country" value="{{ country }}" placeholder="Search Country..."/>
+                      <ul class="autocomplete-result-list"></ul>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div id="autocomplete-city" class="autocomplete">
+                      <div class="col-6 d-flex align-items-center" style="margin: 5px">
+                        <h6 class="mb-0">Enter City</h6>
+                      </div>
+                      <input class="autocomplete-input"  name="city" value="{{ city }}" placeholder="Search City..."/>
+                      <ul class="autocomplete-result-list"></ul>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div id="autocomplete-state" class="autocomplete">
+                      <div class="col-6 d-flex align-items-center" style="margin: 5px">
+                        <h6 class="mb-0">Enter State</h6>
+                      </div>
+                      <input class="autocomplete-input"  name="state" value="{{ state }}" placeholder="Search State..."/>
+                      <ul class="autocomplete-result-list"></ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12 mb-md-0 mb-12">
+                    <div  class="autocomplete">
+                      <input type="submit" value="Search" class="btn bg-gradient-success w-auto " style="margin-left: 40%; margin-top: 28px;" >
+                    </div>
+                  </div>
+                </div>
+              </div>
+              </div>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+          <div class="card-header pb-0">
+            <h6>Locations</h6>
+          </div>
+          <div class="card-body px-0 pt-0 pb-2">
+            <div class="table-responsive p-0">
+              <table class="table align-items-center mb-0">
+                <thead>
+                  <tr>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Location ID</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Country</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">City</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">State</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Iso 2</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Iso 3</th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for location in locations_list %}
+                  <tr>
+                    <td id="location_id_td">
+                      {{ location.id }}
+                    </td>
+                    <td id="location_country_td">
+                      {{ location.country }}
+                    </td>
+                    <td id="location_city_td">
+                      {{ location.city }}
+                    </td>
+                    <td id="location_state_td">
+                      {{ location.state }}
+                    </td>
+                    <td id="location_iso2_td">
+                      {{ location.country_code_iso2 }}
+                    </td>
+                    <td id="location_iso3_td">
+                      {{ location.country_code_iso3 }}
+                    </td>
+                    <td class="align-middle text-center">
+                      <a id="edit-location-button" class="badge badge-sm bg-gradient-faded-dark" data-toggle="tooltip" data-original-title="Edit">
+                        Edit
+                      </a>
+                    </td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Pagination-->
+    {% include '../../../includes/pagination.html' %}
+    <!--end of Pagination-->
+
+        <!--Modals-->
+        <div class="modal fade " id="location-Modal" tabindex="-1" aria-labelledby="add-location-ModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content  bg-gradient">
+                <div class="modal-header bg-gradient-dark" >
+                  <h5 class="modal-title text-white" id="locationModalLabel">Add New Location</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center text-black-50">
+                    <h4 class="heading mt-4" id="modal-header-message">Enter new Location!</h4>
+                    <div id="autocomplete-new-city" class="autocomplete">
+                      <input style="margin: 5px" type="text" name="new_city" id="new_city" class="form-control" placeholder="Enter City..."/>
+                      <ul class="autocomplete-result-list"></ul>
+                    </div>
+                    <div id="autocomplete-new-country" class="autocomplete">
+                      <input style="margin: 5px" type="text" name="new_country" id="new_country" class="form-control" placeholder="Enter Country..."/>
+                      <ul class="autocomplete-result-list" id="new_country_list"></ul>
+                    </div>
+                    <div id="autocomplete-new-state" class="autocomplete">
+                      <input style="margin: 5px" type="text" name="new_state" id="new_state" class="form-control" placeholder="Enter State..."/>
+                      <ul class="autocomplete-result-list" id="new_state_list"></ul>
+                    </div>
+                    <input style="margin: 5px" type="text" name="new_iso2" id="new_iso2" class="form-control" placeholder="Enter Iso2 Country Code..."/>
+                    <input style="margin: 5px" type="text" name="new_iso3" id="new_iso3" class="form-control" placeholder="Enter ISo3 Country Code..."/>
+                </div>
+                <div class="modal-footer justify-content-center">
+                  <button type="button" class="btn bg-gradient-primary"  id="get_iso_submit">Fetch ISO Details <i style="margin-top: 5px; margin-left: 3px" class="ni ni-button-play" aria-hidden="true"></i></button>
+                  <button type="button" class="btn btn-success" data-bs-dismiss="modal" id="location_modal_submit">Submit</button>
+                  <button type="button" class="btn bg-gradient-dark" data-bs-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <div class="modal fade " id="location-update-Modal" tabindex="-1" aria-labelledby="update-location-ModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content  bg-gradient">
+                <div class="modal-header bg-gradient-dark" >
+                  <h5 class="modal-title text-white" id="locationModalLabel">Update Location</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center text-black-50">
+                    <h4 class="heading mt-4" id="modal-header-message">Update Location!</h4>
+                    <input style="margin: 5px" type="text" name="update_city" id="update_city" class="form-control" placeholder="Enter City..."/>
+                    <input style="margin: 5px" type="text" name="update_country" id="update_country" class="form-control" placeholder="Enter Country..."/>
+                    <input style="margin: 5px" type="text" name="update_state" id="update_state" class="form-control" placeholder="Enter State..."/>
+                    <input style="margin: 5px" type="text" name="update_iso2" id="update_iso2" class="form-control" placeholder="Enter Iso2 Country Code..."/>
+                    <input style="margin: 5px" type="text" name="update_iso3" id="update_iso3" class="form-control" placeholder="Enter ISo3 Country Code..."/>
+                    <input type="text" name="new_location_id" id="location_id_update_modal" hidden/>
+                </div>
+                <div class="modal-footer justify-content-center">
+                  <button type="button" class="btn btn-success" data-bs-dismiss="modal" id="location_update_modal_submit">Update</button>
+                  <button type="button" class="btn bg-gradient-dark" data-bs-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+        </div>
+      <div class="modal fade " id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content  bg-gradient">
+            <div class="modal-header bg-gradient-info" >
+              <h5 class="modal-title text-white" id="alertModalLabel">Alert</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="alert alert-danger text-white font-weight-bold" role="alert" id="alert_modal_text">
+                  A simple primary alert—check it out!
+                </div>
+            </div>
+            <div class="modal-footer justify-content-center">
+              <button type="button" class="btn bg-gradient-dark" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+        <!--end of Modals-->
+    {% include "snippets/footer.html" %}
+
+  </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+    <script src="{% static 'js/autocomplete.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+        if (settings.type == 'POST' || settings.type == 'PUT' || settings.type == 'DELETE') {
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie != '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                // Only send the token to relative URLs i.e. locally.
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            }
+        }
+        }
+    });
+
+    new Autocomplete('#autocomplete-state', {
+      search: input => {
+          var url = {% url 'admin-search-state' %} + `?state=${input}`
+          return new Promise(resolve => {
+              fetch(url)
+              .then(response => response.json())
+              .then(data => {
+                  resolve(data.data)
+              })
+          })
+      }
+    })
+
+    new Autocomplete('#autocomplete-country', {
+      search: input => {
+          var url = {% url 'admin-search-country' %} + `?country=${input}`
+          return new Promise(resolve => {
+              fetch(url)
+              .then(response => response.json())
+              .then(data => {
+                  resolve(data.data)
+              })
+          })
+      }
+    })
+
+    new Autocomplete('#autocomplete-city', {
+      search: input => {
+          var url = {% url 'admin-search-city' %} + `?city=${input}`
+          return new Promise(resolve => {
+              fetch(url)
+              .then(response => response.json())
+              .then(data => {
+                  resolve(data.data)
+              })
+          })
+      }
+    })
+
+    new Autocomplete('#autocomplete-new-city', {
+      search: input => {
+          var url = {% url 'admin-search-city' %} + `?city=${input}`
+          return new Promise(resolve => {
+              fetch(url)
+              .then(response => response.json())
+              .then(data => {
+                  resolve(data.data)
+              })
+          })
+      }
+    })
+
+    new Autocomplete('#autocomplete-new-state', {
+      search: input => {
+          var url = {% url 'admin-search-state' %} + `?state=${input}`
+          return new Promise(resolve => {
+              fetch(url)
+              .then(response => response.json())
+              .then(data => {
+                  resolve(data.data)
+              })
+          })
+      }
+    })
+
+    new Autocomplete('#autocomplete-new-country', {
+      search: input => {
+          var url = {% url 'admin-search-country' %} + `?country=${input}`
+          return new Promise(resolve => {
+              fetch(url)
+              .then(response => response.json())
+              .then(data => {
+                  resolve(data.data);
+              })
+          })
+      }
+    })
+
+    $(document).on("click", "#add-location", function() {
+        $("#location-Modal").modal('show');
+    });
+
+    $(document).on("click", "#get_iso_submit", function() {
+        console.log("get iso clicked")
+        var country = document.getElementById('new_country').value;
+        $.ajax({
+             type: 'GET',
+             url: "{% url 'admin-get-iso2-iso3' %}",
+             data: {
+                 'country': country,
+             },
+             dataType: 'json',
+             success: function(data) {
+                 $('#new_iso2').val(data.iso2);
+                 $('#new_iso3').val(data.iso3);
+                 $('#alert_modal_text').text(data.message)
+                 $("#alertModal").modal('show');
+             },
+             error: function(data){
+                 $('#alert_modal_text').text(data.message)
+                 $("#alertModal").modal('show');
+             }
+        })
+    });
+
+    $(document).on("click", "#location_modal_submit", function() {
+        var new_city = document.getElementById('new_city').value;
+        var new_country = document.getElementById('new_country').value;
+        var new_state = document.getElementById('new_state').value;
+        var new_iso2 = document.getElementById('new_iso2').value;
+        var new_iso3 = document.getElementById('new_iso3').value;
+
+        $.ajax({
+             type: 'POST',
+             url: "{% url 'admin-add-new-location' %}",
+             data: {
+                 'city': new_city,
+                 'country': new_country,
+                 'iso2': new_iso2,
+                 'iso3': new_iso3,
+                 'state': new_state
+             },
+             dataType: 'json',
+             success: function(data) {
+                 $('#alert_modal_text').text(data.message)
+                 $("#alertModal").modal('show');
+             },
+             error: function(data){
+                 $('#alert_modal_text').text(data.message)
+                 $("#alertModal").modal('show');
+             }
+        })
+        $('#new_city').val('');
+        $('#new_country').val('');
+        $('#new_state').val('');
+        $('#new_iso2').val('');
+        $('#new_iso3').val('');
+    });
+
+    $(document).on("click", "#edit-location-button", function() {
+        var row_city = $(this).parent().siblings('#location_city_td').text().trim();
+        var row_country = $(this).parent().siblings('#location_country_td').text().trim();
+        var row_state = $(this).parent().siblings('#location_state_td').text().trim();
+        var row_id = $(this).parent().siblings('#location_id_td').text().trim();
+        var row_iso2 = $(this).parent().siblings('#location_iso2_td').text().trim();
+        var row_iso3 = $(this).parent().siblings('#location_iso3_td').text().trim();
+        $('#update_city').val(row_city);
+        $('#update_country').val(row_country);
+        $('#update_state').val(row_state);
+        $('#update_iso2').val(row_iso2);
+        $('#update_iso3').val(row_iso3);
+        $('#location_id_update_modal').val(row_id);
+        $("#location-update-Modal").modal('show');
+    });
+
+    $(document).on("click", '#location_update_modal_submit', function() {
+        const update_city = document.getElementById('update_city').value;
+        const update_country = document.getElementById('update_country').value;
+        const update_state = document.getElementById('update_state').value;
+        const update_iso2 = document.getElementById('update_iso2').value;
+        const update_iso3 = document.getElementById('update_iso3').value;
+        const location_id = document.getElementById('location_id_update_modal').value;
+        $.ajax({
+             type: 'POST',
+             url: "{% url 'admin-update-location' %}",
+             data: {
+                 'city': update_city,
+                 'country': update_country,
+                 'iso2': update_iso2,
+                 'iso3': update_iso3,
+                 'id': location_id,
+                 'state': update_state,
+             },
+             dataType: 'json',
+             success: function(data) {
+                 $('#alert_modal_text').text(data.message)
+                 $("#alertModal").modal('show');
+             },
+             error: function(data){
+                 $('#alert_modal_text').text(data.message)
+                 $("#alertModal").modal('show');
+             }
+        })
+    });
+    </script>
+{% endblock javascripts %}

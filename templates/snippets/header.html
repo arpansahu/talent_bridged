@@ -56,16 +56,10 @@
     </div>
     <div class="navbar-right">
       <ul class="navbar-nav">
-        {% if request.user.is_admin %}
-          <li class="nav-item">
-            <a href="{% url 'proxy-container' %}">Admin Panel</a>
-          </li>
-        {% endif %}
         {% if request.user.is_authenticated %}
           <li class="nav-item">
-            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'admin-home' %}">Admin Panel</a>
           </li>
-
           <!-- "More" Dropdown Menu -->
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="dropdownMenuButton" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -73,8 +67,6 @@
             </a>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
               <li><a class="dropdown-item" href="{% url 'account' %}">Profile</a></li>
-              <li><a class="dropdown-item" href="{% url 'order_list' %}">Orders</a></li>
-              <li><a class="dropdown-item" href="{% url 'billing_address' %}">Billing Address</a></li>
             </ul>
           </li>
 
