@@ -5,6 +5,22 @@ from locations.models import Locations
 
 from talent_bridged.models import AbstractBaseModel
 
+class Keyword(models.Model):
+    word = models.CharField(max_length=255, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    frequency = models.IntegerField(default=0)  # To track popularity, updated on each search or job occurrence
+
+class UserKeyword(models.Model):
+    word = models.CharField(max_length=255)
+    search_count = models.IntegerField(default=0)  # Tracks how many times users searched this keyword
+    jobs_found_count = models.IntegerField(default=0)  # Tracks how many jobs matched this keyword in 'post'
+    last_searched = models.DateTimeField(auto_now=True)
+    
+    def promote_to_keyword(self):
+        if self.search_count >= 10 and self.jobs_found_count >= 10:
+            Keyword.objects.get_or_create(word=self.word)
+            self.delete()
+
 class JobLocation(AbstractBaseModel):
     job = models.ForeignKey('jobs.Jobs', on_delete=models.CASCADE, db_column='jobs_id')
     location = models.ForeignKey('locations.Locations', on_delete=models.CASCADE, db_column='locations_id')

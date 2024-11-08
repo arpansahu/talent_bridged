@@ -16,11 +16,12 @@ from django.views.generic import ListView, UpdateView, DetailView, CreateView, F
 from django.views.generic.base import View, RedirectView
 from django.contrib.auth import get_user_model
 from companies.models import Company
-from jobs.models import Jobs, JobsStats
+from jobs.models import Jobs, JobsStats, Keyword
 from django.utils import timezone
 from locations.models import Locations
 from skills.models import Skills
 from .forms import ModifyCompaniesForm
+
 
 now = timezone.now()
 User = get_user_model()
@@ -206,6 +207,59 @@ def job_update(request, pk):
 
 # views for javascript functions
 @login_required()
+def autocomplete_title_keyword(request):
+    query = request.GET.get('q', '').strip()
+    suggestions = []
+
+    if query:
+        # Get matching job titles
+        job_titles = Jobs.objects.filter(title__icontains=query).values_list('title', flat=True)[:10]
+        
+        # Get matching keywords
+        keywords = Keyword.objects.filter(name__icontains=query).values_list('name', flat=True)[:10]
+        
+        # Combine job titles and keywords into a single list
+        suggestions = list(job_titles) + list(keywords)
+
+    # Remove duplicates and send as JSON response
+    suggestions = list(set(suggestions))  # Remove duplicates
+    return JsonResponse(suggestions, safe=False)
+
+
+def autocomplete_location(request):
+    query = request.GET.get('q', '').strip()
+    location_suggestions = []
+
+    if query:
+        # Filter based on matching query with city, state, or country
+        locations = Locations.objects.filter(
+            Q(city__icontains=query) | Q(state__icontains=query) | Q(country__icontains=query)
+        ).values('city', 'state', 'country').distinct()[:10]
+
+        # Construct a readable location format, e.g., "City, State, Country"
+        location_suggestions = [
+            f"{location['city']}, {location['state']}, {location['country']}".strip(', ')
+            for location in locations
+        ]
+
+    # Return JSON response with location suggestions
+    return JsonResponse(location_suggestions, safe=False)
+
+
+@login_required()
+def autocomplete_skills(request):
+    name = request.GET.get('name')
+    payload = []
+    if name:
+        skill_objs = Skills.objects.filter(name__icontains=name)
+
+        for objs in skill_objs:
+            payload.append(objs.name)
+    payload = list(set(payload))
+    return JsonResponse({'status': 200, 'data': payload})
+
+
+@login_required()
 def search_companies(request):
     company = request.GET.get('company')
     payload = []
@@ -257,17 +311,6 @@ def search_job_id(request):
     return JsonResponse({'status': 200, 'data': payload})
 
 
-@login_required()
-def search_skills(request):
-    name = request.GET.get('name')
-    payload = []
-    if name:
-        skill_objs = Skills.objects.filter(name__icontains=name)
-
-        for objs in skill_objs:
-            payload.append(objs.name)
-    payload = list(set(payload))
-    return JsonResponse({'status': 200, 'data': payload})
 
 
 @login_required()

@@ -64,3 +64,5 @@ celerybeat-schedule.db
 supervisord.log
 supervisord.pid
 request.db
+
+scraper/.scrapy

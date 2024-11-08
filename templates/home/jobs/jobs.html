@@ -381,8 +381,8 @@
                     <td>{{ job.reviewed|yesno:"Yes,No" }}</td>
                     <td>{{ job.date|date:"M d, Y" }}</td>
                     <td>
-                      <a href="{% url 'admin-job-detailed-view' job.id %}" class="btn btn-sm btn-info">View</a>
-                      <a href="{% url 'jobs-update-view' job.id %}" class="btn btn-sm btn-warning">Edit</a>
+                      <a href="{% url 'job_detailed_view' job.id %}" class="btn btn-sm btn-info">View</a>
+                      <a href="{% url 'job_update_view' job.id %}" class="btn btn-sm btn-warning">Edit</a>
                     </td>
                   </tr>
                 {% endfor %}
@@ -410,7 +410,7 @@
         const query = this.value;
 
         if (query.length > 1) {
-            fetch(`{% url 'admin-search-skills' %}?name=${query}`)
+            fetch(`{% url 'autocomplete_skills' %}?name=${query}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 200) {
