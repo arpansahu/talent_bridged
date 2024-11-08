@@ -78,6 +78,7 @@ INSTALLED_APPS = [
     'jobs',
     'locations',
     'skills',
+    'scrapy_manager',
 ]
 
 MIDDLEWARE = [

@@ -35,11 +35,11 @@ from .views import (
 
 urlpatterns = [
 
-    path('', HomeView.as_view(), name='admin-home'),
+    path('admin/', HomeView.as_view(), name='admin-home'),
 
-    path('jobs/', JobsListView.as_view(), name='admin-jobs'),
-    path('jobs/<pk>/', JobsView.as_view(), name='admin-job-detailed-view'),
-    path('jobs/<pk>/update/', job_update, name='admin-jobs-update-view'),
+    path('', JobsListView.as_view(), name='jobs'),
+    path('jobs/<pk>/', JobsView.as_view(), name='job_detailed_view'),
+    path('jobs/<pk>/update/', job_update, name='jobs_update_view'),
 
     # skills
     path('skills/add/', AddNewSkill.as_view(), name='admin-add-new-skill'),

@@ -21,11 +21,29 @@
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
+        flex-direction: row;
+    }
+
+    /* For smaller screens, stack content vertically */
+    @media (max-width: 768px) {
+        .hero-section {
+            flex-direction: column; /* Stack content vertically */
+            padding: 20px;
+            text-align: center;
+        }
     }
 
     .hero-content {
         max-width: 50%;
         flex: 1;
+        padding: 20px;
+    }
+
+    @media (max-width: 768px) {
+        .hero-content {
+            max-width: 100%; /* Take full width on smaller screens */
+            padding: 0;
+        }
     }
 
     .hero-content h1 {
@@ -34,13 +52,33 @@
         margin: 0;
     }
 
+    @media (max-width: 768px) {
+        .hero-content h1 {
+            font-size: 32px; /* Reduce font size on mobile */
+        }
+    }
+
     .hero-content p {
         font-size: 18px;
         color: #666;
         margin: 20px 0;
     }
 
-    .hero-buttons .cta-button, .hero-buttons .cta-secondary {
+    @media (max-width: 768px) {
+        .hero-content p {
+            font-size: 16px; /* Slightly smaller font on mobile */
+        }
+    }
+
+    .hero-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center; /* Center buttons on smaller screens */
+    }
+
+    .hero-buttons .cta-button,
+    .hero-buttons .cta-secondary {
         padding: 12px 24px;
         border-radius: 5px;
         font-weight: bold;
@@ -48,6 +86,15 @@
         margin-right: 10px;
         text-decoration: none;
         transition: background-color 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
+        .hero-buttons .cta-button,
+        .hero-buttons .cta-secondary {
+            margin-right: 0; /* Remove side margin on smaller screens */
+            margin-bottom: 10px; /* Add bottom margin for spacing */
+            width: 100%; /* Full width on smaller screens */
+        }
     }
 
     .cta-button {
@@ -73,6 +120,7 @@
     .hero-image {
         flex: 1;
         text-align: center;
+        padding: 20px;
     }
 
     .hero-image img {
@@ -81,7 +129,48 @@
         border-radius: 15px;
     }
 
-    /* Feature Section */
+    @media (max-width: 768px) {
+        .hero-image {
+            padding: 10px 0; /* Add vertical padding only on smaller screens */
+        }
+
+        .hero-image img {
+            width: 80%; /* Slightly smaller image on mobile for better spacing */
+        }
+    }
+
+        .cta-button {
+            background-color: #4f66ff;
+            color: white;
+            border: none;
+        }
+
+        .cta-secondary {
+            background-color: transparent;
+            color: #4f66ff;
+            border: 2px solid #4f66ff;
+        }
+
+        .cta-button:hover {
+            background-color: #8c52ff;
+        }
+
+        .cta-secondary:hover {
+            background-color: #f0f0f0;
+        }
+
+        .hero-image {
+            flex: 1;
+            text-align: center;
+        }
+
+        .hero-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+        }
+
+    /* Features Section */
     .features-section {
         padding: 50px;
         text-align: center;
@@ -114,150 +203,138 @@
         margin-bottom: 20px;
     }
 
-    /* Job Listings Section */
-    .job-listings {
-        padding: 50px;
-        background-color: #f8f9fa;
-        text-align: center;
-    }
+/* Recently Posted Jobs Section */
+.recent-jobs-section {
+    padding: 50px;
+    background-color: #e0f7fa; /* Light blue background */
+    text-align: center;
+}
 
-    .job-listings h2 {
-        font-size: 36px;
-        margin-bottom: 30px;
-    }
+.recent-jobs-section h2 {
+    font-size: 36px;
+    margin-bottom: 10px;
+    color: #333;
+}
 
-    .job-cards {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        flex-wrap: wrap;
-    }
+.recent-jobs-section p {
+    font-size: 18px;
+    margin-bottom: 30px;
+    color: #555;
+}
 
+.job-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.job-card {
+    display: flex;
+    align-items: center;
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    justify-content: space-between;
+    transition: transform 0.2s;
+}
+
+.job-card:hover {
+    transform: scale(1.02);
+}
+
+.job-icon img {
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+    margin-right: 20px;
+}
+
+.job-details {
+    flex: 1;
+    text-align: left;
+    margin-right: 15px;
+}
+
+.job-details h3 {
+    font-size: 20px;
+    margin: 0;
+    color: #333;
+    font-weight: bold;
+}
+
+.job-details p {
+    font-size: 16px;
+    color: #777;
+    margin: 5px 0;
+}
+
+.job-meta {
+    display: flex;
+    gap: 15px;
+    font-size: 14px;
+    color: #555;
+    margin-top: 8px;
+}
+
+.job-meta span {
+    display: flex;
+    align-items: center;
+}
+
+.job-meta i {
+    margin-right: 5px;
+    color: #4f66ff; /* Icon color */
+}
+
+.job-days-left {
+    font-size: 14px;
+    color: #2e7d32; /* Green color */
+    font-weight: bold;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.load-more {
+    margin-top: 20px;
+}
+
+.load-more button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4f66ff;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.load-more button:hover {
+    background-color: #8c52ff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
     .job-card {
-        background-color: white;
-        border-radius: 10px;
-        padding: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        width: 250px;
+        flex-direction: column;
+        align-items: flex-start;
         text-align: left;
     }
 
-    .job-card h3 {
-        font-size: 20px;
-        margin: 0;
-        color: #333;
+    .job-icon img {
+        margin-bottom: 10px;
     }
 
-    .job-card p {
-        font-size: 16px;
-        color: #777;
-        margin: 10px 0;
-    }
-
-    .job-card button {
-        padding: 10px 20px;
-        background-color: #4f66ff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    /* Company Culture Section */
-    .culture-section {
-        padding: 50px;
-        background-color: #fff;
-        text-align: center;
-    }
-
-    .culture-section h2 {
-        font-size: 36px;
-        margin-bottom: 30px;
-    }
-
-    .culture-tags {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
-    }
-
-    .tag {
-        background-color: #e0e0e0;
-        border-radius: 5px;
-        padding: 10px 20px;
-        font-size: 14px;
-        color: #333;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    .tag:hover {
-        background-color: #ccc;
-    }
-
-    /* Steps Section */
-    .steps-section {
-        padding: 50px;
-        background-color: #f8f9fa;
-        text-align: center;
-    }
-
-    .steps-section h2 {
-        font-size: 36px;
-        margin-bottom: 30px;
-    }
-
-    .steps-section ol {
-        max-width: 600px;
-        margin: 0 auto;
+    .job-days-left {
         text-align: left;
-        font-size: 18px;
+        margin-top: 10px;
     }
+}
 
-    .steps-section ol li {
-        padding: 10px 0;
-    }
 
-    /* Newsletter Section */
-    .newsletter-section {
-        padding: 50px;
-        background-color: #4B0082;
-        color: white;
-        text-align: center;
-    }
-
-    .newsletter-section h2 {
-        font-size: 28px;
-        margin-bottom: 20px;
-    }
-
-    .newsletter-section p {
-        font-size: 18px;
-        margin-bottom: 20px;
-    }
-
-    .newsletter-section form {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-    }
-
-    .newsletter-section input[type="email"] {
-        padding: 10px;
-        border-radius: 5px;
-        border: none;
-        width: 250px;
-    }
-
-    .newsletter-section button {
-        padding: 10px 20px;
-        background-color: #4f66ff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
 </style>
 {% endblock stylesheets %}
 {% block content %}
@@ -277,78 +354,94 @@
             <img src="{% static 'assets/img/ivancik.jpg' %}" alt="Hero Image">
         </div>
     </section>
-    
-    <!-- Feature Section -->
+
+    <!-- Features Section -->
     <section class="features-section">
         <h2>Why Talent Bridged?</h2>
         <div class="feature-cards">
             <div class="feature-card">
-                <h3>Apply to Humans</h3>
-                <p>Connect with real recruiters and hiring managers, making the hiring process more human-centered.</p>
+                <h3>Aggregated Job Opportunities</h3>
+                <p>Find jobs from multiple sources aggregated into one platform for a streamlined search experience.</p>
             </div>
             <div class="feature-card">
-                <h3>Instantly Stand Out</h3>
-                <p>Showcase your skills and accomplishments to get noticed by top companies.</p>
+                <h3>Showcase Your Profile</h3>
+                <p>Create a comprehensive profile to share with recruiters, featuring your background, projects, and skills.</p>
             </div>
             <div class="feature-card">
-                <h3>Real-Time Feedback</h3>
-                <p>Get updates on your applications in real-time, so you’re always in the know.</p>
+                <h3>Skill-Based Job Search</h3>
+                <p>Search jobs by skills within job descriptions, enabling a deeper and more accurate search.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Learning Curve</h3>
+                <p>Access free and paid courses to boost your skills and stay competitive.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Resume Builder</h3>
+                <p>Create a professional resume in PDF format to make a strong first impression.</p>
             </div>
         </div>
     </section>
     
-    <!-- Job Listings Section -->
-    <section class="job-listings">
-        <h2>Find a Job Right Now</h2>
-        <div class="job-cards">
-            <div class="job-card">
-                <h3>Senior Front End Developer</h3>
-                <p>Microsoft</p>
-                <button>Apply Now</button>
+<!-- Recently Posted Jobs Section -->
+<section class="recent-jobs-section">
+    <h2>Recently Posted Jobs</h2>
+    <p>Explore new jobs that suit you</p>
+    <div class="job-list">
+        <!-- Job Card Example -->
+        <div class="job-card">
+            <div class="job-icon">
+                <img src="https://via.placeholder.com/50" alt="Company Logo">
             </div>
-            <div class="job-card">
-                <h3>Junior UX Designer</h3>
-                <p>Google</p>
-                <button>Apply Now</button>
+            <div class="job-details">
+                <h3>Customer Success Associate</h3>
+                <p>by Sendoso, in Email Support</p>
+                <div class="job-meta">
+                    <span><i class="fa fa-map-marker"></i> New York City</span>
+                    <span><i class="fa fa-clock"></i> Part Time, Remote</span>
+                    <span><i class="fa fa-money"></i> Max $1,000/month</span>
+                </div>
             </div>
+            <div class="job-days-left">231 days left</div>
         </div>
-    </section>
-    
-    <!-- Company Culture Section -->
-    <section class="culture-section">
-        <h2>Find Your Company Culture</h2>
-        <div class="culture-tags">
-            <div class="tag">Friendly</div>
-            <div class="tag">Autonomous</div>
-            <div class="tag">Fast Paced</div>
-            <div class="tag">Empowering</div>
-            <div class="tag">Forward Thinking</div>
-        </div>
-    </section>
-    
-    <!-- Steps Section -->
-    <section class="steps-section">
-        <h2>It's Easy to Get Started</h2>
-        <ol>
-            <li>Build a strong profile</li>
-            <li>Discover jobs you love</li>
-            <li>Apply directly on our platform</li>
-        </ol>
-    </section>
-    
-    <!-- Newsletter Section -->
-    <section class="newsletter-section">
-        <h2>Stay Updated</h2>
-        <p>Subscribe to our newsletter for the latest job listings and career advice</p>
-        <form>
-            <input type="email" placeholder="Enter your email" required>
-            <button type="submit">Subscribe</button>
-        </form>
-    </section>
-    
 
-    
+        <!-- Repeat Job Cards with dummy data -->
+        <div class="job-card">
+            <div class="job-icon">
+                <img src="https://via.placeholder.com/50" alt="Company Logo">
+            </div>
+            <div class="job-details">
+                <h3>Middle/Senior Software Engineer</h3>
+                <p>by Nagarro, in Back-end Development</p>
+                <div class="job-meta">
+                    <span><i class="fa fa-map-marker"></i> Buffalo</span>
+                    <span><i class="fa fa-clock"></i> Hybrid, Remote</span>
+                    <span><i class="fa fa-money"></i> Negotiable Price</span>
+                </div>
+            </div>
+            <div class="job-days-left">223 days left</div>
+        </div>
+        <div class="job-card">
+            <div class="job-icon">
+                <img src="https://via.placeholder.com/50" alt="Company Logo">
+            </div>
+            <div class="job-details">
+                <h3>Middle/Senior Software Engineer</h3>
+                <p>by Nagarro, in Back-end Development</p>
+                <div class="job-meta">
+                    <span><i class="fa fa-map-marker"></i> Buffalo</span>
+                    <span><i class="fa fa-clock"></i> Hybrid, Remote</span>
+                    <span><i class="fa fa-money"></i> Negotiable Price</span>
+                </div>
+            </div>
+            <div class="job-days-left">223 days left</div>
+        </div>
 
+        <!-- Add more job cards as needed -->
+    </div>
+    <div class="load-more">
+        <button>Load More</button>
+    </div>
+</section>
 
 
 </div>
