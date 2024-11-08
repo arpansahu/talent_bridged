@@ -17,6 +17,7 @@ import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 import django
 from django.db.models.signals import pre_init
+from django.db.models import Q
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)

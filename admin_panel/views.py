@@ -26,6 +26,12 @@ from .forms import ModifyCompaniesForm
 now = timezone.now()
 User = get_user_model()
 
+# Set up logging
+import logging
+logger = logging.getLogger('django')
+
+
+
 
 @method_decorator(login_required(redirect_field_name=''), name='dispatch')
 class HomeView(View):
@@ -94,6 +100,7 @@ class JobsListView(ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+        logger.info("ARpansahurocks")
         context = super().get_context_data(**kwargs)
         context['segment'] = 'jobs'
         company_list = Company.objects.all()
@@ -207,7 +214,7 @@ def job_update(request, pk):
 
 # views for javascript functions
 @login_required()
-def autocomplete_title_keyword(request):
+def autocomplete_title_keywords(request):
     query = request.GET.get('q', '').strip()
     suggestions = []
 
@@ -226,8 +233,12 @@ def autocomplete_title_keyword(request):
     return JsonResponse(suggestions, safe=False)
 
 
-def autocomplete_location(request):
+
+def autocomplete_locations(request):
+    from django.db.models import Q  # Add this import at the top
     query = request.GET.get('q', '').strip()
+    logger.info(f"Received query for autocomplete: '{query}'")
+
     location_suggestions = []
 
     if query:
@@ -236,15 +247,19 @@ def autocomplete_location(request):
             Q(city__icontains=query) | Q(state__icontains=query) | Q(country__icontains=query)
         ).values('city', 'state', 'country').distinct()[:10]
 
-        # Construct a readable location format, e.g., "City, State, Country"
+        # Log query results for debugging
+        logger.info(f"Database query returned: {list(locations)}")
+
+        # Construct a readable location format
         location_suggestions = [
             f"{location['city']}, {location['state']}, {location['country']}".strip(', ')
             for location in locations
         ]
 
-    # Return JSON response with location suggestions
+    # Log the final response data to confirm it before returning
+    logger.info(f"======================================")
+    logger.info(f"Final response data: {location_suggestions}")
     return JsonResponse(location_suggestions, safe=False)
-
 
 @login_required()
 def autocomplete_skills(request):
@@ -256,6 +271,7 @@ def autocomplete_skills(request):
         for objs in skill_objs:
             payload.append(objs.name)
     payload = list(set(payload))
+    logger.info(f"payload is {payload}")
     return JsonResponse({'status': 200, 'data': payload})
 
 

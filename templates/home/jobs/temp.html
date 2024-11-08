@@ -269,14 +269,20 @@
     <!-- Search Bar -->
     <form method="GET" action="{% url 'jobs' %}">
       <div class="search-bar">
-          <div class="input-container left" style="flex: 2;">
+          <!-- Title/Keyword Input with Autocomplete -->
+          <div class="input-container left" style="flex: 2; position: relative;">
               <i class="fas fa-search icon"></i>
-              <input type="text" name="keyword" id="keyword" placeholder="Job title or keyword" />
+              <input type="text" name="keyword" id="keyword" placeholder="Job title or keyword" autocomplete="off" />
+              <div id="keyword-autocomplete" class="autocomplete-items"></div>
           </div>
-          <div class="input-container right" style="flex: 1;">
+    
+          <!-- Location Input with Autocomplete -->
+          <div class="input-container right" style="flex: 1; position: relative;">
               <i class="fas fa-map-marker-alt icon"></i>
-              <input type="text" name="location" id="location" placeholder="Add country or city" />
+              <input type="text" name="location" id="location" placeholder="Add country or city" autocomplete="off" />
+              <div id="location-autocomplete" class="autocomplete-items"></div>
           </div>
+    
           <button type="submit">Search</button>
       </div>
     </form>
@@ -422,14 +428,18 @@
         }
     });
 
-    function displaySkillsAutocomplete(items, container) {
-        clearAutocomplete(container);
-        items.forEach(item => {
-            const div = document.createElement('div');
-            div.textContent = item; // Assume item is a string (skill name)
-            div.addEventListener('click', function() {
-                addSkillTag(item);
-                clearAutocomplete(container);
+    function displayAutocomplete(skills) {
+        clearAutocomplete();
+        skills.forEach(skill => {
+            const skillDiv = document.createElement('div');
+            skillDiv.textContent = skill;
+            skillDiv.addEventListener('click', function() {
+                if (!selectedSkills.has(skill)) {
+                    addSkillTag(skill);
+                    selectedSkills.add(skill);
+                }
+                clearAutocomplete();
+                skillsInput.value = ''; // Clear input after selection
             });
             container.appendChild(div);
         });
@@ -496,39 +506,62 @@
         });
     }
 
-    // Location Autocomplete
-    const locationInput = document.getElementById('location');
-    const locationAutocomplete = document.getElementById('location-autocomplete');
-    locationInput.addEventListener('input', function() {
-        const query = this.value;
-        if (query.length > 1) {
-            fetch(`{% url 'autocomplete_locations' %}?q=${query}`)
-                .then(response => response.json())
-                .then(data => {
-                    displayLocationAutocomplete(data, locationAutocomplete);
-                })
-                .catch(error => console.error("Error fetching location data:", error));
-        } else {
-            clearAutocomplete(locationAutocomplete);
-        }
-    });
+// Location Autocomplete
+const locationInput = document.getElementById('location');
+const locationAutocomplete = document.getElementById('location-autocomplete');
 
-    function displayLocationAutocomplete(items, container) {
-        clearAutocomplete(container);
+locationInput.addEventListener('input', function() {
+    const query = this.value;
+    console.log("Location input query:", query); // Log the query
+
+    if (query.length > 1) {
+        fetch(`{% url 'autocomplete_locations' %}?q=${query}`)
+            .then(response => {
+                console.log("Response received:", response); // Log raw response object
+                return response.json();
+            })
+            .then(data => {
+                console.log("Parsed JSON data:", data); // Log parsed JSON data
+                displayLocationAutocomplete(data, locationAutocomplete);
+            })
+            .catch(error => console.error("Error fetching location data:", error));
+    } else {
+        console.log("Clearing autocomplete because query length is less than 2");
+        clearAutocomplete(locationAutocomplete);
+    }
+});
+
+function displayLocationAutocomplete(items, container) {
+    console.log("Displaying location autocomplete items:", items); // Log items array
+    clearAutocomplete(container);
+
+    if (Array.isArray(items) && items.length > 0) {
         items.forEach(item => {
             const div = document.createElement('div');
-            div.textContent = `${item.city}, ${item.country}`;
+            div.textContent = item; // Display each item
+            div.classList.add('autocomplete-item'); // Add class for styling
+            console.log("Appending item to container:", item); // Log each item being appended
+
             div.addEventListener('click', function() {
-                locationInput.value = `${item.city}, ${item.country}`;
+                locationInput.value = item;
                 clearAutocomplete(container);
             });
             container.appendChild(div);
         });
+        container.style.display = 'block'; // Show dropdown
+        console.log("Autocomplete dropdown shown.");
+    } else {
+        container.style.display = 'none'; // Hide dropdown if no items
+        console.log("No items found, hiding autocomplete dropdown.");
     }
+}
 
-    function clearAutocomplete(container) {
-        container.innerHTML = '';
-    }
+function clearAutocomplete(container) {
+    container.innerHTML = '';
+    container.style.display = 'none'; // Ensure container hides
+    console.log("Autocomplete container cleared and hidden.");
+}
+
 
     // Hide autocomplete if clicked outside
     document.addEventListener('click', function(e) {
@@ -543,7 +576,6 @@
         }
     });
 });
-
 
 </script>
 {% endblock javascripts %}

@@ -24,8 +24,8 @@ from .views import (
 
 
     autocomplete_skills,
-    autocomplete_location,
-    autocomplete_title_keyword,
+    autocomplete_locations,
+    autocomplete_title_keywords,
     search_companies,
     search_job_title,
     search_job_category,
@@ -63,16 +63,8 @@ urlpatterns = [
     path('companies/update/<pk>/', CompaniesUpdateView.as_view(), name='admin-companies-update'),
     path('companies/add/', CompaniesCreateView.as_view(), name='admin-add-new-companies'),
     # autocomplete views
-    path('autocomplete-skills/', autocomplete_skills, name='autocomplete_skills'),
-    path('autocomplete-locations/', autocomplete_skills, name='autocomplete_locations'),
-    path('autocomplete-title-keyword/', autocomplete_skills, name='autocomplete_title_keyword'),
 
-    path('search-company-name/', search_companies, name='admin-search-company-name'),
-    path('search-job-title/', search_job_title, name='admin-search-job-title'),
-    path('search-job-category/', search_job_category, name='admin-search-job-category'),
-    path('search-job-jobid/', search_job_id, name='admin-search-job-jobid'),
-    
-    path('search-job-country/', search_country, name='admin-search-country'),
-    path('search-job-city/', search_city, name='admin-search-city'),
-    path('search-job-state/', search_state, name='admin-search-state'),
+    path('autocomplete-skills/', autocomplete_skills, name='autocomplete_skills'),
+    path('autocomplete-locations/', autocomplete_locations, name='autocomplete_locations'),
+    path('autocomplete-title-keyword/', autocomplete_title_keywords, name='autocomplete_title_keywords'),
 ]
