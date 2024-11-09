@@ -16,7 +16,7 @@ from django.views.generic import ListView, UpdateView, DetailView, CreateView, F
 from django.views.generic.base import View, RedirectView
 from django.contrib.auth import get_user_model
 from companies.models import Company
-from jobs.models import Jobs, JobsStats, Keyword
+from jobs.models import Jobs, JobsStats, Keyword, UserKeyword
 from django.utils import timezone
 from locations.models import Locations
 from skills.models import Skills
@@ -217,22 +217,36 @@ def job_update(request, pk):
 @login_required()
 def autocomplete_title_keywords(request):
     query = request.GET.get('q', '').strip()
-    suggestions = []
+    
+    # Log the incoming query
+    logger.info(f"Received autocomplete request with query: '{query}'")
+    
+    suggestions = set()
 
     if query:
-        # Get matching job titles
+        # Log each query part for debugging
         job_titles = Jobs.objects.filter(title__icontains=query).values_list('title', flat=True)[:10]
+        logger.info(f"Job titles found for query '{query}': {list(job_titles)}")
+        suggestions.update(job_titles)
         
-        # Get matching keywords
-        keywords = Keyword.objects.filter(name__icontains=query).values_list('name', flat=True)[:10]
+        keywords = Keyword.objects.filter(word__icontains=query).values_list('word', flat=True)[:10]
+        logger.info(f"Keywords found for query '{query}': {list(keywords)}")
+        suggestions.update(keywords)
         
-        # Combine job titles and keywords into a single list
-        suggestions = list(job_titles) + list(keywords)
+        user_keywords = UserKeyword.objects.filter(word__icontains=query).values_list('word', 'search_count', 'jobs_found_count')[:10]
+        logger.info(f"User keywords found for query '{query}': {list(user_keywords)}")
+        
+        for word, search_count, jobs_found_count in user_keywords:
+            suggestions.add(word)
+            UserKeyword.objects.filter(word=word).update(search_count=search_count + 1, last_searched=timezone.now())
+            if search_count + 1 >= 10 and jobs_found_count >= 10:
+                Keyword.objects.get_or_create(word=word)
+                UserKeyword.objects.filter(word=word).delete()
 
-    # Remove duplicates and send as JSON response
-    suggestions = list(set(suggestions))  # Remove duplicates
-    return JsonResponse(suggestions, safe=False)
-
+    # Log the final suggestions list
+    logger.info(f"Final suggestions for query '{query}': {suggestions}")
+    
+    return JsonResponse(list(suggestions), safe=False)
 
 
 def autocomplete_locations(request):
