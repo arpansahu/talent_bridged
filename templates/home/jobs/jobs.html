@@ -40,7 +40,7 @@
       width: 100%;
       background-color: white;
       border-radius: 50px;
-      overflow: hidden;
+      overflow: visibile;
       padding: 15px;
       box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1);
       border: none;
@@ -50,6 +50,7 @@
   .input-container {
       position: relative;
       flex: 1;
+      overflow: visibile;
   }
 
   /* Styling for input fields */
@@ -176,15 +177,18 @@
 
 .autocomplete-items {
   position: absolute;
-  border: none;
-  max-height: 150px;
+  top: calc(100% + 5px); /* Adds a small gap below the input field */
+  left: 0;
+  width: 100%;
+  max-height: 200px; /* Set a fixed max-height to control the dropdown height */
   overflow-y: auto;
-  z-index: 1000;
   background-color: white;
-  width: 100%; /* Ensure full width match */
-  left: 0; /* Align with input field */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000; /* Ensure it's on top of other elements */
+  display: block; /* Ensures visibility */
   box-sizing: border-box;
-  margin-top: 5px;
+  border-radius:25px; /* Optional: Rounded corners for a more polished look */
+
 }
 
 
@@ -195,6 +199,9 @@
 .autocomplete-items div:hover {
     background-color: #f1f1f1;
 }
+
+
+
 /* Styling for selected skills tags */
 .selected-skills-container {
   display: flex;
@@ -529,24 +536,26 @@
 
     function displayLocationAutocomplete(items, container) {
       clearAutocomplete(container);
-      console.log("Autocomplete data:", items); // Log the data structure
+  
+      if (items.length === 0) {
+          container.style.display = 'none';
+          return; // Hide if no items
+      }
   
       items.forEach(item => {
           const div = document.createElement('div');
-          
-          // Set the text content directly to the item since it's already in the correct format
           div.textContent = item;
           div.classList.add('autocomplete-item');
           
-          // Set the input value to the selected item when clicked
           div.addEventListener('click', function() {
               locationInput.value = item;
               clearAutocomplete(container);
           });
-          
+  
           container.appendChild(div);
       });
-      container.style.display = 'block'; // Show the dropdown
+  
+      container.style.display = 'block'; // Ensure dropdown is visible
   }
   
 
