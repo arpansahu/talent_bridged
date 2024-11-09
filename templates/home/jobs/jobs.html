@@ -191,15 +191,17 @@
 
 }
 
-
-.autocomplete-items div {
-    padding: 10px;
-    cursor: pointer;
-}
-.autocomplete-items div:hover {
-    background-color: #f1f1f1;
+.autocomplete-items .autocomplete-item {
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Hover effect */
+.autocomplete-items .autocomplete-item:hover {
+  background-color: #4e00ff; /* Change to your desired hover color */
+  color: #fff; /* Text color on hover */
+}
 
 
 /* Styling for selected skills tags */
