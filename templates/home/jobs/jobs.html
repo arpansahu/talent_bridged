@@ -239,47 +239,55 @@
 <div class="container-fluid py-4">
   <!-- Stats and Search Bar Section -->
   <div class="stats-and-search">
-    <!-- Stats Row -->
-    <div class="stats-row">
-      <div class="card">
-        <div class="card-body p-3">
-          <p class="text-sm mb-0 font-weight-bold">Today's New</p>
-          <h5 class="font-weight-bolder mb-0">
-            {{ new_jobs }}
-            <span class="text-success text-sm font-weight-bolder">{{ new_jobs_perc|floatformat:1 }}%</span>
-          </h5>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-body p-3">
-          <p class="text-sm mb-0 font-weight-bold">Total Available</p>
-          <h5 class="font-weight-bolder mb-0">
-            {{ total_jobs }}
-            {% if total_jobs_change_positive %}
-              <span class="text-success text-sm font-weight-bolder">+{{ total_jobs_change }}%</span>
-            {% else %}
-              <span class="text-danger text-sm font-weight-bolder">-{{ total_jobs_change }}%</span>
-            {% endif %}
-          </h5>
-        </div>
-      </div>
-    </div>
 
     <!-- Search Bar -->
     <form method="GET" action="{% url 'jobs' %}">
       <div class="search-bar">
-          <div class="input-container left" style="flex: 2;">
+          <!-- Title/Keyword Input with Autocomplete -->
+          <div class="input-container left" style="flex: 2; position: relative;">
               <i class="fas fa-search icon"></i>
-              <input type="text" name="keyword" id="keyword" placeholder="Job title or keyword" />
+              <input type="text" name="keyword" id="keyword" placeholder="Job title or keyword" autocomplete="off" />
+              <div id="keyword-autocomplete" class="autocomplete-items"></div>
           </div>
-          <div class="input-container right" style="flex: 1;">
+    
+          <!-- Location Input with Autocomplete -->
+          <div class="input-container right" style="flex: 1; position: relative;">
               <i class="fas fa-map-marker-alt icon"></i>
-              <input type="text" name="location" id="location" placeholder="Add country or city" />
+              <input type="text" name="location" id="location" placeholder="Add country or city" autocomplete="off" />
+              <div id="location-autocomplete" class="autocomplete-items"></div>
           </div>
+    
           <button type="submit">Search</button>
       </div>
     </form>
+
+        <!-- Stats Row -->
+        <div class="stats-row" style="margin-top:20px;">
+          <div class="card">
+            <div class="card-body p-3">
+              <p class="text-sm mb-0 font-weight-bold">Today's New</p>
+              <h5 class="font-weight-bolder mb-0">
+                {{ new_jobs }}
+                <span class="text-success text-sm font-weight-bolder">{{ new_jobs_perc|floatformat:1 }}%</span>
+              </h5>
+            </div>
+          </div>
+    
+          <div class="card">
+            <div class="card-body p-3">
+              <p class="text-sm mb-0 font-weight-bold">Total Available</p>
+              <h5 class="font-weight-bolder mb-0">
+                {{ total_jobs }}
+                {% if total_jobs_change_positive %}
+                  <span class="text-success text-sm font-weight-bolder">+{{ total_jobs_change }}%</span>
+                {% else %}
+                  <span class="text-danger text-sm font-weight-bolder">-{{ total_jobs_change }}%</span>
+                {% endif %}
+              </h5>
+            </div>
+          </div>
+        </div>
+    
   </div>
 
   <!-- Filter and Job Listings -->
@@ -497,15 +505,21 @@
     }
 
     // Location Autocomplete
+    // Location Autocomplete
     const locationInput = document.getElementById('location');
     const locationAutocomplete = document.getElementById('location-autocomplete');
+
     locationInput.addEventListener('input', function() {
         const query = this.value;
         if (query.length > 1) {
             fetch(`{% url 'autocomplete_locations' %}?q=${query}`)
                 .then(response => response.json())
                 .then(data => {
-                    displayLocationAutocomplete(data, locationAutocomplete);
+                    if (locationAutocomplete) {
+                        displayLocationAutocomplete(data, locationAutocomplete);
+                    } else {
+                        console.error("Location autocomplete container not found.");
+                    }
                 })
                 .catch(error => console.error("Error fetching location data:", error));
         } else {
@@ -514,17 +528,27 @@
     });
 
     function displayLocationAutocomplete(items, container) {
-        clearAutocomplete(container);
-        items.forEach(item => {
-            const div = document.createElement('div');
-            div.textContent = `${item.city}, ${item.country}`;
-            div.addEventListener('click', function() {
-                locationInput.value = `${item.city}, ${item.country}`;
-                clearAutocomplete(container);
-            });
-            container.appendChild(div);
-        });
-    }
+      clearAutocomplete(container);
+      console.log("Autocomplete data:", items); // Log the data structure
+  
+      items.forEach(item => {
+          const div = document.createElement('div');
+          
+          // Set the text content directly to the item since it's already in the correct format
+          div.textContent = item;
+          div.classList.add('autocomplete-item');
+          
+          // Set the input value to the selected item when clicked
+          div.addEventListener('click', function() {
+              locationInput.value = item;
+              clearAutocomplete(container);
+          });
+          
+          container.appendChild(div);
+      });
+      container.style.display = 'block'; // Show the dropdown
+  }
+  
 
     function clearAutocomplete(container) {
         container.innerHTML = '';

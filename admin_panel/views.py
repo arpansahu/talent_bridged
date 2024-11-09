@@ -21,6 +21,7 @@ from django.utils import timezone
 from locations.models import Locations
 from skills.models import Skills
 from .forms import ModifyCompaniesForm
+from django.db.models import Q
 
 
 now = timezone.now()
@@ -235,7 +236,6 @@ def autocomplete_title_keywords(request):
 
 
 def autocomplete_locations(request):
-    from django.db.models import Q  # Add this import at the top
     query = request.GET.get('q', '').strip()
     logger.info(f"Received query for autocomplete: '{query}'")
 
@@ -252,13 +252,16 @@ def autocomplete_locations(request):
 
         # Construct a readable location format
         location_suggestions = [
-            f"{location['city']}, {location['state']}, {location['country']}".strip(', ')
+            ", ".join(
+                filter(None, [location.get('city'), location.get('state'), location.get('country')])
+            )
             for location in locations
         ]
 
     # Log the final response data to confirm it before returning
-    logger.info(f"======================================")
+    logger.info("======================================")
     logger.info(f"Final response data: {location_suggestions}")
+
     return JsonResponse(location_suggestions, safe=False)
 
 @login_required()
