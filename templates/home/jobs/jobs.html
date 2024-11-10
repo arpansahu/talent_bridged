@@ -5,8 +5,6 @@
 {% block stylesheets %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <!-- Add this inside your base template or head section -->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 
 <style>
   /* Full-width container without max-width */
@@ -53,36 +51,38 @@
       overflow: visibile;
   }
 
-  /* Styling for input fields */
-  .input-container input[type="text"] {
-      width: 100%;
-      padding: 15px 20px 15px 45px;
-      font-size: 1em;
-      border: none;
-      color: #333;
-      outline: none;
-      height: 100%;
-  }
 
-  /* Left input field: sharp right edge */
-  .input-container.left input[type="text"] {
-      border-radius: 50px 0 0 50px;
-  }
+/* General input styling for both inputs */
+.input-container input[type="text"] {
+  width: 100%;
+  padding: 15px 20px 15px 45px; /* Padding is the same for both inputs */
+  font-size: 1em;
+  border: none;
+  color: #333;
+  outline: none;
+  height: 100%;
+  background-color: #ffffff; /* Ensure both have the same background color */
+}
 
-  /* Right input field: sharp left edge */
-  .input-container.right input[type="text"] {
-      border-radius: 0 50px 50px 0;
-  }
+/* Left input field styling */
+.input-container.left input[type="text"] {
+  border-radius: 50px 0 0 50px; /* Rounded left side, sharp right edge */
+}
+
+/* Right input field styling */
+.input-container.right input[type="text"] {
+  border-radius: 0 50px 50px 0; /* Sharp left edge, rounded right side */
+}
 
   /* Icon styling */
   .input-container .icon {
-      position: absolute;
-      top: 50%;
-      left: 15px;
-      transform: translateY(-50%);
-      color: #999;
-      font-size: 1.2em;
-  }
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: #999;
+    font-size: 1.2em;
+}
 
   /* Remove focus outline */
   .input-container input[type="text"]:focus {
@@ -101,9 +101,9 @@
       flex-shrink: 0;
   }
 
-  /* Divider line between search bars */
+  /* Divider line between input fields */
   .input-container.right {
-      border-left: 1px solid #e0e0e0;
+    border-left: 1px solid #e0e0e0; /* Consistent divider line */
   }
 
   /* Mobile view adjustments */
@@ -124,7 +124,7 @@
 
       .input-container.left input[type="text"],
       .input-container.right input[type="text"] {
-          border-radius: 20px; /* Rounded corners for all inputs in mobile */
+          border-radius: 5px; /* Rounded corners for all inputs in mobile */
       }
 
       .input-container.right {
@@ -149,12 +149,6 @@
           padding: 12px 15px 12px 35px;
           font-size: 0.9em;
       }
-      /* Mobile hover effect alternative: .hover-effect class */
-      .autocomplete-items .autocomplete-item.hover-effect {
-        background-color: #4e00ff; /* The same hover color */
-        color: #fff; /* The same text color on hover */
-      }
-  
   }
 
 
@@ -167,69 +161,74 @@
     position: relative;
   }
 
-.autocomplete-items {
-  position: absolute;
-  top: calc(100% + 20px); /* Adds a small gap below the input field */
-  left: 0;
-  width: 100%;
-  max-height: 200px; /* Set a fixed max-height to control the dropdown height */
-  overflow-y: auto;
-  background-color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  z-index: 1000; /* Ensure it's on top of other elements */
-  display: block; /* Ensures visibility */
-  box-sizing: border-box;
-  border-radius:20px; /* Optional: Rounded corners for a more polished look */
 
-}
-
-.autocomplete-items .autocomplete-item {
-  padding: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* Hover effect */
-.autocomplete-items .autocomplete-item:hover {
-  background-color: #4e00ff; /* Change to your desired hover color */
-  color: #fff; /* Text color on hover */
-}
+  .autocomplete-result:hover {
+    background-color: #4e00ff; /* Navy blue color on hover */
+    color: #ffffff; /* White text color for better contrast */
+  }
 
 
-/* Styling for selected skills tags */
-.selected-skills-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  margin-top: 5px;
-  padding-top: 5px; /* Adds extra space to avoid overlap */
-}
-.skill-tag {
-  background-color: #007bff;
-  color: white;
-  padding: 5px 10px;
-  padding-right: 15px; /* Add extra right padding for spacing */
-  border-radius: 15px;
-  display: flex;
-  align-items: center;
-}
-
-.skill-tag i {
-  margin-left: 8px; /* Adjust the space between the text and icon */
-  cursor: pointer;
-}
-
-.skill-tag svg {
-  margin-left: 5px; /* Additional margin to create more space if needed */
-  cursor: pointer;
-}
-
-/* Remove the line under the skills input */
-/* Add spacing below the skills input field */
-#skills-input {
-  margin-bottom: 10px; /* Creates space between input and selected skills */
-}
-
+  .selected-skills-container {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .skill-tag {
+    display: inline-flex;
+    align-items: center;
+    background-color: #4e00ff; /* Use the same color as your theme */
+    color: white;
+    padding: 8px 12px;
+    border-radius: 15px;
+    font-size: 0.9em;
+  }
+  
+  .remove-skill {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    margin-left: 10px;
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+  
+  .remove-skill:hover {
+    color: #ff0000; /* Optional: highlight the remove button on hover */
+  }
+  
+  .selected-companies-container {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .company-tag {
+    display: inline-flex;
+    align-items: center;
+    background-color: #4e00ff; /* Use the same color as your theme */
+    color: white;
+    padding: 8px 12px;
+    border-radius: 15px;
+    font-size: 0.9em;
+  }
+  
+  .remove-company {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    margin-left: 10px;
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+  
+  .remove-company:hover {
+    color: #ff0000; /* Optional: highlight the remove button on hover */
+  }
 
 </style>
 
@@ -272,17 +271,18 @@
     <form method="GET" action="{% url 'jobs' %}">
       <div class="search-bar">
           <!-- Title/Keyword Input with Autocomplete -->
-          <div class="input-container left" style="flex: 2; position: relative;">
-              <i class="fas fa-search icon"></i>
-              <input type="text" name="keyword" id="keyword" placeholder="Job title or keyword" autocomplete="off" />
-              <div id="keyword-autocomplete" class="autocomplete-items"></div>
+          <!-- Title/Keyword Input with Autocomplete -->
+          <div id="title_keyword_container" class="input-container left autocomplete" style="flex: 2; position: relative;">
+            <i class="fas fa-search icon"></i>
+            <input type="text" name="title_keyword" id="title_keyword_input" placeholder="Job title or keyword" autocomplete="off" class="autocomplete-input" />
+            <ul id="keyword-autocomplete" class="autocomplete-result-list"></ul>
           </div>
     
-          <!-- Location Input with Autocomplete -->
-          <div class="input-container right" style="flex: 1; position: relative;">
-              <i class="fas fa-map-marker-alt icon"></i>
-              <input type="text" name="location" id="location" placeholder="Add country or city" autocomplete="off" />
-              <div id="location-autocomplete" class="autocomplete-items"></div>
+          <!-- Location Input with Autocomplete --> 
+          <div id="location" class="input-container right autocomplete" style="flex: 1; position: relative;">
+            <i class="fas fa-map-marker-alt icon"></i>
+            <input type="text" name="location" id="location" placeholder="Add country or city" autocomplete="off" />
+            <ul id="location-autocomplete" class="autocomplete-result-list"></ul>
           </div>
     
           <button type="submit">Search</button>
@@ -326,14 +326,20 @@
           </div>
     
           <!-- Skills Filter -->
-          <div class="form-group">
+          <div id="skills" class="form-group autocomplete">
             <label for="skills">Skills</label>
-            <input type="text" class="form-control" id="skills-input" placeholder="Search for skills" autocomplete="off" />
-            <div id="autocomplete-list" class="autocomplete-items"></div>
+            <input type="text" name="skills" id="skills_input" placeholder="Search for skills" autocomplete="off" class="form-control autocomplete-input" />
+            <ul id="skills-autocomplete" class="autocomplete-result-list"></ul>
             <div id="selected-skills" class="selected-skills-container"></div>
-          </div>
-        
+          </div>           
     
+          <div id="company" class="form-group autocomplete">
+            <label for="company_input">Company</label>
+            <input type="text" name="company" id="company_input" placeholder="Search for company" autocomplete="off" class="form-control autocomplete-input" />
+            <ul id="company-autocomplete" class="autocomplete-result-list"></ul>
+            <div id="selected-companies" class="selected-companies-container"></div>
+          </div>
+
           <!-- Date Filter -->
           <div class="form-group">
             <label for="date-filter">Date Posted</label>
@@ -411,180 +417,128 @@
 
 {% block javascripts %}
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const skillsInput = document.getElementById('skills-input');
-    const autocompleteList = document.getElementById('autocomplete-list');
-    const selectedSkillsContainer = document.getElementById('selected-skills');
-    const selectedSkills = new Set();
 
-    // Skills Autocomplete
-    skillsInput.addEventListener('input', function() {
-        const query = this.value;
-        if (query.length > 1) {
-            fetch(`{% url 'autocomplete_skills' %}?name=${query}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 200) {
-                        displaySkillsAutocomplete(data.data, autocompleteList);
-                    }
-                });
-        } else {
-            clearAutocomplete(autocompleteList);
-        }
-    });
-
-    function displaySkillsAutocomplete(items, container) {
-        clearAutocomplete(container);
-        items.forEach(item => {
-            const div = document.createElement('div');
-            div.textContent = item; // Assume item is a string (skill name)
-            div.addEventListener('click', function() {
-                addSkillTag(item);
-                clearAutocomplete(container);
+  // Autocomplete for location input (new functionality)
+  new Autocomplete('#location', {
+    search: input => {
+        const url = "{% url 'autocomplete_locations' %}?q=" + input;
+        return new Promise(resolve => {
+            fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                resolve(data.data);
             });
-            container.appendChild(div);
         });
     }
+  });
 
-    function addSkillTag(skill) {
-      if (selectedSkills.has(skill)) return;
-  
-      // Clear the input field after adding the skill
-      skillsInput.value = '';
-  
-      const skillTag = document.createElement('div');
-      skillTag.className = 'skill-tag';
-      skillTag.textContent = skill;
-  
-      const removeIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      removeIcon.setAttribute("class", "svg-inline--fa fa-xmark");
-      removeIcon.setAttribute("data-skill", skill);
-      removeIcon.setAttribute("viewBox", "0 0 384 512");
-  
-      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      path.setAttribute("fill", "currentColor");
-      path.setAttribute("d", "M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z");
-      removeIcon.appendChild(path);
-  
-      removeIcon.addEventListener('click', function(event) {
-          event.stopPropagation();
-          skillTag.remove();
-          selectedSkills.delete(skill);
+  // Initialize autocomplete for the keyword input field
+  new Autocomplete('#title_keyword_container', {
+    search: input => {
+      // Assuming you have a URL endpoint that provides keyword suggestions
+      const url = "{% url 'autocomplete_title_keywords' %}?q=" + input;
+      return new Promise(resolve => {
+        fetch(url)
+          .then(response => response.json())
+          .then(data => {
+            resolve(data.data); // Assuming response format: { status: 200, data: [...] }
+          })
       });
-  
-      skillTag.appendChild(removeIcon);
-      selectedSkillsContainer.appendChild(skillTag);
-      selectedSkills.add(skill);
-  }
-  
+    },
+  });
 
-    // Keyword Autocomplete
-    // Keyword Autocomplete (similar changes for keyword and location autocompletes)
-    const keywordInput = document.getElementById('keyword');
-    const keywordAutocomplete = document.getElementById('keyword-autocomplete');
 
-    keywordInput.addEventListener('input', function() {
-        const query = this.value.trim();
-        if (query.length > 1) {
-            fetch(`{% url 'autocomplete_title_keywords' %}?q=${query}`)
-                .then(response => response.json())
-                .then(data => {
-                    displayKeywordAutocomplete(data, keywordAutocomplete);
-                    if (isTouchDevice) {
-                        handleTouchHoverEffect(keywordAutocomplete.querySelectorAll('.autocomplete-item'));
-                    }
-                })
-                .catch(error => console.error("Error fetching title and keyword data:", error));
-        } else {
-            clearAutocomplete(keywordAutocomplete);
-        }
-    });
-
-    function displayKeywordAutocomplete(items, container) {
-        clearAutocomplete(container);
-        items.forEach(item => {
-            const div = document.createElement('div');
-            div.classList.add('autocomplete-item');
-            div.textContent = item;
-            div.addEventListener('click', function() {
-                keywordInput.value = item;
-                clearAutocomplete(container);
-            });
-            container.appendChild(div);
+// Initialize autocomplete for the skills input field
+new Autocomplete('#skills', {
+  search: input => {
+    // Assuming you have a URL endpoint that provides skill suggestions
+    const url = "{% url 'autocomplete_skills' %}?q=" + input;
+    return new Promise(resolve => {
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          resolve(data.data); // Assuming response format: { status: 200, data: [...] }
         });
-        container.style.display = 'block';
-    }
-
-    // Function to clear autocomplete suggestions
-    function clearAutocomplete(container) {
-        container.innerHTML = '';
-        container.style.display = 'none'; // Hide the autocomplete dropdown
-    }
-
-
-    // Location Autocomplete
-    const locationInput = document.getElementById('location');
-    const locationAutocomplete = document.getElementById('location-autocomplete');
-
-    locationInput.addEventListener('input', function() {
-        const query = this.value;
-        if (query.length > 1) {
-            fetch(`{% url 'autocomplete_locations' %}?q=${query}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (locationAutocomplete) {
-                        displayLocationAutocomplete(data, locationAutocomplete);
-                    } else {
-                        console.error("Location autocomplete container not found.");
-                    }
-                })
-                .catch(error => console.error("Error fetching location data:", error));
-        } else {
-            clearAutocomplete(locationAutocomplete);
-        }
     });
-
-    function displayLocationAutocomplete(items, container) {
-      clearAutocomplete(container);
-  
-      if (items.length === 0) {
-          container.style.display = 'none';
-          return; // Hide if no items
+  },
+  onSubmit: result => {
+    if (result) {
+      // Add the selected skill to the "selected-skills" container
+      const selectedSkillsContainer = document.getElementById("selected-skills");
+      
+      // Check if the skill is already added
+      if (Array.from(selectedSkillsContainer.children).some(skillTag => skillTag.textContent.includes(result))) {
+        return; // Skip adding the skill if it already exists
       }
-  
-      items.forEach(item => {
-          const div = document.createElement('div');
-          div.textContent = item;
-          div.classList.add('autocomplete-item');
-          
-          div.addEventListener('click', function() {
-              locationInput.value = item;
-              clearAutocomplete(container);
-          });
-  
-          container.appendChild(div);
+
+      // Create a new span for the selected skill
+      const skillTag = document.createElement("span");
+      skillTag.className = "skill-tag";
+      skillTag.textContent = result;
+
+      // Add a remove button for each skill
+      const removeButton = document.createElement("button");
+      removeButton.className = "remove-skill";
+      removeButton.innerHTML = "&times;";
+      removeButton.addEventListener("click", () => {
+        selectedSkillsContainer.removeChild(skillTag);
       });
-  
-      container.style.display = 'block'; // Ensure dropdown is visible
-  }
-  
 
-    function clearAutocomplete(container) {
-        container.innerHTML = '';
+      // Append the remove button to the skill tag and add the skill tag to the container
+      skillTag.appendChild(removeButton);
+      selectedSkillsContainer.appendChild(skillTag);
+
+      // Do not clear the input field; allow adding multiple skills
+      document.getElementById('skills_input').value = "";
     }
+  },
+});
 
-    // Hide autocomplete if clicked outside
-    document.addEventListener('click', function(e) {
-        if (!skillsInput.contains(e.target) && !autocompleteList.contains(e.target)) {
-            clearAutocomplete(autocompleteList);
-        }
-        if (!keywordInput.contains(e.target) && !keywordAutocomplete.contains(e.target)) {
-            clearAutocomplete(keywordAutocomplete);
-        }
-        if (!locationInput.contains(e.target) && !locationAutocomplete.contains(e.target)) {
-            clearAutocomplete(locationAutocomplete);
-        }
+
+// Initialize autocomplete for the company input field
+new Autocomplete('#company', {
+  search: input => {
+    // Assuming you have a URL endpoint that provides company suggestions
+    const url = "{% url 'autocomplete_companies' %}?q=" + input;
+    return new Promise(resolve => {
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          resolve(data.data); // Assuming response format: { status: 200, data: [...] }
+        });
     });
+  },
+  onSubmit: result => {
+    if (result) {
+      // Add the selected company to the "selected-companies" container
+      const selectedCompaniesContainer = document.getElementById("selected-companies");
+      
+      // Check if the company is already added
+      if (Array.from(selectedCompaniesContainer.children).some(companyTag => companyTag.textContent.includes(result))) {
+        return; // Skip adding the company if it already exists
+      }
+
+      // Create a new span for the selected company
+      const companyTag = document.createElement("span");
+      companyTag.className = "company-tag";
+      companyTag.textContent = result;
+
+      // Add a remove button for each company
+      const removeButton = document.createElement("button");
+      removeButton.className = "remove-company";
+      removeButton.innerHTML = "&times;";
+      removeButton.addEventListener("click", () => {
+        selectedCompaniesContainer.removeChild(companyTag);
+      });
+
+      // Append the remove button to the company tag and add the company tag to the container
+      companyTag.appendChild(removeButton);
+      selectedCompaniesContainer.appendChild(companyTag);
+
+      // Do not clear the input field; allow adding multiple companies
+      document.getElementById('company_input').value = "";
+    }
+  }
 });
 
 

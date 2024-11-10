@@ -224,18 +224,21 @@ def autocomplete_title_keywords(request):
     suggestions = set()
 
     if query:
-        # Log each query part for debugging
+        # Fetch and log job titles
         job_titles = Jobs.objects.filter(title__icontains=query).values_list('title', flat=True)[:10]
         logger.info(f"Job titles found for query '{query}': {list(job_titles)}")
         suggestions.update(job_titles)
         
+        # Fetch and log keywords
         keywords = Keyword.objects.filter(word__icontains=query).values_list('word', flat=True)[:10]
         logger.info(f"Keywords found for query '{query}': {list(keywords)}")
         suggestions.update(keywords)
         
+        # Fetch and log user keywords
         user_keywords = UserKeyword.objects.filter(word__icontains=query).values_list('word', 'search_count', 'jobs_found_count')[:10]
         logger.info(f"User keywords found for query '{query}': {list(user_keywords)}")
         
+        # Update UserKeyword data and add keywords if necessary
         for word, search_count, jobs_found_count in user_keywords:
             suggestions.add(word)
             UserKeyword.objects.filter(word=word).update(search_count=search_count + 1, last_searched=timezone.now())
@@ -243,10 +246,18 @@ def autocomplete_title_keywords(request):
                 Keyword.objects.get_or_create(word=word)
                 UserKeyword.objects.filter(word=word).delete()
 
-    # Log the final suggestions list
-    logger.info(f"Final suggestions for query '{query}': {suggestions}")
-    
-    return JsonResponse(list(suggestions), safe=False)
+    # Convert suggestions to a list and log the final suggestions list
+    suggestions_list = list(suggestions)
+    logger.info(f"Final suggestions for query '{query}': {suggestions_list}")
+
+    # Construct the response payload
+    payload = {
+        'status': 200,
+        'data': suggestions_list
+    }
+
+    # Return the payload as JSON response
+    return JsonResponse(payload) 
 
 
 def autocomplete_locations(request):
@@ -276,20 +287,71 @@ def autocomplete_locations(request):
     logger.info("======================================")
     logger.info(f"Final response data: {location_suggestions}")
 
-    return JsonResponse(location_suggestions, safe=False)
+    # Construct the response payload
+    payload = {
+        'status': 200,
+        'data': location_suggestions
+    }
+
+    return JsonResponse(payload)
 
 @login_required()
 def autocomplete_skills(request):
-    name = request.GET.get('name')
-    payload = []
-    if name:
-        skill_objs = Skills.objects.filter(name__icontains=name)
+    query = request.GET.get('q', '').strip()
+    logger.info(f"Received query for autocomplete: '{query}'")
 
-        for objs in skill_objs:
-            payload.append(objs.name)
-    payload = list(set(payload))
-    logger.info(f"payload is {payload}")
-    return JsonResponse({'status': 200, 'data': payload})
+    skill_suggestions = []
+
+    if query:
+        # Filter based on matching query with skill name
+        skills = Skills.objects.filter(name__icontains=query).values('name').distinct()[:10]
+
+        # Log query results for debugging
+        logger.info(f"Database query returned: {list(skills)}")
+
+        # Extract the skill names into a list
+        skill_suggestions = [skill.get('name') for skill in skills]
+
+    # Log the final response data to confirm it before returning
+    logger.info("======================================")
+    logger.info(f"Final response data: {skill_suggestions}")
+
+    # Construct the response payload
+    payload = {
+        'status': 200,
+        'data': skill_suggestions
+    }
+
+    return JsonResponse(payload)
+
+@login_required()
+def autocomplete_companies(request):
+    query = request.GET.get('q', '').strip()
+    logger.info(f"Received query for company autocomplete: '{query}'")
+
+    company_suggestions = []
+
+    if query:
+        # Filter based on matching query with company name
+        companies = Company.objects.filter(name__icontains=query).values('name').distinct()[:10]
+
+        # Log query results for debugging
+        logger.info(f"Database query returned: {list(companies)}")
+
+        # Extract the company names into a list
+        company_suggestions = [company.get('name') for company in companies]
+
+    # Log the final response data to confirm it before returning
+    logger.info("======================================")
+    logger.info(f"Final response data: {company_suggestions}")
+
+    # Construct the response payload
+    payload = {
+        'status': 200,
+        'data': company_suggestions
+    }
+
+    return JsonResponse(payload)
 
 
 @login_required()
