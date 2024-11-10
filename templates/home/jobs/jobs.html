@@ -449,6 +449,7 @@
 
 
 // Initialize autocomplete for the skills input field
+// Initialize autocomplete for the skills input field
 new Autocomplete('#skills', {
   search: input => {
     // Assuming you have a URL endpoint that provides skill suggestions
@@ -465,9 +466,13 @@ new Autocomplete('#skills', {
     if (result) {
       // Add the selected skill to the "selected-skills" container
       const selectedSkillsContainer = document.getElementById("selected-skills");
-      
-      // Check if the skill is already added
-      if (Array.from(selectedSkillsContainer.children).some(skillTag => skillTag.textContent.includes(result))) {
+
+      // Check if the skill is already added using data-skill-name attribute
+      const isAlreadyAdded = Array.from(selectedSkillsContainer.children).some(skillTag => {
+        return skillTag.dataset.skillName === result; // Compare with the data attribute value
+      });
+
+      if (isAlreadyAdded) {
         return; // Skip adding the skill if it already exists
       }
 
@@ -475,6 +480,7 @@ new Autocomplete('#skills', {
       const skillTag = document.createElement("span");
       skillTag.className = "skill-tag";
       skillTag.textContent = result;
+      skillTag.dataset.skillName = result; // Use data attribute to store the skill name uniquely
 
       // Add a remove button for each skill
       const removeButton = document.createElement("button");
@@ -494,7 +500,7 @@ new Autocomplete('#skills', {
   },
 });
 
-
+// Initialize autocomplete for the company input field
 // Initialize autocomplete for the company input field
 new Autocomplete('#company', {
   search: input => {
@@ -512,9 +518,13 @@ new Autocomplete('#company', {
     if (result) {
       // Add the selected company to the "selected-companies" container
       const selectedCompaniesContainer = document.getElementById("selected-companies");
-      
-      // Check if the company is already added
-      if (Array.from(selectedCompaniesContainer.children).some(companyTag => companyTag.textContent.includes(result))) {
+
+      // Check if the company is already added using data-company-name attribute
+      const isAlreadyAdded = Array.from(selectedCompaniesContainer.children).some(companyTag => {
+        return companyTag.dataset.companyName === result; // Compare with data attribute value
+      });
+
+      if (isAlreadyAdded) {
         return; // Skip adding the company if it already exists
       }
 
@@ -522,6 +532,7 @@ new Autocomplete('#company', {
       const companyTag = document.createElement("span");
       companyTag.className = "company-tag";
       companyTag.textContent = result;
+      companyTag.dataset.companyName = result; // Use data attribute to store the company name
 
       // Add a remove button for each company
       const removeButton = document.createElement("button");
@@ -540,6 +551,7 @@ new Autocomplete('#company', {
     }
   }
 });
+
 
 
 </script>
