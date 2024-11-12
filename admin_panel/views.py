@@ -269,12 +269,12 @@ def autocomplete_title_keywords(request):
 
     if query:
         # Fetch and log job titles
-        job_titles = Jobs.objects.filter(title__icontains=query).values_list('title', flat=True)[:10]
+        job_titles = Jobs.objects.filter(title__icontains=query).values_list('title', flat=True)[:50]
         logger.info(f"Job titles found for query '{query}': {list(job_titles)}")
         suggestions.update(job_titles)
         
         # Fetch and log keywords
-        keywords = Keyword.objects.filter(word__icontains=query).values_list('word', flat=True)[:10]
+        keywords = Keyword.objects.filter(word__icontains=query).values_list('word', flat=True)[:50]
         logger.info(f"Keywords found for query '{query}': {list(keywords)}")
         suggestions.update(keywords)
         
@@ -313,7 +313,7 @@ def autocomplete_locations(request):
 
     if query:
         # Fetch country-only matches and add them to the suggestions
-        country_matches = Locations.objects.filter(country__icontains=query).values('country').distinct()[:10]
+        country_matches = Locations.objects.filter(country__icontains=query).values('country').distinct()[:100]
         location_suggestions.update([match['country'] for match in country_matches])
 
         # Fetch city, state, country combinations
@@ -351,7 +351,7 @@ def autocomplete_skills(request):
 
     if query:
         # Filter based on matching query with skill name
-        skills = Skills.objects.filter(name__icontains=query).values('name').distinct()[:10]
+        skills = Skills.objects.filter(name__icontains=query).values('name').distinct()[:100]
 
         # Log query results for debugging
         logger.info(f"Database query returned: {list(skills)}")
@@ -380,7 +380,7 @@ def autocomplete_companies(request):
 
     if query:
         # Filter based on matching query with company name
-        companies = Company.objects.filter(name__icontains=query).values('name').distinct()[:10]
+        companies = Company.objects.filter(name__icontains=query).values('name').distinct()[:100]
 
         # Log query results for debugging
         logger.info(f"Database query returned: {list(companies)}")

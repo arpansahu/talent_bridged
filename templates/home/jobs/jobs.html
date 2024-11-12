@@ -329,7 +329,7 @@
           </div>
     
           <!-- Apply Filters Button -->
-          <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+          <button id="apply-filters" type="submit" class="btn btn-primary w-100">Apply Filters</button>
         </div>
       </div>
     </div>
@@ -416,31 +416,43 @@
   function addTag(result, containerId, inputId, dataAttribute) {
     const container = document.getElementById(containerId);
     const input = document.getElementById(inputId);
-  
+
     // Check if the tag is already present
     const isAlreadyAdded = Array.from(container.children).some(tag => tag.getAttribute(dataAttribute) === result);
-  
-    if (isAlreadyAdded) return; // Skip adding if it already exists
-  
-    // Create the tag element with shared class
+
+    if (isAlreadyAdded) {
+        console.log("Tag already exists:", result);
+        return; // Skip adding if it already exists
+    }
+
+    // Create the tag element
     const tag = document.createElement("span");
-    tag.className = "tag"; // Use common tag class
-    tag.textContent = result;
+    tag.className = "tag";
     tag.setAttribute(dataAttribute, result);
-  
+
+    // Create a separate span for the skill name
+    const skillNameSpan = document.createElement("span");
+    skillNameSpan.className = "skill-name";  // Add a specific class for the skill name
+    skillNameSpan.textContent = result;  // Only the skill name text
+
     // Create the remove button
     const removeButton = document.createElement("button");
     removeButton.className = "remove-tag";
     removeButton.innerHTML = "&times;";
     removeButton.addEventListener("click", () => container.removeChild(tag));
-  
-    // Append the remove button to the tag
+
+    // Append the skill name span and remove button to the tag
+    tag.appendChild(skillNameSpan);  // Append skill name separately
     tag.appendChild(removeButton);
     container.appendChild(tag);
-  
+
+    console.log("Added tag:", result); // Log when a tag is successfully added
+
     // Clear the input field for further entries
     input.value = "";
-  }
+}
+
+
   
   // Skills autocomplete
   new Autocomplete('#skills', {
@@ -489,19 +501,42 @@
 
 
   document.getElementById('apply-filters').addEventListener('click', function(event) {
+    console.log("Apply Filters button clicked");
     event.preventDefault();
-  
+
     // Gather form data
     const titleKeyword = document.getElementById('title_keyword_input').value;
     const location = document.getElementById('location_input').value;
-    const selectedSkills = Array.from(document.querySelectorAll('#selected-skills .tag')).map(tag => tag.textContent.trim());
-    const selectedCompanies = Array.from(document.querySelectorAll('#selected-companies .tag')).map(tag => tag.textContent.trim());
-    const selectedCategory = Array.from(document.querySelectorAll('#selected-category .tag')).map(tag => tag.textContent.trim());
-    const selectedSubCategory = Array.from(document.querySelectorAll('#selected-sub-category .tag')).map(tag => tag.textContent.trim());
+
+    // Select only the skill name without the "×" by targeting the `skill-name` span
+    const selectedSkills = Array.from(document.querySelectorAll('#selected-skills .tag')).map(tag => {
+        const skillNameElement = tag.querySelector('.skill-name');
+        return skillNameElement ? skillNameElement.textContent.trim() : "";  // Get only the skill name
+    }).filter(skill => skill !== "");  // Filter out any empty strings
+    console.log("Selected Skills:", selectedSkills);
+
+    const selectedCompanies = Array.from(document.querySelectorAll('#selected-companies .tag')).map(tag => {
+        const companyNameElement = tag.querySelector('.skill-name');
+        return companyNameElement ? companyNameElement.textContent.trim() : "";
+    }).filter(company => company !== "");
+    console.log("Selected Companies:", selectedCompanies);
+
+    const selectedCategory = Array.from(document.querySelectorAll('#selected-category .tag')).map(tag => {
+        const categoryElement = tag.querySelector('.skill-name');
+        return categoryElement ? categoryElement.textContent.trim() : "";
+    }).filter(category => category !== "");
+    console.log("Selected Category:", selectedCategory);
+
+    const selectedSubCategory = Array.from(document.querySelectorAll('#selected-sub-category .tag')).map(tag => {
+        const subCategoryElement = tag.querySelector('.skill-name');
+        return subCategoryElement ? subCategoryElement.textContent.trim() : "";
+    }).filter(subCategory => subCategory !== "");
+    console.log("Selected Sub-Category:", selectedSubCategory);
+
     const datePosted = document.getElementById('date-filter').value;
     const remote = document.getElementById('remote').checked ? 'true' : '';
     const inOffice = document.getElementById('in-office').checked ? 'true' : '';
-  
+
     // Construct the query string
     const queryParams = new URLSearchParams({
       title_keyword: titleKeyword,
@@ -510,16 +545,20 @@
       remote: remote,
       in_office: inOffice
     });
-  
+
     // Append tags as multiple parameters
     selectedSkills.forEach(skill => queryParams.append('skills', skill));
     selectedCompanies.forEach(company => queryParams.append('companies', company));
     selectedCategory.forEach(category => queryParams.append('category', category));
     selectedSubCategory.forEach(subCategory => queryParams.append('sub_category', subCategory));
-  
+
     // Redirect with query parameters
     window.location.href = `{% url 'jobs' %}?${queryParams.toString()}`;
-  });
+});
+
+
+
+
   
 </script>
 {% endblock javascripts %}
