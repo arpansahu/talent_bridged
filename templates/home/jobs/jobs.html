@@ -414,6 +414,13 @@
 
 
   function addTag(result, containerId, inputId, dataAttribute) {
+
+    // Check if result is undefined or an empty string
+    if (!result || !result.trim()) {
+      console.log("Invalid or empty string provided; tag not added.");
+      return;
+    }
+
     const container = document.getElementById(containerId);
     const input = document.getElementById(inputId);
 
@@ -508,11 +515,11 @@
     const titleKeyword = document.getElementById('title_keyword_input').value;
     const location = document.getElementById('location_input').value;
 
-    // Select only the skill name without the "×" by targeting the `skill-name` span
+    // Get selected skills, companies, categories, and sub-categories
     const selectedSkills = Array.from(document.querySelectorAll('#selected-skills .tag')).map(tag => {
         const skillNameElement = tag.querySelector('.skill-name');
-        return skillNameElement ? skillNameElement.textContent.trim() : "";  // Get only the skill name
-    }).filter(skill => skill !== "");  // Filter out any empty strings
+        return skillNameElement ? skillNameElement.textContent.trim() : "";
+    }).filter(skill => skill !== "");
     console.log("Selected Skills:", selectedSkills);
 
     const selectedCompanies = Array.from(document.querySelectorAll('#selected-companies .tag')).map(tag => {
@@ -539,18 +546,26 @@
 
     // Construct the query string
     const queryParams = new URLSearchParams({
-      title_keyword: titleKeyword,
-      location: location,
-      date_posted: datePosted,
-      remote: remote,
-      in_office: inOffice
+        title_keyword: titleKeyword,
+        location: location,
+        date_posted: datePosted,
+        remote: remote,
+        in_office: inOffice
     });
 
-    // Append tags as multiple parameters
-    selectedSkills.forEach(skill => queryParams.append('skills', skill));
-    selectedCompanies.forEach(company => queryParams.append('companies', company));
-    selectedCategory.forEach(category => queryParams.append('category', category));
-    selectedSubCategory.forEach(subCategory => queryParams.append('sub_category', subCategory));
+    // Add each set of tags as a single, comma-separated parameter
+    if (selectedSkills.length > 0) {
+        queryParams.append('skills', selectedSkills.join(','));
+    }
+    if (selectedCompanies.length > 0) {
+        queryParams.append('companies', selectedCompanies.join(','));
+    }
+    if (selectedCategory.length > 0) {
+        queryParams.append('category', selectedCategory.join(','));
+    }
+    if (selectedSubCategory.length > 0) {
+        queryParams.append('sub_category', selectedSubCategory.join(','));
+    }
 
     // Redirect with query parameters
     window.location.href = `{% url 'jobs' %}?${queryParams.toString()}`;

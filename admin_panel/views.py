@@ -22,6 +22,8 @@ from locations.models import Locations
 from skills.models import Skills
 from .forms import ModifyCompaniesForm
 from django.db.models import Q
+from django.db.models.functions import Length
+
 
 
 now = timezone.now()
@@ -63,19 +65,16 @@ class JobsListView(ListView):
         location = request.get("location")
 
         if location:
-            # Split the location string into city, state, and country components
+            # Split the location string into parts
             location_parts = [part.strip() for part in location.split(',')]
             city, state, country = None, None, None
 
-            # Assign values based on the number of parts in the location string
             if len(location_parts) == 3:
+                # When 3 parts are present, assume it's city, state, and country
                 city, state, country = location_parts
-            elif len(location_parts) == 2:
-                # If two parts, assume it's state and country
-                state, country = location_parts
             elif len(location_parts) == 1:
-                # If only one part, treat it as a country
-                country = location_parts[0]
+                # Treat the single part as either a city or a country
+                potential_city_or_country = location_parts[0]
 
             # Apply filtering for each part that is available
             if city:
@@ -84,26 +83,41 @@ class JobsListView(ListView):
                 queryset = queryset.filter(location__state__iexact=state)
             if country:
                 queryset = queryset.filter(location__country__iexact=country)
+            elif potential_city_or_country:
+                # Filter for either city or country when there's a single part
+                queryset = queryset.filter(
+                    Q(location__city__iexact=potential_city_or_country) |
+                    Q(location__country__iexact=potential_city_or_country)
+                )
 
-        # Category and Sub-category filters
+        # Category filter (multiple categories allowed)
         category = request.get("category")
         if category:
-            queryset = queryset.filter(category__icontains=category)
-        
+            # Split the comma-separated string into a list if needed
+            category_list = category.split(",")
+            queryset = queryset.filter(category__in=category_list)
+
+        # Sub-category filter (multiple sub-categories allowed)
         sub_category = request.get("sub_category")
         if sub_category:
-            queryset = queryset.filter(sub_category__icontains=sub_category)
+            # Split the comma-separated string into a list if needed
+            sub_category_list = sub_category.split(",")
+            queryset = queryset.filter(sub_category__in=sub_category_list)
+
         
         # Skills filter (multiple skills allowed)
-        skills = request.getlist("skills")
+        skills = request.get("skills")
         if skills:
-            for skill in skills:
-                queryset = queryset.filter(required_skills__name=skill)
+            skills_list = skills.split(",")
+            queryset = queryset.filter(required_skills__name__in=skills)
         
         # Company filter (multiple companies allowed)
-        companies = request.getlist("companies")
+        companies = request.get("companies")
         if companies:
-            queryset = queryset.filter(company__name__in=companies)
+            # Split the comma-separated string into a list if needed
+            companies_list = companies.split(",")
+            queryset = queryset.filter(company__name__in=companies_list)
+
         
         # Date Posted filter
         date_posted = request.get("date")
@@ -261,49 +275,47 @@ def job_update(request, pk):
 @login_required()
 def autocomplete_title_keywords(request):
     query = request.GET.get('q', '').strip()
-    
-    # Log the incoming query
     logger.info(f"Received autocomplete request with query: '{query}'")
-    
+
     suggestions = set()
 
     if query:
-        # Fetch and log job titles
-        job_titles = Jobs.objects.filter(title__icontains=query).values_list('title', flat=True)[:50]
-        logger.info(f"Job titles found for query '{query}': {list(job_titles)}")
+        # Fetch job titles matching the query
+        job_titles = Jobs.objects.filter(title__icontains=query).values_list('title', flat=True)[:5]
         suggestions.update(job_titles)
+        logger.info(f"Job titles found: {list(job_titles)}")
         
-        # Fetch and log keywords
-        keywords = Keyword.objects.filter(word__icontains=query).values_list('word', flat=True)[:50]
-        logger.info(f"Keywords found for query '{query}': {list(keywords)}")
+        # Fetch keywords matching the query
+        keywords = Keyword.objects.filter(word__icontains=query).values_list('word', flat=True)[:5]
         suggestions.update(keywords)
+        logger.info(f"Keywords found: {list(keywords)}")
         
-        # Fetch and log user keywords
-        user_keywords = UserKeyword.objects.filter(word__icontains=query).values_list('word', 'search_count', 'jobs_found_count')[:10]
-        logger.info(f"User keywords found for query '{query}': {list(user_keywords)}")
-        
-        # Update UserKeyword data and add keywords if necessary
-        for word, search_count, jobs_found_count in user_keywords:
+        # Fetch user keywords and update counts
+        user_keywords = UserKeyword.objects.filter(word__icontains=query).values('word', 'search_count', 'jobs_found_count')[:10]
+        logger.info(f"User keywords found: {list(user_keywords)}")
+
+        for user_keyword in user_keywords:
+            word = user_keyword['word']
+            search_count = user_keyword['search_count']
+            jobs_found_count = user_keyword['jobs_found_count']
+
+            # Add word to suggestions and update UserKeyword counts
             suggestions.add(word)
             UserKeyword.objects.filter(word=word).update(search_count=search_count + 1, last_searched=timezone.now())
+
+            # Promote UserKeyword to Keyword if criteria are met
             if search_count + 1 >= 10 and jobs_found_count >= 10:
                 Keyword.objects.get_or_create(word=word)
                 UserKeyword.objects.filter(word=word).delete()
 
-    # Convert suggestions to a list and log the final suggestions list
-    suggestions_list = list(suggestions)
+    # Prepare response and log it
+    suggestions_list = sorted(list(suggestions))  # Sorting for consistency
     logger.info(f"Final suggestions for query '{query}': {suggestions_list}")
 
-    # Construct the response payload
-    payload = {
+    return JsonResponse({
         'status': 200,
         'data': suggestions_list
-    }
-
-    # Return the payload as JSON response
-    return JsonResponse(payload) 
-
-
+    })
 
 def autocomplete_locations(request):
     query = request.GET.get('q', '').strip()
@@ -312,35 +324,33 @@ def autocomplete_locations(request):
     location_suggestions = set()  # Use a set to avoid duplicates
 
     if query:
-        # Fetch country-only matches and add them to the suggestions
-        country_matches = Locations.objects.filter(country__icontains=query).values('country').distinct()[:100]
-        location_suggestions.update([match['country'] for match in country_matches])
+        # Fetch country-only matches
+        country_matches = Locations.objects.filter(country__icontains=query).values_list('country', flat=True).distinct()[:10]
+        location_suggestions.update(country_matches)
+        logger.info(f"Country matches found: {list(country_matches)}")
 
-        # Fetch city, state, country combinations
+        # Fetch city, state, and country combinations matching the query
         location_matches = Locations.objects.filter(
-            Q(city__icontains=query)
+            Q(city__icontains=query) | Q(state__icontains=query) | Q(country__icontains=query)
         ).values('city', 'state', 'country').distinct()[:10]
 
-        # Format city, state, country combinations and add them to the suggestions
+        # Format results as "City, State, Country" and add to suggestions
         formatted_locations = [
-            ", ".join(filter(None, [location.get('city'), location.get('state'), location.get('country')]))
+            ", ".join(filter(None, [location['city'], location['state'], location['country']]))
             for location in location_matches
         ]
         location_suggestions.update(formatted_locations)
+        logger.info(f"Formatted location matches found: {formatted_locations}")
 
-    # Convert set to list for JSON response and log the suggestions
-    location_suggestions = list(location_suggestions)
+    # Convert set to list, sort for consistency, and log
+    location_suggestions = sorted(list(location_suggestions))
     logger.info("======================================")
     logger.info(f"Final response data: {location_suggestions}")
 
-    # Construct the response payload
-    payload = {
+    return JsonResponse({
         'status': 200,
         'data': location_suggestions
-    }
-
-    return JsonResponse(payload)
-
+    })
 
 @login_required()
 def autocomplete_skills(request):
@@ -350,8 +360,15 @@ def autocomplete_skills(request):
     skill_suggestions = []
 
     if query:
-        # Filter based on matching query with skill name
-        skills = Skills.objects.filter(name__icontains=query).values('name').distinct()[:100]
+        # Filter based on matching query with skill name, then annotate with length and order by it
+        skills = (
+            Skills.objects
+            .filter(name__icontains=query)
+            .annotate(name_length=Length('name'))
+            .order_by('name_length')  # Sort by name length, shortest first
+            .values('name')
+            .distinct()[:10]
+        )
 
         # Log query results for debugging
         logger.info(f"Database query returned: {list(skills)}")
@@ -379,8 +396,15 @@ def autocomplete_companies(request):
     company_suggestions = []
 
     if query:
-        # Filter based on matching query with company name
-        companies = Company.objects.filter(name__icontains=query).values('name').distinct()[:100]
+        # Filter companies based on query, annotate with length, and order by it
+        companies = (
+            Company.objects
+            .filter(name__icontains=query)
+            .annotate(name_length=Length('name'))
+            .order_by('name_length')  # Sort by name length, shortest first
+            .values('name')
+            .distinct()[:10]
+        )
 
         # Log query results for debugging
         logger.info(f"Database query returned: {list(companies)}")
@@ -400,7 +424,6 @@ def autocomplete_companies(request):
 
     return JsonResponse(payload)
 
-
 @login_required
 def autocomplete_category(request):
     query = request.GET.get('q', '').strip()
@@ -409,8 +432,17 @@ def autocomplete_category(request):
     category_suggestions = []
 
     if query:
-        # Fetch and log categories based on the query
-        categories = Jobs.objects.filter(category__icontains=query).values_list('category', flat=True).distinct()[:10]
+        # Fetch categories, annotate with length, and order by length (shorter first)
+        categories = (
+            Jobs.objects
+            .filter(category__icontains=query)
+            .values_list('category', flat=True)
+            .annotate(category_length=Length('category'))
+            .order_by('category_length')
+            .distinct()[:10]
+        )
+
+        # Log categories found
         logger.info(f"Categories found for query '{query}': {list(categories)}")
         category_suggestions = list(categories)
 
@@ -420,6 +452,8 @@ def autocomplete_category(request):
         'data': category_suggestions
     }
 
+    # Log the final response
+    logger.info(f"Final category suggestions: {category_suggestions}")
     return JsonResponse(payload)
 
 
@@ -431,8 +465,17 @@ def autocomplete_sub_category(request):
     sub_category_suggestions = []
 
     if query:
-        # Fetch and log sub-categories based on the query
-        sub_categories = Jobs.objects.filter(sub_category__icontains=query).values_list('sub_category', flat=True).distinct()[:10]
+        # Fetch sub-categories, annotate with length, and order by length (shorter first)
+        sub_categories = (
+            Jobs.objects
+            .filter(sub_category__icontains=query)
+            .values_list('sub_category', flat=True)
+            .annotate(sub_category_length=Length('sub_category'))
+            .order_by('sub_category_length')
+            .distinct()[:10]
+        )
+
+        # Log sub-categories found
         logger.info(f"Sub-categories found for query '{query}': {list(sub_categories)}")
         sub_category_suggestions = list(sub_categories)
 
@@ -442,6 +485,8 @@ def autocomplete_sub_category(request):
         'data': sub_category_suggestions
     }
 
+    # Log the final response
+    logger.info(f"Final sub-category suggestions: {sub_category_suggestions}")
     return JsonResponse(payload)
 
 
