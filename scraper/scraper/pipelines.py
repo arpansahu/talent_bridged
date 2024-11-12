@@ -107,19 +107,24 @@ def write_item_to_db(item, logger):
 
         extracted_skills = extract_skills(job_instance.post_text, logger)
         logger.info("Skills extracted from post_text: %s", extracted_skills)
-        
-        # Find skills in the database and link them to the job
+                
+        # Find skills in the database and prepare for bulk linking
+        skills_to_add = []
         for skill_name in extracted_skills:
             try:
                 # Find the skill in the Skills model
                 skill = Skills.objects.get(name__iexact=skill_name)
-                logger.info("Skill found: %s", skill.name)
-                
-                # Link the skill to the job using the ManyToMany relation
-                job_instance.required_skills.add(skill)
-                logger.info("Linked skill %s to job id %s", skill_name, job_instance.job_id)
+                skills_to_add.append(skill)
+                logger.info("Skill found and added to bulk list: %s", skill.name)
             except Skills.DoesNotExist:
                 logger.warning("Skill %s not found in database; skipping", skill_name)
+
+        # Perform bulk addition of skills to the job
+        if skills_to_add:
+            job_instance.required_skills.add(*skills_to_add)
+            logger.info("Linked %d skills to job id %s in bulk", len(skills_to_add), job_instance.job_id)
+        else:
+            logger.info("No skills found to link for job id %s", job_instance.job_id)
 
     else:
         logger.info("Job with job id %s already exists", item['job_id'])
