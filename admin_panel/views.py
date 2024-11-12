@@ -50,63 +50,99 @@ class JobsListView(ListView):
 
     def get_queryset(self):
         queryset = Jobs.objects.all().prefetch_related('company', 'location', 'required_skills').order_by('id')
-        if self.request.GET.get("reviewed") == 'unreviewed':
-            queryset = queryset.filter(reviewed=False)
+        request = self.request.GET
+        
+        # Title and post_text keyword filter
+        title_keyword = request.get("title_keyword")
+        if title_keyword:
+            queryset = queryset.filter(
+                Q(title__icontains=title_keyword) | Q(post_text__icontains=title_keyword)
+            )
 
-        elif self.request.GET.get("reviewed") == 'reviewed':
-            queryset = queryset.filter(reviewed=True)
+        # Location filter
+        location = request.get("location")
 
-        if self.request.GET.get("available") == 'available':
+        if location:
+            # Split the location string into city, state, and country components
+            location_parts = [part.strip() for part in location.split(',')]
+            city, state, country = None, None, None
+
+            # Assign values based on the number of parts in the location string
+            if len(location_parts) == 3:
+                city, state, country = location_parts
+            elif len(location_parts) == 2:
+                # If two parts, assume it's state and country
+                state, country = location_parts
+            elif len(location_parts) == 1:
+                # If only one part, treat it as a country
+                country = location_parts[0]
+
+            # Apply filtering for each part that is available
+            if city:
+                queryset = queryset.filter(location__city__iexact=city)
+            if state:
+                queryset = queryset.filter(location__state__iexact=state)
+            if country:
+                queryset = queryset.filter(location__country__iexact=country)
+
+        # Category and Sub-category filters
+        category = request.get("category")
+        if category:
+            queryset = queryset.filter(category__icontains=category)
+        
+        sub_category = request.get("sub_category")
+        if sub_category:
+            queryset = queryset.filter(sub_category__icontains=sub_category)
+        
+        # Skills filter (multiple skills allowed)
+        skills = request.getlist("skills")
+        if skills:
+            for skill in skills:
+                queryset = queryset.filter(required_skills__name=skill)
+        
+        # Company filter (multiple companies allowed)
+        companies = request.getlist("companies")
+        if companies:
+            queryset = queryset.filter(company__name__in=companies)
+        
+        # Date Posted filter
+        date_posted = request.get("date")
+        if date_posted:
+            today = timezone.now()
+            if date_posted == "last_24_hours":
+                queryset = queryset.filter(date__gte=today - datetime.timedelta(days=1))
+            elif date_posted == "last_7_days":
+                queryset = queryset.filter(date__gte=today - datetime.timedelta(days=7))
+            elif date_posted == "last_30_days":
+                queryset = queryset.filter(date__gte=today - datetime.timedelta(days=30))
+        
+        # Work type filter
+        if request.get("remote") == "true":
+            queryset = queryset.filter(remote=True)
+        if request.get("in_office") == "true":
+            queryset = queryset.filter(in_office=True)
+        
+        # Availability filter
+        availability = request.get("available")
+        if availability == "available":
             queryset = queryset.filter(available=True)
-
-        elif self.request.GET.get("available") == 'unavailable':
+        elif availability == "unavailable":
             queryset = queryset.filter(available=False)
 
-        if self.request.GET.get("skill"):
-            skill = Skills.objects.get(name=self.request.GET.get("skill"))
-            queryset = queryset.filter(required_skills=skill.id)
+        # Reviewed status filter
+        reviewed = request.get("reviewed")
+        if reviewed == "reviewed":
+            queryset = queryset.filter(reviewed=True)
+        elif reviewed == "unreviewed":
+            queryset = queryset.filter(reviewed=False)
 
-        if self.request.GET.get("date-range"):
-            obj = self.request.GET.get("date-range").split(' to ')
-            if len(obj) == 2:
-                from_date = timezone.make_aware(datetime.datetime.strptime(obj[0], '%Y-%m-%d'))
-                to_date = timezone.make_aware(datetime.datetime.strptime(obj[1], '%Y-%m-%d')) + datetime.timedelta(days=1)
-            if len(obj) == 1:
-                from_date = timezone.make_aware(datetime.datetime.strptime(obj[0], '%Y-%m-%d'))
-                to_date = timezone.make_aware(datetime.datetime.strptime(obj[0], '%Y-%m-%d')) + datetime.timedelta(days=1)
-
-            queryset = queryset.filter(date__range=[from_date, to_date])
-
-        if self.request.GET.get("company-name"):
-            queryset = queryset.filter(company_id__name=self.request.GET.get("company-name"))
-
-        if self.request.GET.get("job-title"):
-            queryset = queryset.filter(title=self.request.GET.get("job-title"))
-
-        if self.request.GET.get("job-category"):
-            queryset = queryset.filter(category=self.request.GET.get("job-category"))
-
-        if self.request.GET.get("job-country"):
-            queryset = queryset.filter(location__country=self.request.GET.get("job-country"))
-
-        if self.request.GET.get("job-city"):
-            queryset = queryset.filter(location__city=self.request.GET.get("job-city"))
-
-        if self.request.GET.get("job-state"):
-            queryset = queryset.filter(location__state=self.request.GET.get("job-state"))
-
-        if self.request.GET.get("job-job-id"):
-            queryset = queryset.filter(job_id=self.request.GET.get("job-job-id"))
-
-        return queryset
+        return queryset.distinct()
 
     def get_context_data(self, **kwargs):
-        logger.info("ARpansahurocks")
         context = super().get_context_data(**kwargs)
         context['segment'] = 'jobs'
-        company_list = Company.objects.all()
-        context['company_list'] = company_list
         
+        # Statistics
         today_min = timezone.make_aware(datetime.datetime.combine(datetime.date.today(), datetime.time.min))
         today_max = timezone.make_aware(datetime.datetime.combine(datetime.date.today(), datetime.time.max))
         new_jobs = Jobs.objects.filter(date__range=(today_min, today_max)).count()
@@ -120,6 +156,7 @@ class JobsListView(ListView):
         context['new_jobs_perc'] = new_jobs_perc
         context['total_jobs'] = Jobs.objects.filter(available=True).count()
         
+        # Calculate total jobs change compared to yesterday
         yesterday_min = timezone.make_aware(datetime.datetime.combine(datetime.date.today() - datetime.timedelta(days=1), datetime.time.min))
         yesterday_max = timezone.make_aware(datetime.datetime.combine(datetime.date.today() - datetime.timedelta(days=1), datetime.time.max))
         total_yesterday_jobs = JobsStats.objects.filter(date__range=(yesterday_min, yesterday_max)).first()
@@ -133,6 +170,7 @@ class JobsListView(ListView):
         except:
             context['total_jobs_change'] = 0
 
+        # Unavailable jobs stats
         context['total_unavailable_jobs'] = Jobs.objects.filter(available=False).count()
         total_yesterday_unavailable_jobs = JobsStats.objects.filter(date__range=(yesterday_min, yesterday_max)).first()
         
@@ -144,17 +182,23 @@ class JobsListView(ListView):
         except:
             context['total_unavailable_jobs_change'] = 0
         
-        total_non_reviewed = Jobs.objects.filter(available=True, reviewed=False).count()
-        context['total_non_reviewed'] = total_non_reviewed
+        # Total non-reviewed jobs
+        context['total_non_reviewed'] = Jobs.objects.filter(available=True, reviewed=False).count()
+
+        # Filters data
+        context['company_list'] = Company.objects.all()
+        context['skills_list'] = Skills.objects.all()
+        context['category_list'] = Jobs.objects.values_list('category', flat=True).distinct()
+        context['sub_category_list'] = Jobs.objects.values_list('sub_category', flat=True).distinct()
 
         return context
-
-
 @method_decorator(login_required(login_url='login'), name='dispatch')
 class JobsView(DetailView):
     model = Jobs
     template_name = 'home/jobs/jobs-detailed.html'
     context_object_name = 'job'
+    pk_url_kwarg = 'id'  # Specify that 'id' should be used as the primary key in the URL
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -260,30 +304,32 @@ def autocomplete_title_keywords(request):
     return JsonResponse(payload) 
 
 
+
 def autocomplete_locations(request):
     query = request.GET.get('q', '').strip()
     logger.info(f"Received query for autocomplete: '{query}'")
 
-    location_suggestions = []
+    location_suggestions = set()  # Use a set to avoid duplicates
 
     if query:
-        # Filter based on matching query with city, state, or country
-        locations = Locations.objects.filter(
-            Q(city__icontains=query) | Q(state__icontains=query) | Q(country__icontains=query)
+        # Fetch country-only matches and add them to the suggestions
+        country_matches = Locations.objects.filter(country__icontains=query).values('country').distinct()[:10]
+        location_suggestions.update([match['country'] for match in country_matches])
+
+        # Fetch city, state, country combinations
+        location_matches = Locations.objects.filter(
+            Q(city__icontains=query)
         ).values('city', 'state', 'country').distinct()[:10]
 
-        # Log query results for debugging
-        logger.info(f"Database query returned: {list(locations)}")
-
-        # Construct a readable location format
-        location_suggestions = [
-            ", ".join(
-                filter(None, [location.get('city'), location.get('state'), location.get('country')])
-            )
-            for location in locations
+        # Format city, state, country combinations and add them to the suggestions
+        formatted_locations = [
+            ", ".join(filter(None, [location.get('city'), location.get('state'), location.get('country')]))
+            for location in location_matches
         ]
+        location_suggestions.update(formatted_locations)
 
-    # Log the final response data to confirm it before returning
+    # Convert set to list for JSON response and log the suggestions
+    location_suggestions = list(location_suggestions)
     logger.info("======================================")
     logger.info(f"Final response data: {location_suggestions}")
 
@@ -294,6 +340,7 @@ def autocomplete_locations(request):
     }
 
     return JsonResponse(payload)
+
 
 @login_required()
 def autocomplete_skills(request):
@@ -349,6 +396,50 @@ def autocomplete_companies(request):
     payload = {
         'status': 200,
         'data': company_suggestions
+    }
+
+    return JsonResponse(payload)
+
+
+@login_required
+def autocomplete_category(request):
+    query = request.GET.get('q', '').strip()
+    logger.info(f"Received autocomplete request for category with query: '{query}'")
+    
+    category_suggestions = []
+
+    if query:
+        # Fetch and log categories based on the query
+        categories = Jobs.objects.filter(category__icontains=query).values_list('category', flat=True).distinct()[:10]
+        logger.info(f"Categories found for query '{query}': {list(categories)}")
+        category_suggestions = list(categories)
+
+    # Construct the response payload
+    payload = {
+        'status': 200,
+        'data': category_suggestions
+    }
+
+    return JsonResponse(payload)
+
+
+@login_required
+def autocomplete_sub_category(request):
+    query = request.GET.get('q', '').strip()
+    logger.info(f"Received autocomplete request for sub-category with query: '{query}'")
+    
+    sub_category_suggestions = []
+
+    if query:
+        # Fetch and log sub-categories based on the query
+        sub_categories = Jobs.objects.filter(sub_category__icontains=query).values_list('sub_category', flat=True).distinct()[:10]
+        logger.info(f"Sub-categories found for query '{query}': {list(sub_categories)}")
+        sub_category_suggestions = list(sub_categories)
+
+    # Construct the response payload
+    payload = {
+        'status': 200,
+        'data': sub_category_suggestions
     }
 
     return JsonResponse(payload)

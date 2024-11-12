@@ -2,6 +2,8 @@ from django.db import models
 from skills.models import Skills
 from companies.models import Company
 from locations.models import Locations
+from bs4 import BeautifulSoup
+
 
 from talent_bridged.models import AbstractBaseModel
 
@@ -38,7 +40,8 @@ class Jobs(AbstractBaseModel):
     title = models.CharField(max_length=300, null=False)
     category = models.CharField(max_length=300, default='')
     sub_category = models.CharField(max_length=300, default='')
-    post = models.CharField(max_length=100000)
+    post = models.CharField()
+    post_text = models.TextField()  # Plain text content
     # Reference Skills with the correct app name
     required_skills = models.ManyToManyField('skills.Skills', related_name='jobs')
     required_experience = models.IntegerField(blank=True, null=True)
@@ -55,6 +58,14 @@ class Jobs(AbstractBaseModel):
 
     class Meta:
         unique_together = ('job_id', 'company')
+    
+    def save(self, *args, **kwargs):
+        # Extract plain text from the HTML content in 'post'
+        if self.post:
+            soup = BeautifulSoup(self.post, "html.parser")
+            self.post_text = soup.get_text()
+        super().save(*args, **kwargs)
+
 
 class JobsStats(AbstractBaseModel):
     total_available = models.IntegerField()

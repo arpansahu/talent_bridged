@@ -48,8 +48,7 @@ class ScrapeOpsFakeUserAgentMiddleware:
     def process_request(self, request, spider):        
         random_user_agent = self._get_random_user_agent()
         request.headers['User-Agent'] = random_user_agent
-        print(f"=================request.headers['User-Agent']: {request.headers['User-Agent']}===============================================")
-
+        
 
 class ScrapeOpsFakeBrowserHeadersMiddleware:
 
@@ -87,8 +86,7 @@ class ScrapeOpsFakeBrowserHeadersMiddleware:
         random_header = self._get_random_header()
         for key, val in random_header.items():
             request.headers[key] = val
-        print(f"=================Fake Header Created : {random_header}===============================================")
-
+        
 class ScraperSpiderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the spider middleware does not modify the

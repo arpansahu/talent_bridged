@@ -168,67 +168,42 @@
   }
 
 
-  .selected-skills-container {
-    margin-top: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  
-  .skill-tag {
-    display: inline-flex;
-    align-items: center;
-    background-color: #4e00ff; /* Use the same color as your theme */
-    color: white;
-    padding: 8px 12px;
-    border-radius: 15px;
-    font-size: 0.9em;
-  }
-  
-  .remove-skill {
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-    margin-left: 10px;
-    font-weight: bold;
-    font-size: 1.2em;
-  }
-  
-  .remove-skill:hover {
-    color: #ff0000; /* Optional: highlight the remove button on hover */
-  }
-  
-  .selected-companies-container {
-    margin-top: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  
-  .company-tag {
-    display: inline-flex;
-    align-items: center;
-    background-color: #4e00ff; /* Use the same color as your theme */
-    color: white;
-    padding: 8px 12px;
-    border-radius: 15px;
-    font-size: 0.9em;
-  }
-  
-  .remove-company {
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-    margin-left: 10px;
-    font-weight: bold;
-    font-size: 1.2em;
-  }
-  
-  .remove-company:hover {
-    color: #ff0000; /* Optional: highlight the remove button on hover */
-  }
+
+/* Container for all tags */
+.tag-container {
+  margin-top: 10px; /* 10px margin from the input field */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* General styling for all tags */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  background-color: #4e00ff; /* Tag background color */
+  color: white;
+  padding: 8px 12px;
+  border-radius: 15px;
+  font-size: 0.9em;
+}
+
+/* Remove button styling for all tags */
+.remove-tag {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  margin-left: 8px;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.remove-tag:hover {
+  color: #ff0000; /* Red color on hover */
+}
+
+
 
 </style>
 
@@ -281,7 +256,7 @@
           <!-- Location Input with Autocomplete --> 
           <div id="location" class="input-container right autocomplete" style="flex: 1; position: relative;">
             <i class="fas fa-map-marker-alt icon"></i>
-            <input type="text" name="location" id="location" placeholder="Add country or city" autocomplete="off" />
+            <input type="text" name="location" id="location_input" placeholder="Add country or city" autocomplete="off" />
             <ul id="location-autocomplete" class="autocomplete-result-list"></ul>
           </div>
     
@@ -289,8 +264,6 @@
       </div>
     </form>
 
-        
-    
   </div>
 
   <!-- Filter and Job Listings -->
@@ -300,29 +273,20 @@
         <div class="card-body">
           <h6 class="font-weight-bold">Filters</h6>
     
-          <!-- Category Filter -->
-          <div class="form-group">
-            <label for="job-category">Category</label>
-            <select class="form-control" id="job-category" name="category">
-              <option value="">All Categories</option>
-              <option value="IT">IT</option>
-              <option value="Marketing">Marketing</option>
-              <option value="Finance">Finance</option>
-              <!-- Add more categories as needed -->
-            </select>
+          <!-- Category Filter with Autocomplete -->
+          <div id="category" class="form-group autocomplete">
+            <label for="category_input">Category</label>
+            <input type="text" name="category" id="category_input" placeholder="Search for category" autocomplete="off" class="form-control autocomplete-input" />
+            <ul id="category-autocomplete" class="autocomplete-result-list"></ul>
+            <div id="selected-category" class="tag-container"></div>
           </div>
-    
-          <!-- Sub-Category Filter -->
-          <div class="form-group">
-            <label for="job-sub-category">Sub-Category</label>
-            <select class="form-control" id="job-sub-category" name="sub_category">
-              <option value="">All Sub-Categories</option>
-              <!-- Populate sub-categories dynamically if needed -->
-              <option value="Software Development">Software Development</option>
-              <option value="Content Marketing">Content Marketing</option>
-              <option value="Accounting">Accounting</option>
-              <!-- Add more sub-categories as needed -->
-            </select>
+          
+          <!-- Sub-Category Filter with Autocomplete -->
+          <div id="sub_category" class="form-group autocomplete">
+            <label for="sub_category_input">Sub-Category</label>
+            <input type="text" name="sub_category" id="sub_category_input" placeholder="Search for sub-category" autocomplete="off" class="form-control autocomplete-input" />
+            <ul id="sub-category-autocomplete" class="autocomplete-result-list"></ul>
+            <div id="selected-sub-category" class="tag-container"></div>
           </div>
     
           <!-- Skills Filter -->
@@ -330,14 +294,14 @@
             <label for="skills">Skills</label>
             <input type="text" name="skills" id="skills_input" placeholder="Search for skills" autocomplete="off" class="form-control autocomplete-input" />
             <ul id="skills-autocomplete" class="autocomplete-result-list"></ul>
-            <div id="selected-skills" class="selected-skills-container"></div>
+            <div id="selected-skills" class="tag-container"></div>
           </div>           
     
           <div id="company" class="form-group autocomplete">
             <label for="company_input">Company</label>
             <input type="text" name="company" id="company_input" placeholder="Search for company" autocomplete="off" class="form-control autocomplete-input" />
             <ul id="company-autocomplete" class="autocomplete-result-list"></ul>
-            <div id="selected-companies" class="selected-companies-container"></div>
+            <div id="selected-companies" class="tag-container"></div>
           </div>
 
           <!-- Date Filter -->
@@ -399,7 +363,7 @@
                     <td>{{ job.date|date:"M d, Y" }}</td>
                     <td>
                       <a href="{% url 'job_detailed_view' job.id %}" class="btn btn-sm btn-info">View</a>
-                      <a href="{% url 'job_update_view' job.id %}" class="btn btn-sm btn-warning">Edit</a>
+                      <a href="{% url 'job_update_view' job.id %}" class="btn btn-sm btn-warning">Edit</a>                      
                     </td>
                   </tr>
                 {% endfor %}
@@ -448,111 +412,114 @@
   });
 
 
-// Initialize autocomplete for the skills input field
-// Initialize autocomplete for the skills input field
-new Autocomplete('#skills', {
-  search: input => {
-    // Assuming you have a URL endpoint that provides skill suggestions
-    const url = "{% url 'autocomplete_skills' %}?q=" + input;
-    return new Promise(resolve => {
-      fetch(url)
-        .then(response => response.json())
-        .then(data => {
-          resolve(data.data); // Assuming response format: { status: 200, data: [...] }
-        });
-    });
-  },
-  onSubmit: result => {
-    if (result) {
-      // Add the selected skill to the "selected-skills" container
-      const selectedSkillsContainer = document.getElementById("selected-skills");
 
-      // Check if the skill is already added using data-skill-name attribute
-      const isAlreadyAdded = Array.from(selectedSkillsContainer.children).some(skillTag => {
-        return skillTag.dataset.skillName === result; // Compare with the data attribute value
-      });
-
-      if (isAlreadyAdded) {
-        return; // Skip adding the skill if it already exists
-      }
-
-      // Create a new span for the selected skill
-      const skillTag = document.createElement("span");
-      skillTag.className = "skill-tag";
-      skillTag.textContent = result;
-      skillTag.dataset.skillName = result; // Use data attribute to store the skill name uniquely
-
-      // Add a remove button for each skill
-      const removeButton = document.createElement("button");
-      removeButton.className = "remove-skill";
-      removeButton.innerHTML = "&times;";
-      removeButton.addEventListener("click", () => {
-        selectedSkillsContainer.removeChild(skillTag);
-      });
-
-      // Append the remove button to the skill tag and add the skill tag to the container
-      skillTag.appendChild(removeButton);
-      selectedSkillsContainer.appendChild(skillTag);
-
-      // Do not clear the input field; allow adding multiple skills
-      document.getElementById('skills_input').value = "";
-    }
-  },
-});
-
-// Initialize autocomplete for the company input field
-// Initialize autocomplete for the company input field
-new Autocomplete('#company', {
-  search: input => {
-    // Assuming you have a URL endpoint that provides company suggestions
-    const url = "{% url 'autocomplete_companies' %}?q=" + input;
-    return new Promise(resolve => {
-      fetch(url)
-        .then(response => response.json())
-        .then(data => {
-          resolve(data.data); // Assuming response format: { status: 200, data: [...] }
-        });
-    });
-  },
-  onSubmit: result => {
-    if (result) {
-      // Add the selected company to the "selected-companies" container
-      const selectedCompaniesContainer = document.getElementById("selected-companies");
-
-      // Check if the company is already added using data-company-name attribute
-      const isAlreadyAdded = Array.from(selectedCompaniesContainer.children).some(companyTag => {
-        return companyTag.dataset.companyName === result; // Compare with data attribute value
-      });
-
-      if (isAlreadyAdded) {
-        return; // Skip adding the company if it already exists
-      }
-
-      // Create a new span for the selected company
-      const companyTag = document.createElement("span");
-      companyTag.className = "company-tag";
-      companyTag.textContent = result;
-      companyTag.dataset.companyName = result; // Use data attribute to store the company name
-
-      // Add a remove button for each company
-      const removeButton = document.createElement("button");
-      removeButton.className = "remove-company";
-      removeButton.innerHTML = "&times;";
-      removeButton.addEventListener("click", () => {
-        selectedCompaniesContainer.removeChild(companyTag);
-      });
-
-      // Append the remove button to the company tag and add the company tag to the container
-      companyTag.appendChild(removeButton);
-      selectedCompaniesContainer.appendChild(companyTag);
-
-      // Do not clear the input field; allow adding multiple companies
-      document.getElementById('company_input').value = "";
-    }
+  function addTag(result, containerId, inputId, dataAttribute) {
+    const container = document.getElementById(containerId);
+    const input = document.getElementById(inputId);
+  
+    // Check if the tag is already present
+    const isAlreadyAdded = Array.from(container.children).some(tag => tag.getAttribute(dataAttribute) === result);
+  
+    if (isAlreadyAdded) return; // Skip adding if it already exists
+  
+    // Create the tag element with shared class
+    const tag = document.createElement("span");
+    tag.className = "tag"; // Use common tag class
+    tag.textContent = result;
+    tag.setAttribute(dataAttribute, result);
+  
+    // Create the remove button
+    const removeButton = document.createElement("button");
+    removeButton.className = "remove-tag";
+    removeButton.innerHTML = "&times;";
+    removeButton.addEventListener("click", () => container.removeChild(tag));
+  
+    // Append the remove button to the tag
+    tag.appendChild(removeButton);
+    container.appendChild(tag);
+  
+    // Clear the input field for further entries
+    input.value = "";
   }
-});
+  
+  // Skills autocomplete
+  new Autocomplete('#skills', {
+    search: input => {
+      const url = "{% url 'autocomplete_skills' %}?q=" + input;
+      return fetch(url)
+        .then(response => response.json())
+        .then(data => data.data);
+    },
+    onSubmit: result => addTag(result, 'selected-skills', 'skills_input', 'data-skill-name')
+  });
+  
+  // Company autocomplete
+  new Autocomplete('#company', {
+    search: input => {
+      const url = "{% url 'autocomplete_companies' %}?q=" + input;
+      return fetch(url)
+        .then(response => response.json())
+        .then(data => data.data);
+    },
+    onSubmit: result => addTag(result, 'selected-companies', 'company_input', 'data-company-name')
+  });
+  
+  // Category autocomplete
+  new Autocomplete('#category', {
+    search: input => {
+      const url = "{% url 'autocomplete_category' %}?q=" + input;
+      return fetch(url)
+        .then(response => response.json())
+        .then(data => data.data);
+    },
+    onSubmit: result => addTag(result, 'selected-category', 'category_input', 'data-category-name')
+  });
+
+  // Sub-Category autocomplete
+  new Autocomplete('#sub_category', {
+    search: input => {
+      const url = "{% url 'autocomplete_sub_category' %}?q=" + input;
+      return fetch(url)
+        .then(response => response.json())
+        .then(data => data.data);
+    },
+    onSubmit: result => addTag(result, 'selected-sub-category', 'sub_category_input', 'data-sub-category-name')
+  });
 
 
 
+  document.getElementById('apply-filters').addEventListener('click', function(event) {
+    event.preventDefault();
+  
+    // Gather form data
+    const titleKeyword = document.getElementById('title_keyword_input').value;
+    const location = document.getElementById('location_input').value;
+    const selectedSkills = Array.from(document.querySelectorAll('#selected-skills .tag')).map(tag => tag.textContent.trim());
+    const selectedCompanies = Array.from(document.querySelectorAll('#selected-companies .tag')).map(tag => tag.textContent.trim());
+    const selectedCategory = Array.from(document.querySelectorAll('#selected-category .tag')).map(tag => tag.textContent.trim());
+    const selectedSubCategory = Array.from(document.querySelectorAll('#selected-sub-category .tag')).map(tag => tag.textContent.trim());
+    const datePosted = document.getElementById('date-filter').value;
+    const remote = document.getElementById('remote').checked ? 'true' : '';
+    const inOffice = document.getElementById('in-office').checked ? 'true' : '';
+  
+    // Construct the query string
+    const queryParams = new URLSearchParams({
+      title_keyword: titleKeyword,
+      location: location,
+      date_posted: datePosted,
+      remote: remote,
+      in_office: inOffice
+    });
+  
+    // Append tags as multiple parameters
+    selectedSkills.forEach(skill => queryParams.append('skills', skill));
+    selectedCompanies.forEach(company => queryParams.append('companies', company));
+    selectedCategory.forEach(category => queryParams.append('category', category));
+    selectedSubCategory.forEach(subCategory => queryParams.append('sub_category', subCategory));
+  
+    // Redirect with query parameters
+    window.location.href = `{% url 'jobs' %}?${queryParams.toString()}`;
+  });
+  
 </script>
 {% endblock javascripts %}

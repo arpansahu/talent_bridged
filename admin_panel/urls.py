@@ -27,6 +27,9 @@ from .views import (
     autocomplete_locations,
     autocomplete_companies,
     autocomplete_title_keywords,
+    autocomplete_category,
+    autocomplete_sub_category,
+
     search_companies,
     search_job_title,
     search_job_category,
@@ -69,4 +72,6 @@ urlpatterns = [
     path('autocomplete/locations/', autocomplete_locations, name='autocomplete_locations'),
     path('autocomplete/title-keyword/', autocomplete_title_keywords, name='autocomplete_title_keywords'),
     path('autocomplete/companies/', autocomplete_companies, name='autocomplete_companies'),
+    path('autocomplete/category/', autocomplete_category, name='autocomplete_category'),
+    path('autocomplete/sub-category/', autocomplete_sub_category, name='autocomplete_sub_category'),
 ]

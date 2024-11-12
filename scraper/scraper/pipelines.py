@@ -6,8 +6,11 @@ from django.db.models import Q
 from companies.models import Company
 from locations.models import Locations
 from jobs.models import Jobs, JobLocation
+from skills.models import Skills
 from scrapy.exceptions import IgnoreRequest
 import asyncio 
+import re
+from bs4 import BeautifulSoup
 
 class JobsPipeline:
 
@@ -100,8 +103,51 @@ def write_item_to_db(item, logger):
             )
 
         logger.info("Updated Locations for job id %s", job_instance.job_id)
+
+
+        extracted_skills = extract_skills(job_instance.post_text, logger)
+        logger.info("Skills extracted from post_text: %s", extracted_skills)
+        
+        # Find skills in the database and link them to the job
+        for skill_name in extracted_skills:
+            try:
+                # Find the skill in the Skills model
+                skill = Skills.objects.get(name__iexact=skill_name)
+                logger.info("Skill found: %s", skill.name)
+                
+                # Link the skill to the job using the ManyToMany relation
+                job_instance.required_skills.add(skill)
+                logger.info("Linked skill %s to job id %s", skill_name, job_instance.job_id)
+            except Skills.DoesNotExist:
+                logger.warning("Skill %s not found in database; skipping", skill_name)
+
     else:
         logger.info("Job with job id %s already exists", item['job_id'])
+
+def extract_skills(post_text, logger):
+    """
+    This function extracts skill names from the job's post_text.
+    It assumes skill names in the Skills table are keywords that can be matched.
+    """
+    logger.info("Starting skill extraction from post_text")
+
+    # Get all skill names from the Skills table
+    skill_names = Skills.objects.values_list('name', flat=True)
+    logger.info("Retrieved skill names from database")
+
+    # Convert post_text to lowercase for case-insensitive matching
+    post_text = post_text.lower()
+    
+    # Find skills that are mentioned in the post_text
+    found_skills = set()
+    for skill in skill_names:
+        # Use regex for exact word matching to avoid partial matches
+        if re.search(rf'\b{re.escape(skill.lower())}\b', post_text):
+            found_skills.add(skill)
+            logger.info("Skill matched in post_text: %s", skill)
+
+    logger.info("Skill extraction completed with skills: %s", found_skills)
+    return found_skills
 
 def process_locations(locations, logger, job_url):
     logger.info(f"Processing locations {locations}")
