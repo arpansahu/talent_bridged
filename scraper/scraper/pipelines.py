@@ -70,6 +70,9 @@ def write_item_to_db(item, logger):
         category = item.get('category', '') or ''
         sub_category = item.get('sub_category', '') or ''
 
+        soup = BeautifulSoup(item['post'], "html.parser")
+        post_text = soup.get_text()
+
         # Convert the item dictionary to a Jobs instance using the correct field names
 
         job_instance = Jobs(
@@ -81,7 +84,8 @@ def write_item_to_db(item, logger):
             job_url=item['job_url'],
             post=item['post'],
             remote=any_remote,
-            in_office=any_non_remote
+            in_office=any_non_remote,
+            post_text=post_text
         )
 
         # Save the job instance to the database

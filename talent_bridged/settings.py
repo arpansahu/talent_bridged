@@ -80,6 +80,7 @@ INSTALLED_APPS = [
     'locations',
     'skills',
     'scrapy_manager',
+    'django_elasticsearch_dsl',
 ]
 
 MIDDLEWARE = [
@@ -268,6 +269,11 @@ CACHES = {
     }
 }
 
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'https://5hwlzlymfm:n47gcqoezq@arpansahuone-8219277615.us-east-1.bonsaisearch.net:443'
+    },
+}
 
 # Celery Beat specific settings
 
@@ -354,4 +360,17 @@ CSRF_TRUSTED_ORIGINS = [
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
+
+
+
+ELASTICSEARCH_DSL={
+    'default': {
+        'hosts': 'http://localhost:9200',
+        #'http_auth': ('username', 'password')
+    },
+    'settings': {
+        'auto_sync': True,  # This ensures automatic syncing when saving the model
+    },
+
+}
 

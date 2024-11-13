@@ -24,6 +24,8 @@ from .forms import ModifyCompaniesForm
 from django.db.models import Q
 from django.db.models.functions import Length
 
+from jobs.documents import JobDocument  # Import Elasticsearch document
+from jobs.models import Jobs  # Import your Django model
 
 
 now = timezone.now()
@@ -57,8 +59,15 @@ class JobsListView(ListView):
         # Title and post_text keyword filter
         title_keyword = request.get("title_keyword")
         if title_keyword:
+            title_queryset = queryset.filter(title__icontains=title_keyword)
+
+            # Use Elasticsearch for full-text search on `post_text`, retrieving only the IDs
+            es_results = JobDocument.search().query("match", post_text=title_keyword).source(False)
+            es_job_ids = [hit.meta.id for hit in es_results.execute()]
+
+            # Combine both PostgreSQL and Elasticsearch results
             queryset = queryset.filter(
-                Q(title__icontains=title_keyword) | Q(post_text__icontains=title_keyword)
+                Q(id__in=es_job_ids) | Q(id__in=title_queryset.values_list('id', flat=True))
             )
 
         # Location filter
@@ -206,6 +215,8 @@ class JobsListView(ListView):
         context['sub_category_list'] = Jobs.objects.values_list('sub_category', flat=True).distinct()
 
         return context
+
+
 @method_decorator(login_required(login_url='login'), name='dispatch')
 class JobsView(DetailView):
     model = Jobs

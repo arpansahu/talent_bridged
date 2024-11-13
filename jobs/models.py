@@ -37,9 +37,9 @@ class JobLocation(AbstractBaseModel):
         db_table = 'jobs_jobs_locations'  # Explicitly set the table name
 
 class Jobs(AbstractBaseModel):
-    title = models.CharField(max_length=300, null=False)
-    category = models.CharField(max_length=300, default='')
-    sub_category = models.CharField(max_length=300, default='')
+    title = models.CharField(max_length=300, null=False, db_index=True)
+    category = models.CharField(max_length=300, default='', db_index=True)
+    sub_category = models.CharField(max_length=300, default='', db_index=True)
     post = models.CharField()
     post_text = models.TextField()  # Plain text content
     # Reference Skills with the correct app name
@@ -58,13 +58,6 @@ class Jobs(AbstractBaseModel):
 
     class Meta:
         unique_together = ('job_id', 'company')
-    
-    def save(self, *args, **kwargs):
-        # Extract plain text from the HTML content in 'post'
-        if self.post:
-            soup = BeautifulSoup(self.post, "html.parser")
-            self.post_text = soup.get_text()
-        super().save(*args, **kwargs)
 
 
 class JobsStats(AbstractBaseModel):
