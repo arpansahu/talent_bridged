@@ -205,6 +205,101 @@
 
 
 
+.profile-summary {
+  border-radius: 8px;
+  padding: 20px;
+  background-color: #fff;
+}
+
+.profile-header .profile-picture {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.profile-header h5 {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.company-name {
+  font-size: 0.9rem;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.company-logo {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+
+.profile-stats {
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  padding: 10px;
+  text-align: center;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0;
+}
+
+.stat-label {
+  color: #666;
+}
+
+.stat-value {
+  font-weight: bold;
+}
+
+.additional-section h6 {
+  font-size: 1rem;
+  color: #333;
+}
+
+.additional-section .btn {
+  width: 100%;
+  margin-top: 5px;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+.quick-links {
+  margin-top: 20px;
+}
+
+.quick-link {
+  color: #333;
+  font-size: 0.9rem;
+  padding: 8px 0;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+}
+
+.quick-link:first-child {
+  border-top: none;
+}
+
+.quick-link:hover {
+  color: #4e00ff;
+  text-decoration: none;
+}
+
+
+#job-list-container {
+  max-height: 1000px; /* Set the desired height */
+  overflow-y: auto; /* Enable vertical scroll */
+  padding-right: 15px; /* Optional: Add padding to avoid scrollbar overlap */
+}
+
+
 </style>
 {% endblock stylesheets %}
 
@@ -336,44 +431,70 @@
     </div>
     
 
-    <div class="col-md-9">
-      <div class="card">
-        <div class="card-body">
-          <h6 class="font-weight-bold">Job Listings</h6>
-          <div class="table-responsive">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Company</th>
-                  <th>Title / Department</th>
-                  <th>Location</th>
-                  <th>Job URL</th>
-                  <th>Reviewed</th>
-                  <th>Date</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for job in jobs_list %}
-                  <tr>
-                    <td>{{ job.company.name }}</td>
-                    <td>{{ job.title }} / {{ job.category }}</td>
-                    <td>{% for location in job.location.all %}{{ location.city }}, {{ location.country }}{% endfor %}</td>
-                    <td><a href="{{ job.job_url }}" target="_blank">Link</a></td>
-                    <td>{{ job.reviewed|yesno:"Yes,No" }}</td>
-                    <td>{{ job.date|date:"M d, Y" }}</td>
-                    <td>
-                      <a href="{% url 'job_detailed_view' job.id %}" class="btn btn-sm btn-info">View</a>
-                      <a href="{% url 'job_update_view' job.id %}" class="btn btn-sm btn-warning">Edit</a>                      
-                    </td>
-                  </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
+    <div class="col-md-6">   
+        <!-- Infinite Scroll Container for Job Cards -->
+        <div id="job-list-container">
+            {% include 'home/jobs/job_list_partial.html' %}
         </div>
-      </div>
+    
+        <!-- Loading Spinner -->
+        <div id="loading-spinner" style="display: none; text-align: center;">
+          <i class="fas fa-spinner fa-spin fa-2x" aria-hidden="true"></i>
+        </div>
+    
+        <!-- End of Content Message -->
+        <div id="end-of-content" style="display: none; text-align: center;">
+            <p>No more jobs to display.</p>
+        </div>
     </div>
+
+    <div class="profile-summary card shadow-sm col-md-3">
+      <!-- Profile Header Section -->
+      <div class="profile-header text-center">
+          <img src="{% static 'images/profile-picture.jpg' %}" alt="Profile Picture" class="profile-picture rounded-circle mb-2">
+          <h5 class="font-weight-bold">Arpan Sahu</h5>
+          <p class="text-muted mb-1">Software Engineer | Backend</p>
+          <p class="text-muted mb-1"><i class="fas fa-map-marker-alt"></i> Bhopal, Madhya Pradesh</p>
+          <p class="company-name mb-2"><img src="{% static 'images/trellix-logo.png' %}" alt="Company Logo" class="company-logo"> Trellix</p>
+      </div>
+  
+      <!-- Stats Section -->
+      <div class="profile-stats mt-3">
+          <p class="stat-item">
+              <span class="stat-label">Profile viewers</span>
+              <span class="stat-value">134</span>
+          </p>
+          <p class="stat-item">
+              <span class="stat-label">Post impressions</span>
+              <span class="stat-value">155</span>
+          </p>
+      </div>
+  
+      <!-- Additional Section -->
+      <div class="additional-section mt-4">
+          <h6 class="font-weight-bold">Tehnorigger</h6>
+          <p class="text-muted small mb-0">Notifications: <span>0</span></p>
+          <p class="text-muted small mb-2">Page visitors: <span>0</span></p>
+          <a href="#" class="btn btn-outline-primary btn-sm mb-2">Try Premium Page for ₹0</a>
+          <a href="#" class="btn btn-outline-secondary btn-sm mb-2">Advertise on LinkedIn</a>
+          <a href="#" class="btn btn-outline-primary btn-sm">See visitor analytics</a>
+      </div>
+  
+      <!-- Quick Links Section -->
+      <div class="quick-links mt-4">
+          <a href="#" class="quick-link d-flex align-items-center">
+              <i class="fas fa-bookmark mr-2"></i> Saved items
+          </a>
+          <a href="#" class="quick-link d-flex align-items-center">
+              <i class="fas fa-users mr-2"></i> Groups
+          </a>
+          <a href="#" class="quick-link d-flex align-items-center">
+              <i class="fas fa-calendar-alt mr-2"></i> Events
+          </a>
+      </div>
+  </div>
+  
+  
   </div>
 </div>
 
@@ -406,6 +527,59 @@
     initializeTags("selected-sub-category", "initial-selected-sub-category", "sub_category_input", "data-sub-category-name");
     initializeTags("selected-skills", "initial-selected-skills", "skills_input", "data-skill-name");
     initializeTags("selected-companies", "initial-selected-companies", "company_input", "data-company-name");
+
+
+    let isLoading = false;
+    let nextPage = 2;  // Start from page 2 if page 1 is already loaded
+    const jobListContainer = document.getElementById('job-list-container');
+    
+    function loadMoreJobs() {
+        if (isLoading) return;
+        isLoading = true;
+    
+        const loadingSpinner = document.getElementById('loading-spinner');
+        loadingSpinner.style.display = 'block';
+    
+        fetch(`?page=${nextPage}`, {
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'X-Requested-With': 'XMLHttpRequest'  // Mark as AJAX
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.jobs_html) {
+                jobListContainer.insertAdjacentHTML('beforeend', data.jobs_html);
+                nextPage++;
+                isLoading = false;
+                loadingSpinner.style.display = 'none';
+    
+                // If there are no more pages, hide the loading spinner and show the end message
+                if (!data.has_next) {
+                    document.getElementById('end-of-content').style.display = 'block';
+                    loadingSpinner.style.display = 'none';
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error loading more jobs:', error);
+            isLoading = false;
+            loadingSpinner.style.display = 'none';
+        });
+    }
+    
+    // Trigger loadMoreJobs when scrolling near the bottom of #job-list-container
+    jobListContainer.addEventListener('scroll', () => {
+        if (jobListContainer.scrollTop + jobListContainer.clientHeight >= jobListContainer.scrollHeight - 100) {
+            loadMoreJobs();
+        }
+    });
+
   });
 
   // Autocomplete for location input (new functionality)

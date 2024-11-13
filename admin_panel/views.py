@@ -26,6 +26,7 @@ from django.db.models.functions import Length
 
 from jobs.documents import JobDocument  # Import Elasticsearch document
 from jobs.models import Jobs  # Import your Django model
+from django.template.loader import render_to_string
 
 
 now = timezone.now()
@@ -64,7 +65,6 @@ class JobsListView(ListView):
         self.in_office = ""
 
         queryset = Jobs.objects.all().filter(available=True).prefetch_related('company', 'location', 'required_skills').order_by('id')
-        print(f"1: {queryset.count()}")
         request = self.request.GET
         
         # Title and post_text keyword filter
@@ -83,7 +83,6 @@ class JobsListView(ListView):
                 Q(id__in=es_job_ids) | Q(id__in=title_queryset.values_list('id', flat=True))
             )
 
-        print(f"2: {queryset.count()}")
         # Location filter
         location = request.get("location")
 
@@ -113,7 +112,7 @@ class JobsListView(ListView):
                     Q(location__city__iexact=potential_city_or_country) |
                     Q(location__country__iexact=potential_city_or_country)
                 )
-        print(f"3: {queryset.count()}")
+
         # Category filter (multiple categories allowed)
         category = request.get("category")
         if category:
@@ -122,7 +121,7 @@ class JobsListView(ListView):
             self.category = category
             queryset = queryset.filter(category__in=category_list)
 
-        print(f"4: {queryset.count()}")
+
         # Sub-category filter (multiple sub-categories allowed)
         sub_category = request.get("sub_category")
         if sub_category:
@@ -131,16 +130,16 @@ class JobsListView(ListView):
             self.sub_category = sub_category
             queryset = queryset.filter(sub_category__in=sub_category_list)
 
-        print(f"5: {queryset.count()}")
+
         # Skills filter (multiple skills allowed)
         skills = request.get("skills")
         if skills:
-            print(skills)
+
             skills_list = skills.split(",")
             self.skills = skills
 
             queryset = queryset.filter(required_skills__name__in=skills)
-        print(f"6: {queryset.count()}")
+
 
         # Company filter (multiple companies allowed)
         companies = request.get("companies")
@@ -234,6 +233,16 @@ class JobsListView(ListView):
 
         return context
 
+    def render_to_response(self, context, **response_kwargs):
+        # Check if the request is an AJAX call by inspecting headers
+        if self.request.headers.get("x-requested-with") == "XMLHttpRequest":
+            jobs_html = render_to_string('home/jobs/job_list_partial.html', context)
+            return JsonResponse({
+                'jobs_html': jobs_html,
+                'has_next': context['page_obj'].has_next(),
+                'next_page_number': context['page_obj'].next_page_number() if context['page_obj'].has_next() else None
+            })
+        return super().render_to_response(context, **response_kwargs)
 
 @method_decorator(login_required(login_url='login'), name='dispatch')
 class JobsView(DetailView):
