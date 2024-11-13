@@ -53,12 +53,25 @@ class JobsListView(ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        queryset = Jobs.objects.all().prefetch_related('company', 'location', 'required_skills').order_by('id')
+        self.title_keyword = ""
+        self.location = ""
+        self.category = ""
+        self.sub_category = ""
+        self.skills = ""
+        self.companies = ""
+        self.date_posted = ""
+        self.remote = ""
+        self.in_office = ""
+
+        queryset = Jobs.objects.all().filter(available=True).prefetch_related('company', 'location', 'required_skills').order_by('id')
+        print(f"1: {queryset.count()}")
         request = self.request.GET
         
         # Title and post_text keyword filter
         title_keyword = request.get("title_keyword")
+
         if title_keyword:
+            self.title_keyword = title_keyword
             title_queryset = queryset.filter(title__icontains=title_keyword)
 
             # Use Elasticsearch for full-text search on `post_text`, retrieving only the IDs
@@ -70,10 +83,12 @@ class JobsListView(ListView):
                 Q(id__in=es_job_ids) | Q(id__in=title_queryset.values_list('id', flat=True))
             )
 
+        print(f"2: {queryset.count()}")
         # Location filter
         location = request.get("location")
 
         if location:
+            self.location = location
             # Split the location string into parts
             location_parts = [part.strip() for part in location.split(',')]
             city, state, country = None, None, None
@@ -98,33 +113,41 @@ class JobsListView(ListView):
                     Q(location__city__iexact=potential_city_or_country) |
                     Q(location__country__iexact=potential_city_or_country)
                 )
-
+        print(f"3: {queryset.count()}")
         # Category filter (multiple categories allowed)
         category = request.get("category")
         if category:
             # Split the comma-separated string into a list if needed
             category_list = category.split(",")
+            self.category = category
             queryset = queryset.filter(category__in=category_list)
 
+        print(f"4: {queryset.count()}")
         # Sub-category filter (multiple sub-categories allowed)
         sub_category = request.get("sub_category")
         if sub_category:
             # Split the comma-separated string into a list if needed
             sub_category_list = sub_category.split(",")
+            self.sub_category = sub_category
             queryset = queryset.filter(sub_category__in=sub_category_list)
 
-        
+        print(f"5: {queryset.count()}")
         # Skills filter (multiple skills allowed)
         skills = request.get("skills")
         if skills:
+            print(skills)
             skills_list = skills.split(",")
+            self.skills = skills
+
             queryset = queryset.filter(required_skills__name__in=skills)
-        
+        print(f"6: {queryset.count()}")
+
         # Company filter (multiple companies allowed)
         companies = request.get("companies")
         if companies:
             # Split the comma-separated string into a list if needed
             companies_list = companies.split(",")
+            self.companies = companies
             queryset = queryset.filter(company__name__in=companies_list)
 
         
@@ -132,6 +155,7 @@ class JobsListView(ListView):
         date_posted = request.get("date")
         if date_posted:
             today = timezone.now()
+            self.date_posted = date_posted
             if date_posted == "last_24_hours":
                 queryset = queryset.filter(date__gte=today - datetime.timedelta(days=1))
             elif date_posted == "last_7_days":
@@ -141,78 +165,72 @@ class JobsListView(ListView):
         
         # Work type filter
         if request.get("remote") == "true":
+            self.remote = True
             queryset = queryset.filter(remote=True)
         if request.get("in_office") == "true":
+            self.in_office = True
             queryset = queryset.filter(in_office=True)
         
-        # Availability filter
-        availability = request.get("available")
-        if availability == "available":
-            queryset = queryset.filter(available=True)
-        elif availability == "unavailable":
-            queryset = queryset.filter(available=False)
-
-        # Reviewed status filter
-        reviewed = request.get("reviewed")
-        if reviewed == "reviewed":
-            queryset = queryset.filter(reviewed=True)
-        elif reviewed == "unreviewed":
-            queryset = queryset.filter(reviewed=False)
 
         return queryset.distinct()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['segment'] = 'jobs'
-        
-        # Statistics
-        today_min = timezone.make_aware(datetime.datetime.combine(datetime.date.today(), datetime.time.min))
-        today_max = timezone.make_aware(datetime.datetime.combine(datetime.date.today(), datetime.time.max))
+
+        today = timezone.now()
+        today_min = timezone.make_aware(datetime.datetime.combine(today.date(), datetime.time.min))
+        today_max = timezone.make_aware(datetime.datetime.combine(today.date(), datetime.time.max))
+
+        # Jobs stats for today
         new_jobs = Jobs.objects.filter(date__range=(today_min, today_max)).count()
-        
-        try:
-            new_jobs_perc = (new_jobs / context['jobs_list'].count()) * 100
-        except ZeroDivisionError:
-            new_jobs_perc = 0
-        
-        context['new_jobs'] = new_jobs
-        context['new_jobs_perc'] = new_jobs_perc
-        context['total_jobs'] = Jobs.objects.filter(available=True).count()
-        
-        # Calculate total jobs change compared to yesterday
-        yesterday_min = timezone.make_aware(datetime.datetime.combine(datetime.date.today() - datetime.timedelta(days=1), datetime.time.min))
-        yesterday_max = timezone.make_aware(datetime.datetime.combine(datetime.date.today() - datetime.timedelta(days=1), datetime.time.max))
-        total_yesterday_jobs = JobsStats.objects.filter(date__range=(yesterday_min, yesterday_max)).first()
+        total_jobs = Jobs.objects.filter(available=True).count()
+        total_unavailable_jobs = Jobs.objects.filter(available=False).count()
+        non_reviewed_jobs = Jobs.objects.filter(available=True, reviewed=False).count()
 
-        try:
-            if total_yesterday_jobs and total_yesterday_jobs.total_available:
-                context['total_jobs_change'] = ((context['total_jobs'] - total_yesterday_jobs.total_available) / total_yesterday_jobs.total_available) * 100
-                context['total_jobs_change_positive'] = context['total_jobs_change'] > 0
-            else:
-                context['total_jobs_change'] = 0
-        except:
+        # Percentage of new jobs
+        total_jobs_list = context.get('jobs_list', [])
+        new_jobs_perc = (new_jobs / len(total_jobs_list)) * 100 if total_jobs_list else 0
+
+        # Setting the context for today’s job stats
+        context.update({
+            'new_jobs': new_jobs,
+            'new_jobs_perc': new_jobs_perc,
+            'total_jobs': total_jobs,
+            'total_unavailable_jobs': total_unavailable_jobs,
+            'total_non_reviewed': non_reviewed_jobs,
+        })
+
+        # Yesterday's job stats
+        yesterday_min = today_min - datetime.timedelta(days=1)
+        yesterday_max = today_max - datetime.timedelta(days=1)
+
+        yesterday_jobs = JobsStats.objects.filter(date__range=(yesterday_min, yesterday_max)).first()
+        if yesterday_jobs and yesterday_jobs.total_available:
+            context['total_jobs_change'] = ((total_jobs - yesterday_jobs.total_available) / yesterday_jobs.total_available) * 100
+            context['total_jobs_change_positive'] = context['total_jobs_change'] > 0
+        else:
             context['total_jobs_change'] = 0
+            context['total_jobs_change_positive'] = False
 
-        # Unavailable jobs stats
-        context['total_unavailable_jobs'] = Jobs.objects.filter(available=False).count()
-        total_yesterday_unavailable_jobs = JobsStats.objects.filter(date__range=(yesterday_min, yesterday_max)).first()
-        
-        try:
-            if total_yesterday_unavailable_jobs and total_yesterday_unavailable_jobs.total_unavailable:
-                context['total_unavailable_jobs_change'] = ((context['total_unavailable_jobs'] - total_yesterday_unavailable_jobs.total_unavailable) / total_yesterday_unavailable_jobs.total_unavailable) * 100
-            else:
-                context['total_unavailable_jobs_change'] = 0
-        except:
+        # Yesterday's unavailable job stats
+        if yesterday_jobs and yesterday_jobs.total_unavailable:
+            context['total_unavailable_jobs_change'] = ((total_unavailable_jobs - yesterday_jobs.total_unavailable) / yesterday_jobs.total_unavailable) * 100
+        else:
             context['total_unavailable_jobs_change'] = 0
-        
-        # Total non-reviewed jobs
-        context['total_non_reviewed'] = Jobs.objects.filter(available=True, reviewed=False).count()
 
-        # Filters data
-        context['company_list'] = Company.objects.all()
-        context['skills_list'] = Skills.objects.all()
-        context['category_list'] = Jobs.objects.values_list('category', flat=True).distinct()
-        context['sub_category_list'] = Jobs.objects.values_list('sub_category', flat=True).distinct()
+        # Selected filters data from instance variables
+        context.update({
+            'selected_title_keyword': self.title_keyword,
+            'selected_location': self.location,
+            'selected_date_posted': self.date_posted,
+            'selected_remote': self.remote,
+            'selected_in_office': self.in_office,
+            'selected_category': self.category,
+            'selected_sub_category': self.sub_category,
+            'selected_skills': self.skills,
+            'selected_companies': self.companies
+        })
 
         return context
 

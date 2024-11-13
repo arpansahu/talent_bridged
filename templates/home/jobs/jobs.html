@@ -206,7 +206,6 @@
 
 
 </style>
-
 {% endblock stylesheets %}
 
 {% block content %}
@@ -214,7 +213,6 @@
 <div class="container-fluid py-4">
   <!-- Stats and Search Bar Section -->
   <div class="stats-and-search">
-
     <!-- Stats Row -->
     <div class="stats-row" style="margin-top:20px;">
       <div class="card">
@@ -226,7 +224,6 @@
           </h5>
         </div>
       </div>
-
       <div class="card">
         <div class="card-body p-3">
           <p class="text-sm mb-0 font-weight-bold">Total Available</p>
@@ -246,24 +243,22 @@
     <form method="GET" action="{% url 'jobs' %}">
       <div class="search-bar">
           <!-- Title/Keyword Input with Autocomplete -->
-          <!-- Title/Keyword Input with Autocomplete -->
           <div id="title_keyword_container" class="input-container left autocomplete" style="flex: 2; position: relative;">
             <i class="fas fa-search icon"></i>
-            <input type="text" name="title_keyword" id="title_keyword_input" placeholder="Job title or keyword" autocomplete="off" class="autocomplete-input" />
+            <input type="text" name="title_keyword" id="title_keyword_input" placeholder="Job title or keyword" autocomplete="off" class="autocomplete-input" value="{{ selected_title_keyword }}" />
             <ul id="keyword-autocomplete" class="autocomplete-result-list"></ul>
           </div>
     
           <!-- Location Input with Autocomplete --> 
           <div id="location" class="input-container right autocomplete" style="flex: 1; position: relative;">
             <i class="fas fa-map-marker-alt icon"></i>
-            <input type="text" name="location" id="location_input" placeholder="Add country or city" autocomplete="off" />
+            <input type="text" name="location" id="location_input" placeholder="Add country or city" autocomplete="off" value="{{ selected_location }}" />
             <ul id="location-autocomplete" class="autocomplete-result-list"></ul>
           </div>
     
           <button type="submit">Search</button>
       </div>
     </form>
-
   </div>
 
   <!-- Filter and Job Listings -->
@@ -279,39 +274,45 @@
             <input type="text" name="category" id="category_input" placeholder="Search for category" autocomplete="off" class="form-control autocomplete-input" />
             <ul id="category-autocomplete" class="autocomplete-result-list"></ul>
             <div id="selected-category" class="tag-container"></div>
+            <div id="initial-selected-category" style="display: none;">{{ selected_category }}</div> <!-- Hidden initial values -->
           </div>
-          
+
           <!-- Sub-Category Filter with Autocomplete -->
           <div id="sub_category" class="form-group autocomplete">
             <label for="sub_category_input">Sub-Category</label>
             <input type="text" name="sub_category" id="sub_category_input" placeholder="Search for sub-category" autocomplete="off" class="form-control autocomplete-input" />
             <ul id="sub-category-autocomplete" class="autocomplete-result-list"></ul>
             <div id="selected-sub-category" class="tag-container"></div>
+            <div id="initial-selected-sub-category" style="display: none;">{{ selected_sub_category }}</div> <!-- Hidden initial values -->
           </div>
-    
+
           <!-- Skills Filter -->
           <div id="skills" class="form-group autocomplete">
             <label for="skills">Skills</label>
             <input type="text" name="skills" id="skills_input" placeholder="Search for skills" autocomplete="off" class="form-control autocomplete-input" />
             <ul id="skills-autocomplete" class="autocomplete-result-list"></ul>
             <div id="selected-skills" class="tag-container"></div>
-          </div>           
-    
+            <div id="initial-selected-skills" style="display: none;">{{ selected_skills }}</div> <!-- Hidden initial values -->
+          </div>
+
+          <!-- Company Filter with Autocomplete -->
           <div id="company" class="form-group autocomplete">
             <label for="company_input">Company</label>
             <input type="text" name="company" id="company_input" placeholder="Search for company" autocomplete="off" class="form-control autocomplete-input" />
             <ul id="company-autocomplete" class="autocomplete-result-list"></ul>
             <div id="selected-companies" class="tag-container"></div>
+            <div id="initial-selected-companies" style="display: none;">{{ selected_companies }}</div> <!-- Hidden initial values -->
           </div>
 
-          <!-- Date Filter -->
+
+          <!-- Date Posted filter -->
           <div class="form-group">
             <label for="date-filter">Date Posted</label>
             <select class="form-control" id="date-filter" name="date">
               <option value="">Anytime</option>
-              <option value="last_24_hours">Last 24 hours</option>
-              <option value="last_7_days">Last 7 days</option>
-              <option value="last_30_days">Last 30 days</option>
+              <option value="last_24_hours" {% if selected_date_posted == "last_24_hours" %}selected{% endif %}>Last 24 hours</option>
+              <option value="last_7_days" {% if selected_date_posted == "last_7_days" %}selected{% endif %}>Last 7 days</option>
+              <option value="last_30_days" {% if selected_date_posted == "last_30_days" %}selected{% endif %}>Last 30 days</option>
             </select>
           </div>
     
@@ -319,11 +320,11 @@
           <div class="form-group">
             <label>Work Type</label>
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="remote" name="remote" value="true">
+              <input class="form-check-input" type="checkbox" id="remote" name="remote" value="true" {% if selected_remote %}checked{% endif %}>
               <label class="form-check-label" for="remote">Remote</label>
             </div>
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="in-office" name="in_office" value="true">
+              <input class="form-check-input" type="checkbox" id="in-office" name="in_office" value="true" {% if selected_in_office %}checked{% endif %}>
               <label class="form-check-label" for="in-office">In Office</label>
             </div>
           </div>
@@ -376,11 +377,36 @@
   </div>
 </div>
 
+
+
 {% endblock content %}
+
 
 
 {% block javascripts %}
 <script>
+
+  document.addEventListener("DOMContentLoaded", function() {
+    // Define a reusable function to initialize tags for each field    
+
+    function initializeTags(containerId, hiddenFieldId, inputId, dataAttribute) {
+        // Retrieve the initial values as a comma-separated string, then split into an array
+        const initialValues = document.getElementById(hiddenFieldId).textContent.split(",");
+
+        // Loop through each value and add as a tag
+        initialValues.forEach(value => {
+            if (value.trim()) {
+                addTag(value.trim(), containerId, inputId, dataAttribute);
+            }
+        });
+    }
+
+    // Initialize each tag container with its initial values
+    initializeTags("selected-category", "initial-selected-category", "category_input", "data-category-name");
+    initializeTags("selected-sub-category", "initial-selected-sub-category", "sub_category_input", "data-sub-category-name");
+    initializeTags("selected-skills", "initial-selected-skills", "skills_input", "data-skill-name");
+    initializeTags("selected-companies", "initial-selected-companies", "company_input", "data-company-name");
+  });
 
   // Autocomplete for location input (new functionality)
   new Autocomplete('#location', {
@@ -410,7 +436,6 @@
       });
     },
   });
-
 
 
   function addTag(result, containerId, inputId, dataAttribute) {
@@ -457,7 +482,7 @@
 
     // Clear the input field for further entries
     input.value = "";
-}
+  }
 
 
   
