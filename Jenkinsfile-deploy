@@ -81,55 +81,47 @@ pipeline {
                 }
             }
         }
-        stage('Check & Create Nginx Configuration') {
+        stage('Update Nginx Configuration') {
             steps {
                 script {
-                    // Check if the Nginx configuration file exists
-                    def configExists = sh(script: "test -f ${env.NGINX_CONF_PATH} && echo 'exists' || echo 'not exists'", returnStdout: true).trim()
+                    echo "Updating Nginx configuration from repository..."
 
-                    if (configExists == 'not exists') {
-                        echo "Nginx configuration file does not exist. Creating it now..."
+                    // Always update the config to ensure it matches the repository version
+                    sh "sudo cat nginx.conf | sudo tee ${env.NGINX_CONF_PATH} > /dev/null"
 
-                        // Create or overwrite the NGINX_CONF file with the content of nginx.conf using sudo tee
-                        sh "sudo cat nginx.conf | sudo tee ${env.NGINX_CONF_PATH} > /dev/null"
+                    // Replace placeholders in the configuration file
+                    sh "sudo sed -i 's|SERVER_NAME|${env.SERVER_NAME}|g' ${env.NGINX_CONF_PATH}"
+                    sh "sudo sed -i 's|DOCKER_PORT|${env.DOCKER_PORT}|g' ${env.NGINX_CONF_PATH}"
 
-                        // Replace placeholders in the configuration file
-                        sh "sudo sed -i 's|SERVER_NAME|${env.SERVER_NAME}|g' ${env.NGINX_CONF_PATH}"
-                        sh "sudo sed -i 's|DOCKER_PORT|${env.DOCKER_PORT}|g' ${env.NGINX_CONF_PATH}"
+                    echo "✅ Nginx configuration updated successfully"
 
-                        echo "Nginx configuration file created."
-
-                        // Ensure Nginx is aware of the new configuration
-                        sh "sudo ln -sf ${env.NGINX_CONF_PATH} /etc/nginx/sites-enabled/"
-                    } else {
-                        echo "Nginx configuration file already exists."
-                    }                    
+                    // Ensure Nginx is aware of the configuration
+                    sh "sudo ln -sf ${env.NGINX_CONF_PATH} /etc/nginx/sites-enabled/"
+                    
+                    // Test nginx configuration
+                    sh "sudo nginx -t"
                 }
             }
         }
-        stage('Check & Create Flower Nginx Configuration') {
+        stage('Update Flower Nginx Configuration') {
             steps {
                 script {
-                    // Check if the Nginx configuration file exists
-                    def configExists = sh(script: "test -f ${env.NGINX_CONF_FLOWER_PATH} && echo 'exists' || echo 'not exists'", returnStdout: true).trim()
+                    echo "Updating Flower Nginx configuration from repository..."
 
-                    if (configExists == 'not exists') {
-                        echo "Nginx configuration file does not exist. Creating it now..."
+                    // Always update the config to ensure it matches the repository version
+                    sh "sudo cat nginx.conf | sudo tee ${env.NGINX_CONF_FLOWER_PATH} > /dev/null"
 
-                        // Create or overwrite the NGINX_CONF file with the content of nginx.conf using sudo tee
-                        sh "sudo cat nginx.conf | sudo tee ${env.NGINX_CONF_FLOWER_PATH} > /dev/null"
+                    // Replace placeholders in the configuration file
+                    sh "sudo sed -i 's|SERVER_NAME|${env.FLOWER_SERVER_NAME}|g' ${env.NGINX_CONF_FLOWER_PATH}"
+                    sh "sudo sed -i 's|DOCKER_PORT|${env.FLOWER_PORT}|g' ${env.NGINX_CONF_FLOWER_PATH}"
 
-                        // Replace placeholders in the configuration file
-                        sh "sudo sed -i 's|SERVER_NAME|${env.FLOWER_SERVER_NAME}|g' ${env.NGINX_CONF_FLOWER_PATH}"
-                        sh "sudo sed -i 's|DOCKER_PORT|${env.FLOWER_PORT}|g' ${env.NGINX_CONF_FLOWER_PATH}"
+                    echo "✅ Flower Nginx configuration updated successfully"
 
-                        echo "Nginx configuration file created."
-
-                        // Ensure Nginx is aware of the new configuration
-                        sh "sudo ln -sf ${env.NGINX_CONF_FLOWER_PATH} /etc/nginx/sites-enabled/"
-                    } else {
-                        echo "Nginx configuration file already exists."
-                    }                    
+                    // Ensure Nginx is aware of the configuration
+                    sh "sudo ln -sf ${env.NGINX_CONF_FLOWER_PATH} /etc/nginx/sites-enabled/"
+                    
+                    // Test nginx configuration
+                    sh "sudo nginx -t"
                 }
             }
         }
